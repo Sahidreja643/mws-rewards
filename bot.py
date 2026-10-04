@@ -37,12 +37,7 @@ Tap the button below to open MWS Rewards and begin your journey.
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [
-            InlineKeyboardButton(
-                "🚀 OPEN MWS REWARDS",
-                url=MINI_APP_URL
-            )
-        ]
+        [InlineKeyboardButton("🚀 OPEN MWS REWARDS", url=MINI_APP_URL)]
     ]
 
     await update.message.reply_text(
@@ -58,13 +53,13 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="HTML"
     )
 
-async def main():
+def main():
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
 
-    await app.run_polling()
+    app.run_polling()
 
 if __name__ == "__main__":
     main()
