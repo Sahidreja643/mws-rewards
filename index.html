@@ -7,159 +7,87 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-
 body{
   font-family:Arial,sans-serif;
-  background:#080d1c;
+  background:#080d1b;
   color:#fff;
   min-height:100vh;
 }
-
 .app{
   max-width:480px;
   margin:auto;
   padding:18px;
 }
-
-.header{
-  text-align:center;
-  padding:18px 0 14px;
-}
-
+.header{text-align:center;padding:20px 0}
 .logo{
-  width:70px;
-  height:70px;
-  margin:auto;
-  border-radius:22px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:21px;
-  font-weight:900;
-  color:#101522;
-  background:linear-gradient(135deg,#ffe27a,#f5a623);
-  box-shadow:0 10px 30px rgba(245,166,35,.25);
+  width:78px;height:78px;margin:auto;border-radius:50%;
+  background:linear-gradient(135deg,#ffe36e,#ff9d00);
+  display:flex;align-items:center;justify-content:center;
+  color:#111;font-size:22px;font-weight:900;
+  box-shadow:0 0 30px rgba(255,190,50,.35);
 }
-
-.title{
-  margin-top:12px;
-  font-size:25px;
-  font-weight:900;
-}
-
-.subtitle{
-  margin-top:5px;
-  color:#8994ad;
-  font-size:13px;
-}
+.title{margin-top:12px;font-size:27px;font-weight:900}
+.subtitle{margin-top:5px;color:#9da7bd;font-size:13px}
 
 .balance{
-  margin-top:15px;
-  padding:23px;
-  border-radius:24px;
-  background:linear-gradient(145deg,#172442,#10182d);
-  border:1px solid #263553;
-  text-align:center;
+  margin-top:18px;padding:24px;border-radius:22px;
+  background:linear-gradient(135deg,#192545,#10172c);
+  border:1px solid #2d3b60;text-align:center;
 }
-
-.balance-label{
-  color:#8d99b2;
-  font-size:13px;
-}
-
-.coins{
-  margin-top:7px;
-  font-size:34px;
-  font-weight:900;
-}
-
-.usd{
-  margin-top:5px;
-  color:#f6c957;
-  font-size:15px;
-  font-weight:700;
-}
-
-.rate{
-  margin-top:8px;
-  color:#71809d;
-  font-size:11px;
-}
+.balance small{color:#9da7bd}
+.coins{margin-top:8px;font-size:34px;font-weight:900}
+.dollar{margin-top:5px;color:#ffd45a;font-size:16px}
 
 .grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:17px;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;margin-top:18px;
 }
-
 .card{
-  padding:19px 10px;
-  border-radius:19px;
-  background:#121b30;
-  border:1px solid #22304b;
-  text-align:center;
+  padding:20px 10px;background:#141d34;
+  border:1px solid #293756;border-radius:18px;
+  text-align:center;cursor:pointer;
   transition:.2s;
 }
-
-.card:active{
-  transform:scale(.97);
-}
-
-.icon{
-  font-size:27px;
-  margin-bottom:8px;
-}
-
-.card b{
-  font-size:14px;
-}
-
-.card p{
-  margin-top:5px;
-  color:#78859e;
-  font-size:11px;
-}
-
-.section{
-  margin-top:18px;
-  padding:17px;
-  border-radius:19px;
-  background:#10182b;
-  border:1px solid #202d47;
-}
-
-.section-title{
-  font-size:14px;
-  font-weight:800;
-  margin-bottom:10px;
-}
-
-.streak{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color:#a5afc2;
-  font-size:12px;
-}
+.card:active{transform:scale(.96)}
+.icon{font-size:29px;margin-bottom:8px}
+.card b{font-size:14px}
+.card p{margin-top:5px;font-size:11px;color:#8f9ab0}
 
 .notice{
-  margin-top:17px;
-  padding:14px;
-  border-radius:16px;
-  background:#0e1628;
-  border:1px solid #1d2940;
-  color:#7f8ca5;
-  font-size:11px;
-  line-height:1.5;
-  text-align:center;
+  margin-top:18px;padding:15px;border-radius:15px;
+  background:#11192b;color:#9da7bd;
+  font-size:12px;text-align:center;
 }
 
-.footer{
-  padding:20px 0 8px;
-  text-align:center;
-  color:#53617a;
-  font-size:10px;
+.modal{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.75);
+  align-items:center;justify-content:center;
+  padding:20px;z-index:10;
+}
+.modal-box{
+  width:100%;max-width:420px;
+  background:#141d34;border:1px solid #354568;
+  border-radius:22px;padding:24px;text-align:center;
+}
+.modal-box h2{margin-bottom:12px}
+.modal-box p{color:#aab4c8;line-height:1.6}
+.close{
+  margin-top:18px;width:100%;padding:13px;
+  border:0;border-radius:12px;
+  background:#ffc52f;color:#111;font-weight:800;
+}
+.spin{
+  margin:18px auto;width:130px;height:130px;
+  border-radius:50%;
+  border:10px solid #ffc52f;
+  display:flex;align-items:center;justify-content:center;
+  font-size:42px;
+}
+.action{
+  margin-top:18px;width:100%;padding:14px;
+  border:0;border-radius:12px;
+  background:#ffc52f;color:#111;font-weight:800;
 }
 </style>
 </head>
@@ -175,89 +103,177 @@ body{
   </div>
 
   <div class="balance">
-    <div class="balance-label">MY COINS</div>
-
-    <div class="coins" id="coinBalance">
-      🪙 0
-    </div>
-
-    <div class="usd" id="usdBalance">
-      $0.00
-    </div>
-
-    <div class="rate">
-      10,000 Coins = $1.00
-    </div>
+    <small>My Coins</small>
+    <div class="coins">🪙 <span id="coins">0</span></div>
+    <div class="dollar">$<span id="dollar">0.00</span></div>
   </div>
 
   <div class="grid">
 
-    <div class="card">
+    <div class="card" onclick="dailyReward()">
       <div class="icon">🎁</div>
       <b>Daily Reward</b>
       <p>Claim daily coins</p>
     </div>
 
-    <div class="card">
+    <div class="card" onclick="openSpin()">
       <div class="icon">🎡</div>
       <b>Free Spin</b>
-      <p>Daily free spin</p>
+      <p>Try your free spin</p>
     </div>
 
-    <div class="card">
+    <div class="card" onclick="openTasks()">
       <div class="icon">✅</div>
       <b>Tasks</b>
       <p>Complete tasks</p>
     </div>
 
-    <div class="card">
+    <div class="card" onclick="openInvite()">
       <div class="icon">👥</div>
       <b>Invite Friends</b>
       <p>Earn referral coins</p>
     </div>
 
-    <div class="card">
+    <div class="card" onclick="openLeaderboard()">
       <div class="icon">🏆</div>
       <b>Leaderboard</b>
       <p>Top members</p>
     </div>
 
-    <div class="card">
+    <div class="card" onclick="openWallet()">
       <div class="icon">👛</div>
       <b>Wallet</b>
-      <p>Connect wallet</p>
+      <p>View your balance</p>
     </div>
 
-  </div>
-
-  <div class="section">
-    <div class="section-title">🔥 Daily Streak</div>
-
-    <div class="streak">
-      <span>Current streak</span>
-      <strong>0 Days</strong>
+    <div class="card" onclick="openWithdraw()">
+      <div class="icon">💸</div>
+      <b>Withdraw</b>
+      <p>Withdrawal information</p>
     </div>
-  </div>
 
-  <div class="section">
-    <div class="section-title">💸 Withdrawal</div>
-
-    <div class="streak">
-      <span>Minimum withdrawal</span>
-      <strong>10,000 Coins</strong>
-    </div>
   </div>
 
   <div class="notice">
-    Collect Coins through eligible activities.
-    Reward rules and withdrawal conditions will always be shown clearly.
-  </div>
-
-  <div class="footer">
-    MWS Rewards © 2026
+    MWS Rewards — Complete eligible activities and collect Coins.
   </div>
 
 </div>
 
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2 id="modalTitle">MWS Rewards</h2>
+    <div id="modalContent"></div>
+    <button class="close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+let coins = Number(localStorage.getItem("mwsCoins") || 0);
+
+function updateBalance(){
+  document.getElementById("coins").textContent = coins.toLocaleString();
+  document.getElementById("dollar").textContent =
+    (coins / 10000).toFixed(2);
+  localStorage.setItem("mwsCoins", coins);
+}
+
+function showModal(title,content){
+  document.getElementById("modalTitle").textContent=title;
+  document.getElementById("modalContent").innerHTML=content;
+  document.getElementById("modal").style.display="flex";
+}
+
+function closeModal(){
+  document.getElementById("modal").style.display="none";
+}
+
+function dailyReward(){
+  let today=new Date().toDateString();
+  let last=localStorage.getItem("mwsDaily");
+
+  if(last===today){
+    showModal("🎁 Daily Reward",
+      "<p>You have already claimed today's reward.<br><br>Come back tomorrow!</p>");
+    return;
+  }
+
+  coins+=500;
+  localStorage.setItem("mwsDaily",today);
+  updateBalance();
+
+  showModal("🎉 Reward Claimed!",
+    "<p>You received <b>500 Coins</b>.<br><br>Come back tomorrow for another reward.</p>");
+}
+
+function openSpin(){
+  showModal("🎡 Free Spin",
+    '<div class="spin">🎡</div>' +
+    '<button class="action" onclick="spinNow()">SPIN NOW</button>');
+}
+
+function spinNow(){
+  let rewards=[100,250,500,750,1000];
+  let reward=rewards[Math.floor(Math.random()*rewards.length)];
+
+  coins+=reward;
+  updateBalance();
+
+  showModal("🎉 Congratulations!",
+    "<p>You won <b>"+reward+" Coins</b>!</p>");
+}
+
+function openTasks(){
+  showModal("✅ Tasks",
+    "<p>Available tasks will appear here.</p>" +
+    '<button class="action" onclick="completeDemoTask()">Complete Demo Task</button>');
+}
+
+function completeDemoTask(){
+  coins+=250;
+  updateBalance();
+
+  showModal("✅ Task Completed",
+    "<p>You received <b>250 Coins</b>.</p>");
+}
+
+function openInvite(){
+  showModal("👥 Invite Friends",
+    "<p>Invite your friends and earn referral rewards.</p>" +
+    '<button class="action" onclick="copyInvite()">COPY INVITE LINK</button>');
+}
+
+function copyInvite(){
+  let link=window.location.href;
+
+  navigator.clipboard.writeText(link).then(()=>{
+    showModal("✅ Copied!",
+      "<p>Your invite link has been copied.</p>");
+  });
+}
+
+function openLeaderboard(){
+  showModal("🏆 Leaderboard",
+    "<p>🥇 MWS Member — 25,000 Coins<br><br>" +
+    "🥈 MWS Member — 18,500 Coins<br><br>" +
+    "🥉 MWS Member — 12,000 Coins</p>");
+}
+
+function openWallet(){
+  showModal("👛 Wallet",
+    "<p>Your current balance:</p>" +
+    "<h2>🪙 "+coins.toLocaleString()+" Coins</h2>" +
+    "<p>💵 $"+(coins/10000).toFixed(2)+"</p>");
+}
+
+function openWithdraw(){
+  showModal("💸 Withdraw",
+    "<p>Withdrawal becomes available according to the applicable reward rules and minimum requirements.</p>" +
+    "<p><br>Current Balance:<br><b>"+coins.toLocaleString()+" Coins</b></p>");
+}
+
+updateBalance();
+</script>
+
 </body>
-  </html>
+        </html>
