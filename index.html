@@ -188,7 +188,7 @@ function closeModal(){
   document.getElementById("modal").style.display="none";
 }
 
-  function dailyReward(){
+ function dailyReward(){
 
   const now = Date.now();
   const day = 24 * 60 * 60 * 1000;
@@ -200,17 +200,149 @@ function closeModal(){
   if (!data) {
     data = {
       start: now,
-      claimed: []
+      claimed: [],
+      lastClaim: 0
     };
   }
 
-  // ৭ দিনের cycle শেষ হলে নতুন cycle শুরু
+  // ৭ দিন শেষ হলে নতুন ৭ দিনের cycle
   if (now - data.start >= 7 * day) {
     data = {
       start: now,
-      claimed: []
+      claimed: [],
+      lastClaim: 0
     };
   }
+
+  let html = `
+    <p>🎁 Daily Reward</p>
+    <p style="margin-top:8px;">
+      Claim <b>100 Coins</b> every 24 hours.
+    </p>
+
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:18px;
+    ">
+  `;
+
+  for (let i = 1; i <= 7; i++) {
+
+    const claimed = data.claimed.includes(i);
+
+    if (claimed) {
+
+      html += `
+        <button disabled style="
+          padding:14px 8px;
+          border:0;
+          border-radius:12px;
+          background:#777;
+          color:#ddd;
+          font-weight:bold;
+        ">
+          Day ${i}<br>
+          ✓ Claimed
+        </button>
+      `;
+
+    } else if (i === data.claimed.length + 1) {
+
+      html += `
+        <button
+          class="action"
+          onclick="claimDailyReward(${i})">
+          Day ${i}<br>
+          🪙 100 Coins
+        </button>
+      `;
+
+    } else {
+
+      html += `
+        <button disabled style="
+          padding:14px 8px;
+          border:0;
+          border-radius:12px;
+          background:#26314a;
+          color:#8994aa;
+          font-weight:bold;
+        ">
+          Day ${i}<br>
+          🔒 Locked
+        </button>
+      `;
+    }
+  }
+
+  html += `</div>`;
+
+  showModal("🎁 Daily Rewards", html);
+}
+
+
+function claimDailyReward(dayNumber){
+
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+
+  let data = JSON.parse(
+    localStorage.getItem("mwsDailyRewards") || "null"
+  );
+
+  if (!data) return;
+
+  // আগের Claim-এর 24 ঘণ্টা পূর্ণ হয়েছে কি না
+  if (data.lastClaim && now - data.lastClaim < day) {
+
+    const remaining = day - (now - data.lastClaim);
+
+    const hours = Math.floor(remaining / 3600000);
+    const minutes = Math.floor(
+      (remaining % 3600000) / 60000
+    );
+
+    showModal(
+      "⏳ Daily Reward",
+      `
+      <p>Today's reward has already been claimed.</p>
+      <br>
+      <h3>Next Reward</h3>
+      <p>${hours}h ${minutes}m পরে</p>
+      `
+    );
+
+    return;
+  }
+
+  if (data.claimed.includes(dayNumber)) return;
+
+  data.claimed.push(dayNumber);
+  data.lastClaim = now;
+
+  localStorage.setItem(
+    "mwsDailyRewards",
+    JSON.stringify(data)
+  );
+
+  coins += 100;
+  updateBalance();
+
+  showModal(
+    "🎉 Reward Claimed!",
+    `
+      <h2>🪙 +100 Coins</h2>
+      <p style="margin-top:10px;">
+        Day ${dayNumber} completed!
+      </p>
+      <p style="margin-top:8px;">
+        Come back after 24 hours for the next reward.
+      </p>
+    `
+  );
+  } 
 
   const currentDay =
     Math.floor((now - data.start) / day) + 1;
