@@ -6,88 +6,402 @@
 <title>MWS Rewards</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
   font-family:Arial,sans-serif;
-  background:#080d1b;
-  color:#fff;
+}
+
+body{
   min-height:100vh;
+  color:#fff;
+  background:
+    radial-gradient(circle at 15% 10%,rgba(255,196,45,.18),transparent 28%),
+    radial-gradient(circle at 90% 20%,rgba(255,170,0,.12),transparent 25%),
+    linear-gradient(145deg,#030303,#0b0d12 55%,#020202);
 }
+
 .app{
-  max-width:480px;
+  width:100%;
+  max-width:520px;
   margin:auto;
-  padding:18px;
+  padding:18px 14px 95px;
 }
-.header{text-align:center;padding:20px 0}
+
+.header{
+  text-align:center;
+  padding:12px 0 20px;
+}
+
 .logo{
-  width:78px;height:78px;margin:auto;border-radius:50%;
-  background:linear-gradient(135deg,#ffe36e,#ff9d00);
-  display:flex;align-items:center;justify-content:center;
-  color:#111;font-size:22px;font-weight:900;
-  box-shadow:0 0 30px rgba(255,190,50,.35);
+  font-size:27px;
+  font-weight:900;
+  letter-spacing:3px;
+  color:#ffd34d;
+  text-shadow:0 0 20px rgba(255,202,60,.55);
 }
-.title{margin-top:12px;font-size:27px;font-weight:900}
-.subtitle{margin-top:5px;color:#9da7bd;font-size:13px}
+
+.subtitle{
+  margin-top:6px;
+  color:#8e8e8e;
+  font-size:11px;
+  letter-spacing:1px;
+}
 
 .balance{
-  margin-top:18px;padding:24px;border-radius:22px;
-  background:linear-gradient(135deg,#192545,#10172c);
-  border:1px solid #2d3b60;text-align:center;
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  padding:25px 18px;
+  border-radius:25px;
+  border:1px solid rgba(255,211,77,.35);
+  background:linear-gradient(145deg,rgba(255,214,80,.15),rgba(255,255,255,.025));
+  box-shadow:0 0 30px rgba(255,190,30,.10);
 }
-.balance small{color:#9da7bd}
-.coins{margin-top:8px;font-size:34px;font-weight:900}
-.dollar{margin-top:5px;color:#ffd45a;font-size:16px}
+
+.balance:after{
+  content:"";
+  position:absolute;
+  width:170px;
+  height:170px;
+  right:-90px;
+  top:-90px;
+  border-radius:50%;
+  background:rgba(255,211,77,.10);
+}
+
+.balance small{
+  color:#999;
+}
+
+.coins{
+  margin:8px 0;
+  font-size:36px;
+  font-weight:900;
+  color:#ffd34d;
+}
+
+.usd{
+  color:#eee;
+  font-size:17px;
+}
+
+.level{
+  display:inline-block;
+  margin-top:12px;
+  padding:8px 15px;
+  border-radius:20px;
+  color:#ffd34d;
+  background:#17181d;
+  border:1px solid rgba(255,211,77,.18);
+  font-weight:bold;
+  font-size:12px;
+}
+
+.card{
+  margin-top:14px;
+  padding:18px;
+  border-radius:20px;
+  background:rgba(17,18,23,.95);
+  border:1px solid rgba(255,211,77,.18);
+  box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+
+.card-title{
+  color:#ffd34d;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.mining-row{
+  display:flex;
+  justify-content:space-between;
+  color:#999;
+  font-size:12px;
+  margin-bottom:9px;
+}
+
+.progress{
+  height:9px;
+  border-radius:20px;
+  overflow:hidden;
+  background:#292a2f;
+}
+
+.progress-bar{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#8d5c00,#ffd34d,#fff1a3);
+  box-shadow:0 0 12px rgba(255,211,77,.7);
+  transition:.3s;
+}
+
+.main-btn{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:14px;
+  margin-top:13px;
+  font-size:14px;
+  font-weight:900;
+  color:#111;
+  background:linear-gradient(135deg,#b57b05,#ffd85b);
+  cursor:pointer;
+}
+
+.main-btn:disabled{
+  color:#aaa;
+  background:#555;
+  cursor:not-allowed;
+}
 
 .grid{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:12px;margin-top:18px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:14px;
 }
-.card{
-  padding:20px 10px;background:#141d34;
-  border:1px solid #293756;border-radius:18px;
-  text-align:center;cursor:pointer;
+
+.feature{
+  padding:20px 10px;
+  text-align:center;
+  border-radius:19px;
+  border:1px solid rgba(255,211,77,.16);
+  background:linear-gradient(145deg,#17181d,#0c0d11);
+  cursor:pointer;
   transition:.2s;
 }
-.card:active{transform:scale(.96)}
-.icon{font-size:29px;margin-bottom:8px}
-.card b{font-size:14px}
-.card p{margin-top:5px;font-size:11px;color:#8f9ab0}
 
-.notice{
-  margin-top:18px;padding:15px;border-radius:15px;
-  background:#11192b;color:#9da7bd;
-  font-size:12px;text-align:center;
+.feature:active{
+  transform:scale(.96);
+}
+
+.feature-icon{
+  font-size:29px;
+  margin-bottom:8px;
+}
+
+.feature strong{
+  display:block;
+  color:#ffd34d;
+  font-size:14px;
+}
+
+.feature span{
+  display:block;
+  margin-top:5px;
+  color:#888;
+  font-size:11px;
+}
+
+.modal-bg{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:100;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.82);
 }
 
 .modal{
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,.75);
-  align-items:center;justify-content:center;
-  padding:20px;z-index:10;
+  width:100%;
+  max-width:520px;
+  max-height:90vh;
+  overflow:auto;
+  padding:22px;
+  border-radius:28px 28px 0 0;
+  background:linear-gradient(145deg,#15161c,#08090c);
+  border:1px solid rgba(255,211,77,.3);
 }
-.modal-box{
-  width:100%;max-width:420px;
-  background:#141d34;border:1px solid #354568;
-  border-radius:22px;padding:24px;text-align:center;
-}
-.modal-box h2{margin-bottom:12px}
-.modal-box p{color:#aab4c8;line-height:1.6}
+
 .close{
-  margin-top:18px;width:100%;padding:13px;
-  border:0;border-radius:12px;
-  background:#ffc52f;color:#111;font-weight:800;
-}
-.spin{
-  margin:18px auto;width:130px;height:130px;
+  float:right;
+  width:34px;
+  height:34px;
+  border:0;
   border-radius:50%;
-  border:10px solid #ffc52f;
-  display:flex;align-items:center;justify-content:center;
-  font-size:42px;
+  background:#28292e;
+  color:#fff;
+  font-size:20px;
 }
-.action{
-  margin-top:18px;width:100%;padding:14px;
-  border:0;border-radius:12px;
-  background:#ffc52f;color:#111;font-weight:800;
+
+.modal h2{
+  margin-bottom:15px;
+  color:#ffd34d;
+}
+
+.info{
+  color:#999;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.daily{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:15px;
+}
+
+.day{
+  position:relative;
+  padding:16px;
+  border-radius:16px;
+  background:#17181e;
+  border:1px solid #303136;
+}
+
+.day.active{
+  border-color:#dcae2c;
+}
+
+.day.claimed{
+  background:#555;
+  color:#bbb;
+}
+
+.seal{
+  position:absolute;
+  right:13px;
+  top:13px;
+  color:#ccc;
+  font-weight:bold;
+  font-size:11px;
+}
+
+.task{
+  margin-top:12px;
+  padding:16px;
+  border-radius:16px;
+  background:#17181e;
+  border:1px solid #303136;
+}
+
+.task-title{
+  color:#ffd34d;
+  font-weight:bold;
+}
+
+.task-link{
+  display:block;
+  margin-top:7px;
+  color:#aaa;
+  font-size:11px;
+  word-break:break-all;
+}
+
+.wheel-wrap{
+  position:relative;
+  width:285px;
+  height:285px;
+  margin:20px auto;
+}
+
+.pointer{
+  position:absolute;
+  z-index:5;
+  top:-5px;
+  left:calc(50% - 14px);
+  width:0;
+  height:0;
+  border-left:14px solid transparent;
+  border-right:14px solid transparent;
+  border-top:28px solid white;
+}
+
+.wheel{
+  position:relative;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  border:8px solid #e5b531;
+  background:conic-gradient(
+    #8d5e05 0deg 51.4deg,
+    #d9aa31 51.4deg 102.8deg,
+    #765006 102.8deg 154.2deg,
+    #e4bf52 154.2deg 205.6deg,
+    #895a04 205.6deg 257deg,
+    #d9aa31 257deg 308.4deg,
+    #714903 308.4deg 360deg
+  );
+  box-shadow:0 0 25px rgba(255,207,63,.35);
+  transition:transform 4s cubic-bezier(.15,.75,.2,1);
+}
+
+.wheel:after{
+  content:"SPIN";
+  position:absolute;
+  left:calc(50% - 37px);
+  top:calc(50% - 37px);
+  width:74px;
+  height:74px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#0d0e11;
+  border:4px solid #ffd34d;
+  color:#ffd34d;
+  font-weight:900;
+}
+
+.labels{
+  position:absolute;
+  inset:0;
+}
+
+.labels span{
+  position:absolute;
+  color:#fff;
+  font-size:14px;
+  font-weight:900;
+  text-shadow:0 1px 4px #000;
+}
+
+.labels span:nth-child(1){top:25px;left:125px}
+.labels span:nth-child(2){top:64px;right:35px}
+.labels span:nth-child(3){top:133px;right:18px}
+.labels span:nth-child(4){bottom:52px;right:52px}
+.labels span:nth-child(5){bottom:26px;left:125px}
+.labels span:nth-child(6){bottom:62px;left:40px}
+.labels span:nth-child(7){top:133px;left:18px}
+
+.nav{
+  position:fixed;
+  z-index:50;
+  bottom:0;
+  left:0;
+  right:0;
+  display:flex;
+  justify-content:center;
+  background:rgba(5,5,7,.96);
+  border-top:1px solid rgba(255,211,77,.18);
+}
+
+.nav button{
+  flex:1;
+  max-width:130px;
+  padding:13px 4px;
+  border:0;
+  background:none;
+  color:#888;
+  font-size:11px;
+}
+
+.nav button:first-child{
+  color:#ffd34d;
+}
+
+input{
+  width:100%;
+  margin-top:8px;
+  padding:13px;
+  border-radius:12px;
+  border:1px solid #444;
+  background:#111;
+  color:#fff;
 }
 </style>
 </head>
@@ -97,626 +411,868 @@ body{
 <div class="app">
 
   <div class="header">
-    <div class="logo">MWS</div>
-    <div class="title">MWS Rewards</div>
-    <div class="subtitle">Rewards • Tasks • Referrals</div>
+    <div class="logo">👑 MWS REWARDS</div>
+    <div class="subtitle">PREMIUM REWARD EXPERIENCE</div>
   </div>
 
   <div class="balance">
-    <small>My Coins</small>
-    <div class="coins">🪙 <span id="coins">0</span></div>
-    <div class="dollar">$<span id="dollar">0.00</span></div>
+    <small>TOTAL BALANCE</small>
+    <div class="coins" id="coins">0 🪙</div>
+    <div class="usd" id="usd">$0.00</div>
+    <div class="level" id="level">LEVEL 0</div>
   </div>
 
+  <!-- MINING -->
+  <div class="card">
+
+    <div class="card-title">⛏️ MWS MINING</div>
+
+    <div class="mining-row">
+      <span id="mineStatus">Mining Ready</span>
+      <span id="mineTimer">08h 00m</span>
+    </div>
+
+    <div class="progress">
+      <div class="progress-bar" id="mineProgress"></div>
+    </div>
+
+    <button class="main-btn"
+      id="mineBtn"
+      onclick="startMining()">
+      ⛏️ START MINING
+    </button>
+
+  </div>
+
+  <!-- FEATURES -->
   <div class="grid">
 
-    <div class="card" onclick="dailyReward()">
-      <div class="icon">🎁</div>
-      <b>Daily Reward</b>
-      <p>Claim daily coins</p>
+    <div class="feature" onclick="openDaily()">
+      <div class="feature-icon">🎁</div>
+      <strong>Daily Reward</strong>
+      <span>100 Coins Daily</span>
     </div>
 
-    <div class="card" onclick="openSpin()">
-      <div class="icon">🎡</div>
-      <b>Free Spin</b>
-      <p>Try your free spin</p>
+    <div class="feature" onclick="openSpin()">
+      <div class="feature-icon">🎡</div>
+      <strong>Free Spin</strong>
+      <span>100–500 Coins</span>
     </div>
 
-    <div class="card" onclick="openTasks()">
-      <div class="icon">✅</div>
-      <b>Tasks</b>
-      <p>Complete tasks</p>
+    <div class="feature" onclick="openTasks()">
+      <div class="feature-icon">📢</div>
+      <strong>Tasks</strong>
+      <span>50 Coins Each</span>
     </div>
 
-    <div class="card" onclick="openInvite()">
-      <div class="icon">👥</div>
-      <b>Invite Friends</b>
-      <p>Earn referral coins</p>
+    <div class="feature" onclick="openInvite()">
+      <div class="feature-icon">👥</div>
+      <strong>Invite Friends</strong>
+      <span>+100 Coins</span>
     </div>
 
-    <div class="card" onclick="openLeaderboard()">
-      <div class="icon">🏆</div>
-      <b>Leaderboard</b>
-      <p>Top members</p>
+    <div class="feature" onclick="openLeaderboard()">
+      <div class="feature-icon">🏆</div>
+      <strong>Leaderboard</strong>
+      <span>Top Rewards</span>
     </div>
 
-    <div class="card" onclick="openWallet()">
-      <div class="icon">👛</div>
-      <b>Wallet</b>
-      <p>View your balance</p>
+    <div class="feature" onclick="openWallet()">
+      <div class="feature-icon">👛</div>
+      <strong>Wallet</strong>
+      <span>Coin Balance</span>
     </div>
 
-    <div class="card" onclick="openWithdraw()">
-      <div class="icon">💸</div>
-      <b>Withdraw</b>
-      <p>Withdrawal information</p>
+    <div class="feature" onclick="openWithdraw()">
+      <div class="feature-icon">💸</div>
+      <strong>Withdraw</strong>
+      <span>From $1.00</span>
     </div>
 
   </div>
-
-  <div class="notice">
-    MWS Rewards — Complete eligible activities and collect Coins.
-  </div>
-
 </div>
 
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <h2 id="modalTitle">MWS Rewards</h2>
+<!-- NAV -->
+<div class="nav">
+  <button onclick="scrollTop()">🏠<br>Home</button>
+  <button onclick="openTasks()">📢<br>Tasks</button>
+  <button onclick="openWallet()">👛<br>Wallet</button>
+  <button onclick="openWithdraw()">💸<br>Withdraw</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg">
+
+  <div class="modal">
+
+    <button class="close"
+      onclick="closeModal()">×</button>
+
     <div id="modalContent"></div>
-    <button class="close" onclick="closeModal()">Close</button>
+
   </div>
+
 </div>
 
 <script>
-let coins = Number(localStorage.getItem("mwsCoins") || 0);
+
+/* ================= STORAGE ================= */
+
+let coins =
+  Number(localStorage.getItem("mwsCoins") || 0);
+
+let mining =
+  JSON.parse(localStorage.getItem("mwsMining") || "null");
+
+let daily =
+  JSON.parse(localStorage.getItem("mwsDaily") || "null");
+
+let spin =
+  JSON.parse(localStorage.getItem("mwsSpin") || "null");
+
+let tasks =
+  JSON.parse(localStorage.getItem("mwsTasks") || "{}");
+
+/* ================= GENERAL ================= */
+
+function save(){
+
+  localStorage.setItem("mwsCoins",coins);
+
+  localStorage.setItem(
+    "mwsMining",
+    JSON.stringify(mining)
+  );
+
+  localStorage.setItem(
+    "mwsDaily",
+    JSON.stringify(daily)
+  );
+
+  localStorage.setItem(
+    "mwsSpin",
+    JSON.stringify(spin)
+  );
+
+  localStorage.setItem(
+    "mwsTasks",
+    JSON.stringify(tasks)
+  );
+}
 
 function updateBalance(){
-  document.getElementById("coins").textContent = coins.toLocaleString();
-  document.getElementById("dollar").textContent =
-    (coins / 10000).toFixed(2);
-  localStorage.setItem("mwsCoins", coins);
+
+  document.getElementById("coins").textContent =
+    coins.toLocaleString()+" 🪙";
+
+  document.getElementById("usd").textContent =
+    "$"+(coins/10000).toFixed(2);
+
+  document.getElementById("level").textContent =
+    "LEVEL "+Math.floor(coins/500);
+
+  save();
 }
 
 function showModal(title,content){
-  document.getElementById("modalTitle").textContent=title;
-  document.getElementById("modalContent").innerHTML=content;
-  document.getElementById("modal").style.display="flex";
+
+  document.getElementById("modalContent").innerHTML =
+    `<h2>${title}</h2>${content}`;
+
+  document.getElementById("modalBg").style.display =
+    "flex";
 }
 
 function closeModal(){
-  document.getElementById("modal").style.display="none";
+
+  document.getElementById("modalBg").style.display =
+    "none";
 }
 
- function dailyReward(){
+/* ================= MINING ================= */
 
-  const now = Date.now();
-  const day = 24 * 60 * 60 * 1000;
+const MINING_TIME =
+  8*60*60*1000;
 
-  let data = JSON.parse(
-    localStorage.getItem("mwsDailyRewards") || "null"
-  );
+const MINING_REWARD =
+  500;
 
-  if (!data) {
-    data = {
-      start: now,
-      claimed: [],
-      lastClaim: 0
-    };
+function startMining(){
+
+  if(mining && mining.active){
+    return;
   }
 
-  // ৭ দিন শেষ হলে নতুন ৭ দিনের cycle
-  if (now - data.start >= 7 * day) {
-    data = {
-      start: now,
-      claimed: [],
-      lastClaim: 0
-    };
-  }
+  mining={
+    active:true,
+    start:Date.now(),
+    end:Date.now()+MINING_TIME
+  };
 
-  let html = `
-    <p>🎁 Daily Reward</p>
-    <p style="margin-top:8px;">
-      Claim <b>100 Coins</b> every 24 hours.
-    </p>
-
-    <div style="
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-      margin-top:18px;
-    ">
-  `;
-
-  for (let i = 1; i <= 7; i++) {
-
-    const claimed = data.claimed.includes(i);
-
-    if (claimed) {
-
-      html += `
-        <button disabled style="
-          padding:14px 8px;
-          border:0;
-          border-radius:12px;
-          background:#777;
-          color:#ddd;
-          font-weight:bold;
-        ">
-          Day ${i}<br>
-          ✓ Claimed
-        </button>
-      `;
-
-    } else if (i === data.claimed.length + 1) {
-
-      html += `
-        <button
-          class="action"
-          onclick="claimDailyReward(${i})">
-          Day ${i}<br>
-          🪙 100 Coins
-        </button>
-      `;
-
-    } else {
-
-      html += `
-        <button disabled style="
-          padding:14px 8px;
-          border:0;
-          border-radius:12px;
-          background:#26314a;
-          color:#8994aa;
-          font-weight:bold;
-        ">
-          Day ${i}<br>
-          🔒 Locked
-        </button>
-      `;
-    }
-  }
-
-  html += `</div>`;
-
-  showModal("🎁 Daily Rewards", html);
+  save();
+  updateMining();
 }
 
+function updateMining(){
 
-function claimDailyReward(dayNumber){
+  const status =
+    document.getElementById("mineStatus");
 
-  const now = Date.now();
-  const day = 24 * 60 * 60 * 1000;
+  const timer =
+    document.getElementById("mineTimer");
 
-  let data = JSON.parse(
-    localStorage.getItem("mwsDailyRewards") || "null"
-  );
+  const bar =
+    document.getElementById("mineProgress");
 
-  if (!data) return;
+  const btn =
+    document.getElementById("mineBtn");
 
-  // আগের Claim-এর 24 ঘণ্টা পূর্ণ হয়েছে কি না
-  if (data.lastClaim && now - data.lastClaim < day) {
+  if(!mining || !mining.active){
 
-    const remaining = day - (now - data.lastClaim);
+    status.textContent =
+      "Mining Ready";
 
-    const hours = Math.floor(remaining / 3600000);
-    const minutes = Math.floor(
-      (remaining % 3600000) / 60000
-    );
+    timer.textContent =
+      "08h 00m";
 
-    showModal(
-      "⏳ Daily Reward",
-      `
-      <p>Today's reward has already been claimed.</p>
-      <br>
-      <h3>Next Reward</h3>
-      <p>${hours}h ${minutes}m পরে</p>
-      `
-    );
+    bar.style.width =
+      "0%";
+
+    btn.disabled=false;
+
+    btn.textContent =
+      "⛏️ START MINING";
 
     return;
   }
 
-  if (data.claimed.includes(dayNumber)) return;
+  const remaining =
+    mining.end-Date.now();
 
-  data.claimed.push(dayNumber);
-  data.lastClaim = now;
+  if(remaining<=0){
 
-  localStorage.setItem(
-    "mwsDailyRewards",
-    JSON.stringify(data)
-  );
+    mining.active=false;
 
-  coins += 100;
-  updateBalance();
+    coins+=MINING_REWARD;
 
-  showModal(
-    "🎉 Reward Claimed!",
-    `
-      <h2>🪙 +100 Coins</h2>
-      <p style="margin-top:10px;">
-        Day ${dayNumber} completed!
-      </p>
-      <p style="margin-top:8px;">
-        Come back after 24 hours for the next reward.
-      </p>
-    `
-  );
-  } 
+    save();
+    updateBalance();
 
-  const currentDay =
-    Math.floor((now - data.start) / day) + 1;
+    status.textContent =
+      "Mining Complete";
 
-  let html = `
-    <p>🎁 Claim 100 Coins every 24 hours</p>
-    <div style="
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-      margin-top:18px;
-    ">
-  `;
+    timer.textContent =
+      "+500 Coins";
 
-  for (let i = 1; i <= 7; i++) {
+    bar.style.width =
+      "100%";
 
-    const claimed = data.claimed.includes(i);
+    btn.disabled=false;
 
-    if (claimed) {
+    btn.textContent =
+      "⛏️ START MINING";
 
-      html += `
-        <button
-          disabled
-          style="
-            padding:14px;
-            border:0;
-            border-radius:12px;
-            background:#777;
-            color:#ddd;
-            font-weight:bold;
-          ">
-          Day ${i}<br>
-          ✓ Claimed
-        </button>
-      `;
-
-    } else if (i === currentDay) {
-
-      html += `
-        <button
-          class="action"
-          onclick="claimDailyDay(${i})">
-          Day ${i}<br>
-          🪙 100 Coins
-        </button>
-      `;
-
-    } else {
-
-      html += `
-        <button
-          disabled
-          style="
-            padding:14px;
-            border:0;
-            border-radius:12px;
-            background:#26314a;
-            color:#8994aa;
-            font-weight:bold;
-          ">
-          Day ${i}<br>
-          🔒 Locked
-        </button>
-      `;
-    }
+    return;
   }
 
-  html += `</div>`;
+  const elapsed =
+    Date.now()-mining.start;
 
-  showModal("🎁 Daily Rewards", html);
+  const progress =
+    Math.min(
+      100,
+      elapsed/MINING_TIME*100
+    );
+
+  const h =
+    Math.floor(remaining/3600000);
+
+  const m =
+    Math.floor(
+      (remaining%3600000)/60000
+    );
+
+  const s =
+    Math.floor(
+      (remaining%60000)/1000
+    );
+
+  status.textContent =
+    "⛏️ Mining Active";
+
+  timer.textContent =
+    `${String(h).padStart(2,"0")}h ${String(m).padStart(2,"0")}m ${String(s).padStart(2,"0")}s`;
+
+  bar.style.width =
+    progress+"%";
+
+  btn.disabled=true;
+
+  btn.textContent =
+    "⛏️ MINING ACTIVE";
 }
 
+/* ================= DAILY ================= */
 
-function claimDailyDay(dayNumber){
+function getDailyStart(){
 
-  let data = JSON.parse(
-    localStorage.getItem("mwsDailyRewards") || "null"
-  );
+  const now =
+    new Date();
 
-  if (!data) return;
+  now.setHours(10,0,0,0);
 
-  if (data.claimed.includes(dayNumber)) return;
-
-  data.claimed.push(dayNumber);
-
-  localStorage.setItem(
-    "mwsDailyRewards",
-    JSON.stringify(data)
-  );
-
-  coins += 100;
-  updateBalance();
-
-  showModal(
-    "🎉 Reward Claimed!",
-    `
-      <p>You received</p>
-      <h2>🪙 100 Coins</h2>
-      <p>Come back after 24 hours for the next Daily Reward.</p>
-    `
-  );
+  if(Date.now()<now.getTime()){
+    now.setDate(
+      now.getDate()-1
+    );
   }
 
+  return now.getTime();
+}
 
-let spinTimer;
+function setupDaily(){
+
+  const start =
+    getDailyStart();
+
+  if(!daily){
+
+    daily={
+      cycleStart:start,
+      claimed:[]
+    };
+
+    save();
+    return;
+  }
+
+  if(
+    start-daily.cycleStart
+    >=
+    7*24*60*60*1000
+  ){
+
+    daily={
+      cycleStart:start,
+      claimed:[]
+    };
+
+    save();
+  }
+}
+
+function openDaily(){
+
+  setupDaily();
+
+  const now =
+    Date.now();
+
+  const dayIndex =
+    Math.floor(
+      (now-daily.cycleStart)/
+      (24*60*60*1000)
+    );
+
+  let html=`
+    <p class="info">
+      🎁 Claim 100 Coins at 10:00 AM each day.
+    </p>
+
+    <div class="daily">
+  `;
+
+  for(let i=1;i<=7;i++){
+
+    const claimed =
+      daily.claimed.includes(i);
+
+    const active =
+      i===dayIndex+1;
+
+    html+=`
+
+      <div class="day
+        ${claimed?"claimed":""}
+        ${active&&!claimed?"active":""}">
+
+        <b>DAY ${i}</b>
+        <br>
+        🪙 100 Coins
+
+        ${
+          claimed
+
+          ? `<span class="seal">
+               ✓ CLAIMED
+             </span>`
+
+          : active
+
+          ? `<button
+               class="main-btn"
+               onclick="claimDaily(${i})">
+               🎁 CLAIM 100
+             </button>`
+
+          : `<button
+               class="main-btn"
+               disabled>
+               🔒 LOCKED
+             </button>`
+        }
+
+      </div>
+    `;
+  }
+
+  html+=`
+    </div>
+  `;
+
+  showModal(
+    "🎁 DAILY REWARDS",
+    html
+  );
+}
+
+function claimDaily(day){
+
+  setupDaily();
+
+  const now =
+    Date.now();
+
+  const current =
+    Math.floor(
+      (now-daily.cycleStart)/
+      (24*60*60*1000)
+    )+1;
+
+  if(day!==current){
+    return;
+  }
+
+  if(
+    daily.claimed.includes(day)
+  ){
+    return;
+  }
+
+  daily.claimed.push(day);
+
+  coins+=100;
+
+  save();
+  updateBalance();
+
+  openDaily();
+}
+
+/* ================= SPIN ================= */
+
+const SPIN_TIME =
+  24*60*60*1000;
 
 function openSpin(){
 
-  const lastSpin = Number(localStorage.getItem("mwsLastSpin") || 0);
-  const cooldown = 24 * 60 * 60 * 1000;
-  const remaining = (lastSpin + cooldown) - Date.now();
+  const locked =
+    spin &&
+    Date.now()<spin.next;
 
-  if (lastSpin && remaining > 0) {
+  let html=`
 
-    showModal(
-      "🎡 Free Spin",
-      `
-      <div class="spin">
-        🎡
+    <div class="wheel-wrap">
+
+      <div class="pointer"></div>
+
+      <div class="wheel" id="wheel">
+
+        <div class="labels">
+          <span>100</span>
+          <span>150</span>
+          <span>200</span>
+          <span>250</span>
+          <span>300</span>
+          <span>400</span>
+          <span>500</span>
+        </div>
+
       </div>
 
-      <p>⏳ Your next spin will be available in:</p>
+    </div>
+  `;
 
-      <h2 id="spinCountdown">Loading...</h2>
-      `
-    );
+  if(locked){
 
-    startSpinCountdown(lastSpin + cooldown);
-    return;
+    html+=`
+
+      <button
+        class="main-btn"
+        disabled>
+        ⏳ SPIN LOCKED
+      </button>
+
+      <p
+        id="spinTimer"
+        style="
+        text-align:center;
+        margin-top:12px;
+        color:#ffd34d;">
+      </p>
+    `;
+
+  }else{
+
+    html+=`
+
+      <button
+        class="main-btn"
+        id="spinBtn"
+        onclick="doSpin()">
+        🎡 SPIN NOW
+      </button>
+
+      <p
+        class="info"
+        style="text-align:center;margin-top:10px;">
+        One spin every 24 hours
+      </p>
+    `;
   }
 
   showModal(
-    "🎡 Free Spin",
-    `
-    <div class="spin">
-      🎡
-    </div>
-
-    <p>🪙 Win between <b>100 and 500 Coins</b></p>
-
-    <button
-      id="spinButton"
-      class="action"
-      onclick="spinNow()">
-      🎡 SPIN NOW
-    </button>
-    `
+    "🎡 FREE SPIN",
+    html
   );
+
+  if(locked){
+    updateSpinTimer();
+  }
 }
 
+function updateSpinTimer(){
 
-function spinNow(){
+  const el =
+    document.getElementById(
+      "spinTimer"
+    );
 
-  const lastSpin = Number(localStorage.getItem("mwsLastSpin") || 0);
-  const cooldown = 24 * 60 * 60 * 1000;
+  if(!el || !spin){
+    return;
+  }
 
-  if (lastSpin && Date.now() - lastSpin < cooldown) {
+  const remaining =
+    spin.next-Date.now();
+
+  if(remaining<=0){
+
     openSpin();
     return;
   }
 
-  const rewards = [100,150,200,250,300,400,500];
+  const h =
+    Math.floor(
+      remaining/3600000
+    );
 
-  const reward =
-    rewards[Math.floor(Math.random() * rewards.length)];
+  const m =
+    Math.floor(
+      (remaining%3600000)/60000
+    );
 
-  localStorage.setItem("mwsLastSpin", Date.now());
+  const s =
+    Math.floor(
+      (remaining%60000)/1000
+    );
 
-  coins += reward;
-  updateBalance();
+  el.textContent =
+    `⏳ Next Spin: ${h}h ${m}m ${s}s`;
 
-  showModal(
-    "🎉 Congratulations!",
-    `
-    <div class="spin">
-      🎡
-    </div>
-
-    <h2>🪙 ${reward} Coins</h2>
-
-    <p>You can spin again after 24 hours.</p>
-
-    <p id="spinCountdown" style="margin-top:12px;">
-      Calculating...
-    </p>
-    `
+  setTimeout(
+    updateSpinTimer,
+    1000
   );
-
-  startSpinCountdown(Date.now() + cooldown);
 }
 
+function doSpin(){
 
-function startSpinCountdown(endTime){
-
-  const timer = setInterval(() => {
-
-    const remaining = endTime - Date.now();
-
-    const element =
-      document.getElementById("spinCountdown");
-
-    if (!element) {
-      clearInterval(timer);
-      return;
-    }
-
-    if (remaining <= 0) {
-
-      clearInterval(timer);
-
-      element.innerHTML =
-        "🎉 <b>Your Spin is Ready!</b>";
-
-      return;
-    }
-
-    const hours =
-      Math.floor(remaining / 3600000);
-
-    const minutes =
-      Math.floor(
-        (remaining % 3600000) / 60000
-      );
-
-    const seconds =
-      Math.floor(
-        (remaining % 60000) / 1000
-      );
-
-    element.textContent =
-      `⏳ Next Spin: ${hours}h ${minutes}m ${seconds}s`;
-
-  }, 1000);
-  }
-
-  } else {
-
-    button.disabled = false;
-    button.style.background = "#20a060";
-    button.style.color = "#fff";
-    button.textContent = "🎡 SPIN NOW";
-    timer.textContent = "✨ Your spin is ready!";
-  }
-  }
-function spinNow(){
-
-  const lastSpin = Number(localStorage.getItem("mwsLastSpin") || 0);
-  const now = Date.now();
-  const cooldown = 24 * 60 * 60 * 1000;
-
-  if (lastSpin && now - lastSpin < cooldown) {
-    showSpinCooldown(lastSpin + cooldown);
+  if(
+    spin &&
+    Date.now()<spin.next
+  ){
     return;
   }
 
-  const rewards = [100,150,200,250,300,400,500];
-  const reward = rewards[Math.floor(Math.random() * rewards.length)];
+  const rewards=[
+    100,
+    150,
+    200,
+    250,
+    300,
+    400,
+    500
+  ];
 
-  localStorage.setItem("mwsLastSpin", Date.now());
+  const reward =
+    rewards[
+      Math.floor(
+        Math.random()*rewards.length
+      )
+    ];
 
-  coins += reward;
-  updateBalance();
+  const wheel =
+    document.getElementById(
+      "wheel"
+    );
 
-  showModal(
-    "🎉 Congratulations!",
-    `
-    <div style="font-size:45px">🎡</div>
-    <p>You won</p>
-    <h2>🪙 ${reward} Coins</h2>
-    <p>Your next spin will be available after 24 hours.</p>
-    `
-  );
-}
+  const btn =
+    document.getElementById(
+      "spinBtn"
+    );
 
-function showSpinCooldown(endTime){
-
-  clearInterval(spinTimer);
-
-  showModal(
-    "⏰ Spin Unavailable",
-    `
-    <p>You've already used today's spin.</p>
-    <br>
-    <h3 id="spinCountdown">Calculating...</h3>
-    <br>
-    <p>Come back when the timer reaches zero.</p>
-    `
-  );
-
-  spinTimer = setInterval(() => {
-
-    const remaining = endTime - Date.now();
-
-    if (remaining <= 0) {
-      clearInterval(spinTimer);
-
-      showModal(
-        "🎡 Free Spin Ready!",
-        `
-        <p>Your 24-hour cooldown is over.</p>
-        <button class="action" onclick="openSpin()">
-          🎡 SPIN NOW
-        </button>
-        `
-      );
-
-      return;
-    }
-
-    const hours = Math.floor(remaining / 3600000);
-    const minutes = Math.floor((remaining % 3600000) / 60000);
-    const seconds = Math.floor((remaining % 60000) / 1000);
-
-    const timer = document.getElementById("spinCountdown");
-
-    if (timer) {
-      timer.textContent =
-        `⏳ Next Spin: ${hours}h ${minutes}m ${seconds}s`;
-    }
-
-  }, 1000);
+  if(btn){
+    btn.disabled=true;
+    btn.textContent="🎡 SPINNING...";
   }
 
-function openTasks(){
-  showModal("✅ Tasks",
-    "<p>Available tasks will appear here.</p>" +
-    '<button class="action" onclick="completeDemoTask()">Complete Demo Task</button>');
+  if(wheel){
+
+    const rotation =
+      1440+
+      Math.floor(
+        Math.random()*360
+      );
+
+    wheel.style.transform =
+      `rotate(${rotation}deg)`;
+  }
+
+  spin={
+    next:Date.now()+SPIN_TIME
+  };
+
+  save();
+
+  setTimeout(()=>{
+
+    coins+=reward;
+
+    save();
+    updateBalance();
+
+    showModal(
+      "🎉 YOU WON!",
+      `
+        <div style="text-align:center">
+
+          <div style="font-size:55px">
+            🎡
+          </div>
+
+          <h2>
+            🪙 +${reward} Coins
+          </h2>
+
+          <p class="info">
+            Next spin available
+            after 24 hours.
+          </p>
+
+        </div>
+      `
+    );
+
+  },4200);
 }
 
-function completeDemoTask(){
-  coins+=250;
+/* ================= TASKS ================= */
+
+const taskList=[
+
+  {
+    id:"telegram1",
+    title:"ATF MINE",
+    url:"https://t.me/ATF_MINE",
+    action:"Join / Follow + React"
+  },
+
+  {
+    id:"telegram2",
+    title:"WAJIHA QUEEN",
+    url:"https://t.me/WAJIHA_QUEENn",
+    action:"Join / Follow + React"
+  },
+
+  {
+    id:"youtube1",
+    title:"YouTube Channel",
+    url:"https://youtube.com/@aminakhatun-mi2nv?si=RoD-MTuYrxNt5xkL",
+    action:"Subscribe + Like + Comment"
+  }
+
+];
+
+const TASK_COOLDOWN =
+  5*60*60*1000;
+
+function openTasks(){
+
+  let html=`
+
+    <p class="info">
+      Complete the required channel action,
+      then claim your 50 Coin reward.
+    </p>
+  `;
+
+  taskList.forEach(task=>{
+
+    const last =
+      Number(
+        tasks[task.id] || 0
+      );
+
+    const remaining =
+      last+TASK_COOLDOWN-Date.now();
+
+    const locked =
+      remaining>0;
+
+    html+=`
+
+      <div class="task">
+
+        <div class="task-title">
+          📢 ${task.title}
+        </div>
+
+        <a
+          class="task-link"
+          href="${task.url}"
+          target="_blank">
+          Open Channel
+        </a>
+
+        <p
+          class="info"
+          style="margin-top:7px;">
+          ${task.action}
+        </p>
+
+        ${
+          locked
+
+          ? `
+            <button
+              class="main-btn"
+              disabled>
+              ⏳ ${formatTime(remaining)}
+            </button>
+          `
+
+          : `
+            <button
+              class="main-btn"
+              onclick="claimTask('${task.id}')">
+              🎁 CLAIM 50 COINS
+            </button>
+          `
+        }
+
+      </div>
+    `;
+  });
+
+  showModal(
+    "📢 TASKS",
+    html
+  );
+}
+
+function claimTask(id){
+
+  const last =
+    Number(tasks[id] || 0);
+
+  if(
+    Date.now()-last
+    <
+    TASK_COOLDOWN
+  ){
+    return;
+  }
+
+  /*
+    Front-end demo:
+    Actual Join/Subscribe/Like/Comment
+    verification should be performed by
+    a secure backend before real deployment.
+  */
+
+  tasks[id]=Date.now();
+
+  coins+=50;
+
+  save();
   updateBalance();
 
-  showModal("✅ Task Completed",
-    "<p>You received <b>250 Coins</b>.</p>");
+  openTasks();
 }
+
+function formatTime(ms){
+
+  const h =
+    Math.floor(
+      ms/3600000
+    );
+
+  const m =
+    Math.floor(
+      (ms%3600000)/60000
+    );
+
+  return `${h}h ${m}m`;
+}
+
+/* ================= INVITE ================= */
 
 function openInvite(){
-  showModal("👥 Invite Friends",
-    "<p>Invite your friends and earn referral rewards.</p>" +
-    '<button class="action" onclick="copyInvite()">COPY INVITE LINK</button>');
+
+  const link =
+    location.href;
+
+  showModal(
+    "👥 INVITE FRIENDS",
+    `
+      <p class="info">
+        Invite an eligible new user and
+        earn 100 Coins.
+      </p>
+
+      <input
+        id="refLink"
+        value="${link}"
+        readonly>
+
+      <button
+        class="main-btn"
+        onclick="copyReferral()">
+        📋 COPY REFERRAL LINK
+      </button>
+    `
+  );
 }
 
-function copyInvite(){
-  let link=window.location.href;
+function copyReferral(){
 
-  navigator.clipboard.writeText(link).then(()=>{
-    showModal("✅ Copied!",
-      "<p>Your invite link has been copied.</p>");
-  });
-}
+  const input =
+    document.getElementById(
+      "refLink"
+    );
 
-function openLeaderboard(){
-  showModal("🏆 Leaderboard",
-    "<p>🥇 MWS Member — 25,000 Coins<br><br>" +
-    "🥈 MWS Member — 18,500 Coins<br><br>" +
-    "🥉 MWS Member — 12,000 Coins</p>");
-}
+  navigator.clipboard
+    .writeText(input.value);
 
-function openWallet(){
-  showModal("👛 Wallet",
-    "<p>Your current balance:</p>" +
-    "<h2>🪙 "+coins.toLocaleString()+" Coins</h2>" +
-    "<p>💵 $"+(coins/10000).toFixed(2)+"</p>");
-}
-
-function openWithdraw(){
-  showModal("💸 Withdraw",
-    "<p>Withdrawal becomes available according to the applicable reward rules and minimum requirements.</p>" +
-    "<p><br>Current Balance:<br><b>"+coins.toLocaleString()+" Coins</b></p>");
-}
-
-updateBalance();
-</script>
-
-</body>
-        </html>
+  alert(
+    "Ref
