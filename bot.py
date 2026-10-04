@@ -1,15 +1,13 @@
+import asyncio
 import os
-
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, ContextTypes
-
 
 TOKEN = os.getenv("BOT_TOKEN")
 APP_URL = "https://sahidreja643.github.io/mws-rewards/"
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
     message = (
         "🌟 <b>WELCOME TO MWS REWARDS</b> 🌟\n\n"
         "🎉 <b>Welcome to MWS Rewards!</b>\n\n"
@@ -50,7 +48,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
     await update.message.reply_text(
         "💎 <b>MWS Rewards Help</b>\n\n"
         "Use /start to open MWS Rewards.",
@@ -58,20 +55,30 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-def main():
-
+async def main():
     if not TOKEN:
         raise RuntimeError("BOT_TOKEN is not configured.")
 
-    bot = Application.builder().token(TOKEN).build()
+    application = Application.builder().token(TOKEN).build()
 
-    bot.add_handler(CommandHandler("start", start))
-    bot.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("help", help_command))
 
     print("MWS Rewards Bot is running...")
 
-    bot.run_polling()
+    async with application:
+        await application.initialize()
+        await application.start()
+        await application.updater.start_polling()
+        # বট চালু রাখতে লুপ ফিক্স
+        try:
+            while True:
+                await asyncio.sleep(3600)
+        except (KeyboardInterrupt, SystemExit):
+            await application.updater.stop()
+            await application.stop()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
+        
