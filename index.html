@@ -209,56 +209,133 @@ function dailyReward(){
 let spinTimer;
 
 function openSpin(){
-  const lastSpin = Number(localStorage.getItem("mwsLastSpin") || 0);
-  const now = Date.now();
-  const cooldown = 24 * 60 * 60 * 1000;
 
-  if (lastSpin && now - lastSpin < cooldown) {
-    showSpinCooldown(lastSpin + cooldown);
+  const lastSpin = Number(localStorage.getItem("mwsLastSpin") || 0);
+  const cooldown = 24 * 60 * 60 * 1000;
+  const remaining = (lastSpin + cooldown) - Date.now();
+
+  if (lastSpin && remaining > 0) {
+
+    showModal(
+      "🎡 Free Spin",
+      `
+      <div class="spin">
+        🎡
+      </div>
+
+      <p>⏳ Your next spin will be available in:</p>
+
+      <h2 id="spinCountdown">Loading...</h2>
+      `
+    );
+
+    startSpinCountdown(lastSpin + cooldown);
     return;
   }
 
   showModal(
     "🎡 Free Spin",
     `
-    <div class="spin-wheel">
-      <div class="wheel">100<br>150<br>200<br>250<br>300<br>400<br>500</div>
+    <div class="spin">
+      🎡
     </div>
 
-    <p>🎁 Spin and win up to <b>500 Coins</b>!</p>
+    <p>🪙 Win between <b>100 and 500 Coins</b></p>
 
-    <button id="spinButton" class="action" onclick="spinNow()">
-  🎡 SPIN NOW
-</button>
-
-<p id="spinTimer" style="margin-top:12px;font-weight:bold;"></p>
+    <button
+      id="spinButton"
+      class="action"
+      onclick="spinNow()">
+      🎡 SPIN NOW
+    </button>
     `
   );
 }
-function updateSpinButton(){
 
-  const button = document.getElementById("spinButton");
-  const timer = document.getElementById("spinTimer");
 
-  if (!button || !timer) return;
+function spinNow(){
 
   const lastSpin = Number(localStorage.getItem("mwsLastSpin") || 0);
-  const endTime = lastSpin + (24 * 60 * 60 * 1000);
-  const remaining = endTime - Date.now();
+  const cooldown = 24 * 60 * 60 * 1000;
 
-  if (lastSpin && remaining > 0) {
+  if (lastSpin && Date.now() - lastSpin < cooldown) {
+    openSpin();
+    return;
+  }
 
-    button.disabled = true;
-    button.style.background = "#777";
-    button.style.color = "#ddd";
-    button.textContent = "⏳ SPIN LOCKED";
+  const rewards = [100,150,200,250,300,400,500];
 
-    const hours = Math.floor(remaining / 3600000);
-    const minutes = Math.floor((remaining % 3600000) / 60000);
-    const seconds = Math.floor((remaining % 60000) / 1000);
+  const reward =
+    rewards[Math.floor(Math.random() * rewards.length)];
 
-    timer.textContent =
-      `Next Spin: ${hours}h ${minutes}m ${seconds}s`;
+  localStorage.setItem("mwsLastSpin", Date.now());
+
+  coins += reward;
+  updateBalance();
+
+  showModal(
+    "🎉 Congratulations!",
+    `
+    <div class="spin">
+      🎡
+    </div>
+
+    <h2>🪙 ${reward} Coins</h2>
+
+    <p>You can spin again after 24 hours.</p>
+
+    <p id="spinCountdown" style="margin-top:12px;">
+      Calculating...
+    </p>
+    `
+  );
+
+  startSpinCountdown(Date.now() + cooldown);
+}
+
+
+function startSpinCountdown(endTime){
+
+  const timer = setInterval(() => {
+
+    const remaining = endTime - Date.now();
+
+    const element =
+      document.getElementById("spinCountdown");
+
+    if (!element) {
+      clearInterval(timer);
+      return;
+    }
+
+    if (remaining <= 0) {
+
+      clearInterval(timer);
+
+      element.innerHTML =
+        "🎉 <b>Your Spin is Ready!</b>";
+
+      return;
+    }
+
+    const hours =
+      Math.floor(remaining / 3600000);
+
+    const minutes =
+      Math.floor(
+        (remaining % 3600000) / 60000
+      );
+
+    const seconds =
+      Math.floor(
+        (remaining % 60000) / 1000
+      );
+
+    element.textContent =
+      `⏳ Next Spin: ${hours}h ${minutes}m ${seconds}s`;
+
+  }, 1000);
+  }
 
   } else {
 
