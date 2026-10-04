@@ -206,22 +206,112 @@ function dailyReward(){
     "<p>You received <b>500 Coins</b>.<br><br>Come back tomorrow for another reward.</p>");
 }
 
+let spinTimer;
+
 function openSpin(){
-  showModal("🎡 Free Spin",
-    '<div class="spin">🎡</div>' +
-    '<button class="action" onclick="spinNow()">SPIN NOW</button>');
+  const lastSpin = Number(localStorage.getItem("mwsLastSpin") || 0);
+  const now = Date.now();
+  const cooldown = 24 * 60 * 60 * 1000;
+
+  if (lastSpin && now - lastSpin < cooldown) {
+    showSpinCooldown(lastSpin + cooldown);
+    return;
+  }
+
+  showModal(
+    "🎡 Free Spin",
+    `
+    <div class="spin-wheel">
+      <div class="wheel">100<br>150<br>200<br>250<br>300<br>400<br>500</div>
+    </div>
+
+    <p>🎁 Spin and win up to <b>500 Coins</b>!</p>
+
+    <button class="action" onclick="spinNow()">
+      🎡 SPIN NOW
+    </button>
+    `
+  );
 }
 
 function spinNow(){
-  let rewards=[100,250,500,750,1000];
-  let reward=rewards[Math.floor(Math.random()*rewards.length)];
 
-  coins+=reward;
+  const lastSpin = Number(localStorage.getItem("mwsLastSpin") || 0);
+  const now = Date.now();
+  const cooldown = 24 * 60 * 60 * 1000;
+
+  if (lastSpin && now - lastSpin < cooldown) {
+    showSpinCooldown(lastSpin + cooldown);
+    return;
+  }
+
+  const rewards = [100,150,200,250,300,400,500];
+  const reward = rewards[Math.floor(Math.random() * rewards.length)];
+
+  localStorage.setItem("mwsLastSpin", Date.now());
+
+  coins += reward;
   updateBalance();
 
-  showModal("🎉 Congratulations!",
-    "<p>You won <b>"+reward+" Coins</b>!</p>");
+  showModal(
+    "🎉 Congratulations!",
+    `
+    <div style="font-size:45px">🎡</div>
+    <p>You won</p>
+    <h2>🪙 ${reward} Coins</h2>
+    <p>Your next spin will be available after 24 hours.</p>
+    `
+  );
 }
+
+function showSpinCooldown(endTime){
+
+  clearInterval(spinTimer);
+
+  showModal(
+    "⏰ Spin Unavailable",
+    `
+    <p>You've already used today's spin.</p>
+    <br>
+    <h3 id="spinCountdown">Calculating...</h3>
+    <br>
+    <p>Come back when the timer reaches zero.</p>
+    `
+  );
+
+  spinTimer = setInterval(() => {
+
+    const remaining = endTime - Date.now();
+
+    if (remaining <= 0) {
+      clearInterval(spinTimer);
+
+      showModal(
+        "🎡 Free Spin Ready!",
+        `
+        <p>Your 24-hour cooldown is over.</p>
+        <button class="action" onclick="openSpin()">
+          🎡 SPIN NOW
+        </button>
+        `
+      );
+
+      return;
+    }
+
+    const hours = Math.floor(remaining / 3600000);
+    const minutes = Math.floor((remaining % 3600000) / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+
+    const timer = document.getElementById("spinCountdown");
+
+    if (timer) {
+      timer.textContent =
+        `⏳ Next Spin: ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+  }, 1000);
+  }
 
 function openTasks(){
   showModal("✅ Tasks",
