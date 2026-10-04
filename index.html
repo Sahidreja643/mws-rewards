@@ -1,186 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MWS Rewards</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MWS Rewards</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #0b1020;
-      color: white;
-      min-height: 100vh;
-    }
+body{
+  font-family:Arial,sans-serif;
+  background:#080d1c;
+  color:#fff;
+  min-height:100vh;
+}
 
-    .app {
-      max-width: 480px;
-      margin: auto;
-      padding: 20px;
-    }
+.app{
+  max-width:480px;
+  margin:auto;
+  padding:18px;
+}
 
-    .header {
-      text-align: center;
-      padding: 20px 0;
-    }
+.header{
+  text-align:center;
+  padding:18px 0 14px;
+}
 
-    .logo {
-      width: 72px;
-      height: 72px;
-      margin: auto;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #ffd54a, #ff9d00);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: bold;
-      color: #111;
-    }
+.logo{
+  width:70px;
+  height:70px;
+  margin:auto;
+  border-radius:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+  font-weight:900;
+  color:#101522;
+  background:linear-gradient(135deg,#ffe27a,#f5a623);
+  box-shadow:0 10px 30px rgba(245,166,35,.25);
+}
 
-    .title {
-      margin-top: 12px;
-      font-size: 25px;
-      font-weight: 800;
-    }
+.title{
+  margin-top:12px;
+  font-size:25px;
+  font-weight:900;
+}
 
-    .subtitle {
-      margin-top: 5px;
-      color: #9da7bd;
-      font-size: 13px;
-    }
+.subtitle{
+  margin-top:5px;
+  color:#8994ad;
+  font-size:13px;
+}
 
-    .balance {
-      margin-top: 20px;
-      padding: 24px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #182342, #11182d);
-      text-align: center;
-      border: 1px solid #293554;
-    }
+.balance{
+  margin-top:15px;
+  padding:23px;
+  border-radius:24px;
+  background:linear-gradient(145deg,#172442,#10182d);
+  border:1px solid #263553;
+  text-align:center;
+}
 
-    .balance small {
-      color: #9da7bd;
-    }
+.balance-label{
+  color:#8d99b2;
+  font-size:13px;
+}
 
-    .coins {
-      margin-top: 8px;
-      font-size: 34px;
-      font-weight: 800;
-    }
+.coins{
+  margin-top:7px;
+  font-size:34px;
+  font-weight:900;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 18px;
-    }
+.usd{
+  margin-top:5px;
+  color:#f6c957;
+  font-size:15px;
+  font-weight:700;
+}
 
-    .card {
-      padding: 20px 12px;
-      background: #151e35;
-      border: 1px solid #273452;
-      border-radius: 18px;
-      text-align: center;
-    }
+.rate{
+  margin-top:8px;
+  color:#71809d;
+  font-size:11px;
+}
 
-    .icon {
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:17px;
+}
 
-    .card b {
-      font-size: 14px;
-    }
+.card{
+  padding:19px 10px;
+  border-radius:19px;
+  background:#121b30;
+  border:1px solid #22304b;
+  text-align:center;
+  transition:.2s;
+}
 
-    .card p {
-      margin-top: 5px;
-      font-size: 11px;
-      color: #8f9ab0;
-    }
+.card:active{
+  transform:scale(.97);
+}
 
-    .notice {
-      margin-top: 18px;
-      padding: 15px;
-      border-radius: 15px;
-      background: #121a2d;
-      color: #9da7bd;
-      font-size: 12px;
-      text-align: center;
-    }
-  </style>
+.icon{
+  font-size:27px;
+  margin-bottom:8px;
+}
+
+.card b{
+  font-size:14px;
+}
+
+.card p{
+  margin-top:5px;
+  color:#78859e;
+  font-size:11px;
+}
+
+.section{
+  margin-top:18px;
+  padding:17px;
+  border-radius:19px;
+  background:#10182b;
+  border:1px solid #202d47;
+}
+
+.section-title{
+  font-size:14px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.streak{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#a5afc2;
+  font-size:12px;
+}
+
+.notice{
+  margin-top:17px;
+  padding:14px;
+  border-radius:16px;
+  background:#0e1628;
+  border:1px solid #1d2940;
+  color:#7f8ca5;
+  font-size:11px;
+  line-height:1.5;
+  text-align:center;
+}
+
+.footer{
+  padding:20px 0 8px;
+  text-align:center;
+  color:#53617a;
+  font-size:10px;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="app">
+<div class="app">
 
-    <div class="header">
-      <div class="logo">MWS</div>
+  <div class="header">
+    <div class="logo">MWS</div>
+    <div class="title">MWS Rewards</div>
+    <div class="subtitle">Rewards • Tasks • Referrals</div>
+  </div>
 
-      <div class="title">MWS Rewards</div>
+  <div class="balance">
+    <div class="balance-label">MY COINS</div>
 
-      <div class="subtitle">
-        Rewards • Tasks • Referrals
-      </div>
+    <div class="coins" id="coinBalance">
+      🪙 0
     </div>
 
-    <div class="balance">
-      <small>My Coins</small>
-      <div class="coins">🪙 0</div>
+    <div class="usd" id="usdBalance">
+      $0.00
     </div>
 
-    <div class="grid">
+    <div class="rate">
+      10,000 Coins = $1.00
+    </div>
+  </div>
 
-      <div class="card">
-        <div class="icon">🎁</div>
-        <b>Daily Reward</b>
-        <p>Claim daily coins</p>
-      </div>
+  <div class="grid">
 
-      <div class="card">
-        <div class="icon">🎡</div>
-        <b>Free Spin</b>
-        <p>Try your free spin</p>
-      </div>
-
-      <div class="card">
-        <div class="icon">✅</div>
-        <b>Tasks</b>
-        <p>Complete tasks</p>
-      </div>
-
-      <div class="card">
-        <div class="icon">👥</div>
-        <b>Invite Friends</b>
-        <p>Earn referral coins</p>
-      </div>
-
-      <div class="card">
-        <div class="icon">🏆</div>
-        <b>Leaderboard</b>
-        <p>Top members</p>
-      </div>
-
-      <div class="card">
-        <div class="icon">👛</div>
-        <b>Wallet</b>
-        <p>Connect & withdraw</p>
-      </div>
-
+    <div class="card">
+      <div class="icon">🎁</div>
+      <b>Daily Reward</b>
+      <p>Claim daily coins</p>
     </div>
 
-    <div class="notice">
-      MWS Rewards — Complete eligible activities and collect coins.
+    <div class="card">
+      <div class="icon">🎡</div>
+      <b>Free Spin</b>
+      <p>Daily free spin</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">✅</div>
+      <b>Tasks</b>
+      <p>Complete tasks</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">👥</div>
+      <b>Invite Friends</b>
+      <p>Earn referral coins</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🏆</div>
+      <b>Leaderboard</b>
+      <p>Top members</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">👛</div>
+      <b>Wallet</b>
+      <p>Connect wallet</p>
     </div>
 
   </div>
+
+  <div class="section">
+    <div class="section-title">🔥 Daily Streak</div>
+
+    <div class="streak">
+      <span>Current streak</span>
+      <strong>0 Days</strong>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">💸 Withdrawal</div>
+
+    <div class="streak">
+      <span>Minimum withdrawal</span>
+      <strong>10,000 Coins</strong>
+    </div>
+  </div>
+
+  <div class="notice">
+    Collect Coins through eligible activities.
+    Reward rules and withdrawal conditions will always be shown clearly.
+  </div>
+
+  <div class="footer">
+    MWS Rewards © 2026
+  </div>
+
+</div>
 
 </body>
   </html>
