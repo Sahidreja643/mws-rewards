@@ -227,13 +227,48 @@ function openSpin(){
 
     <p>🎁 Spin and win up to <b>500 Coins</b>!</p>
 
-    <button class="action" onclick="spinNow()">
-      🎡 SPIN NOW
-    </button>
+    <button id="spinButton" class="action" onclick="spinNow()">
+  🎡 SPIN NOW
+</button>
+
+<p id="spinTimer" style="margin-top:12px;font-weight:bold;"></p>
     `
   );
 }
+function updateSpinButton(){
 
+  const button = document.getElementById("spinButton");
+  const timer = document.getElementById("spinTimer");
+
+  if (!button || !timer) return;
+
+  const lastSpin = Number(localStorage.getItem("mwsLastSpin") || 0);
+  const endTime = lastSpin + (24 * 60 * 60 * 1000);
+  const remaining = endTime - Date.now();
+
+  if (lastSpin && remaining > 0) {
+
+    button.disabled = true;
+    button.style.background = "#777";
+    button.style.color = "#ddd";
+    button.textContent = "⏳ SPIN LOCKED";
+
+    const hours = Math.floor(remaining / 3600000);
+    const minutes = Math.floor((remaining % 3600000) / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+
+    timer.textContent =
+      `Next Spin: ${hours}h ${minutes}m ${seconds}s`;
+
+  } else {
+
+    button.disabled = false;
+    button.style.background = "#20a060";
+    button.style.color = "#fff";
+    button.textContent = "🎡 SPIN NOW";
+    timer.textContent = "✨ Your spin is ready!";
+  }
+  }
 function spinNow(){
 
   const lastSpin = Number(localStorage.getItem("mwsLastSpin") || 0);
