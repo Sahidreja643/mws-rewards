@@ -2,79 +2,1262 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>MWS Rewards</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-font-family:Arial,sans-serif;color:#fff;min-height:100vh;
-background:
-radial-gradient(circle at 20% 10%,#6d4b0066,transparent 30%),
-radial-gradient(circle at 90% 30%,#d99d0033,transparent 25%),
-linear-gradient(145deg,#020204,#0d0e13,#020202);
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
 }
-.app{max-width:520px;margin:auto;padding:18px 14px 100px}
-.header{text-align:center;padding:10px 0 18px}
-.logo{font-size:28px;font-weight:900;letter-spacing:2px;color:#ffd34d;text-shadow:0 0 20px #ffd34d66}
-.sub{font-size:11px;color:#888;margin-top:6px;letter-spacing:1px}
-.balance,.card,.feature{
-border:1px solid #ffd34d2e;
-background:linear-gradient(145deg,#191a20,#090a0d);
-box-shadow:0 10px 30px #0008;
-}
-.balance{padding:24px;border-radius:25px;text-align:center}
-.balance small{color:#888}
-.coins{font-size:36px;font-weight:900;color:#ffd34d;margin:8px}
-.usd{font-size:17px}
-.level{display:inline-block;margin-top:12px;padding:8px 16px;border-radius:20px;background:#111217;color:#ffd34d}
 
-.card{padding:18px;border-radius:20px;margin-top:14px}
-.title{color:#ffd34d;font-weight:900;margin-bottom:12px}
-.row{display:flex;justify-content:space-between;color:#999;font-size:12px}
-.progress{height:9px;background:#292a2f;border-radius:20px;overflow:hidden;margin-top:10px}
-.bar{height:100%;width:0;background:linear-gradient(90deg,#8b5a00,#ffd34d,#fff0a0);transition:.3s}
+html,body{
+  min-height:100%;
+  background:#030507;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  overflow-x:hidden;
+}
 
 button{
-width:100%;border:0;border-radius:14px;padding:14px;margin-top:12px;
-font-weight:900;cursor:pointer;
+  font-family:inherit;
+  cursor:pointer;
 }
-.main{background:linear-gradient(135deg,#a86f00,#ffd85b);color:#111}
-button:disabled{background:#555!important;color:#aaa!important;cursor:not-allowed}
 
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
-.feature{padding:20px 8px;border-radius:19px;text-align:center;cursor:pointer}
-.feature:active{transform:scale(.96)}
-.icon{font-size:30px;margin-bottom:7px}
-.feature strong{display:block;color:#ffd34d}
-.feature span{display:block;color:#888;font-size:11px;margin-top:5px}
-
-.modalbg{
-display:none;position:fixed;inset:0;background:#000d;
-z-index:99;align-items:flex-end;justify-content:center
+.app{
+  width:100%;
+  max-width:520px;
+  min-height:100vh;
+  margin:auto;
+  padding:18px 14px 100px;
+  background:
+    radial-gradient(circle at 20% 5%,rgba(255,211,77,.12),transparent 25%),
+    radial-gradient(circle at 100% 35%,rgba(255,180,20,.08),transparent 28%),
+    linear-gradient(160deg,#050607,#0a0c11 55%,#020304);
 }
+
+/* HEADER */
+
+.header{
+  text-align:center;
+  padding:10px 0 18px;
+}
+
+.crown{
+  font-size:30px;
+  filter:drop-shadow(0 0 12px #e8b62e);
+}
+
+.logo{
+  margin-top:4px;
+  font-size:27px;
+  font-weight:900;
+  letter-spacing:3px;
+  color:#ffd75a;
+  text-shadow:0 0 20px rgba(255,205,70,.45);
+}
+
+.subtitle{
+  margin-top:5px;
+  color:#85878d;
+  font-size:10px;
+  letter-spacing:2px;
+}
+
+/* BALANCE */
+
+.balance{
+  position:relative;
+  overflow:hidden;
+  padding:25px 18px;
+  text-align:center;
+  border-radius:28px;
+  border:1px solid rgba(255,211,77,.35);
+  background:
+    linear-gradient(145deg,rgba(255,211,77,.13),rgba(255,255,255,.025));
+  box-shadow:
+    0 15px 45px rgba(0,0,0,.35),
+    inset 0 1px rgba(255,255,255,.05);
+}
+
+.balance:before{
+  content:"";
+  position:absolute;
+  width:190px;
+  height:190px;
+  left:-110px;
+  top:-110px;
+  border-radius:50%;
+  background:rgba(255,211,77,.07);
+}
+
+.balance-label{
+  color:#85878d;
+  font-size:10px;
+  letter-spacing:2px;
+}
+
+.coins{
+  margin-top:7px;
+  color:#ffd34d;
+  font-size:38px;
+  font-weight:900;
+  text-shadow:0 0 18px rgba(255,211,77,.28);
+}
+
+.usd{
+  margin-top:3px;
+  color:#fff;
+  font-size:17px;
+}
+
+.level{
+  display:inline-block;
+  margin-top:13px;
+  padding:8px 17px;
+  border-radius:30px;
+  color:#ffd34d;
+  background:#13151a;
+  border:1px solid rgba(255,211,77,.2);
+  font-size:11px;
+  font-weight:bold;
+}
+
+/* CARDS */
+
+.card{
+  margin-top:14px;
+  padding:18px;
+  border-radius:23px;
+  border:1px solid rgba(255,211,77,.16);
+  background:linear-gradient(145deg,#15171c,#0a0b0e);
+  box-shadow:0 12px 30px rgba(0,0,0,.3);
+}
+
+.card-title{
+  color:#ffd34d;
+  font-size:15px;
+  font-weight:900;
+}
+
+.card-subtitle{
+  margin-top:5px;
+  color:#777a81;
+  font-size:11px;
+}
+
+/* MINING */
+
+.mining-top{
+  display:flex;
+  justify-content:space-between;
+  margin-top:16px;
+  color:#999;
+  font-size:11px;
+}
+
+.progress{
+  height:9px;
+  margin-top:10px;
+  overflow:hidden;
+  border-radius:20px;
+  background:#292b31;
+}
+
+.progress-bar{
+  width:0%;
+  height:100%;
+  border-radius:20px;
+  background:linear-gradient(90deg,#805400,#e4b52e,#fff0a0);
+  box-shadow:0 0 12px rgba(255,211,77,.7);
+}
+
+.main-btn{
+  width:100%;
+  margin-top:14px;
+  padding:14px;
+  border:0;
+  border-radius:15px;
+  color:#111;
+  font-size:13px;
+  font-weight:900;
+  background:linear-gradient(135deg,#a96f00,#ffd75a,#c68b08);
+  box-shadow:0 6px 20px rgba(255,193,40,.12);
+}
+
+.main-btn:active{
+  transform:scale(.98);
+}
+
+.main-btn:disabled{
+  color:#aaa;
+  background:#4b4d51;
+  box-shadow:none;
+  cursor:not-allowed;
+}
+
+/* FEATURE GRID */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+
+.feature{
+  min-height:120px;
+  padding:19px 10px;
+  text-align:center;
+  border-radius:21px;
+  border:1px solid rgba(255,211,77,.15);
+  background:linear-gradient(145deg,#17191e,#0b0c10);
+  box-shadow:0 8px 20px rgba(0,0,0,.2);
+  transition:.15s;
+}
+
+.feature:active{
+  transform:scale(.95);
+}
+
+.icon{
+  font-size:30px;
+  margin-bottom:9px;
+}
+
+.feature-title{
+  color:#ffd34d;
+  font-size:13px;
+  font-weight:900;
+}
+
+.feature-text{
+  margin-top:5px;
+  color:#777b82;
+  font-size:10px;
+}
+
+/* MODAL */
+
+.modal-bg{
+  display:none;
+  position:fixed;
+  z-index:1000;
+  inset:0;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.82);
+}
+
 .modal{
-width:100%;max-width:520px;max-height:90vh;overflow:auto;
-background:linear-gradient(145deg,#17181e,#07080a);
-border:1px solid #ffd34d55;border-radius:28px 28px 0 0;
-padding:22px
+  width:100%;
+  max-width:520px;
+  max-height:91vh;
+  overflow:auto;
+  padding:22px 18px 30px;
+  border-radius:28px 28px 0 0;
+  border:1px solid rgba(255,211,77,.25);
+  background:linear-gradient(150deg,#15171c,#07080b);
+  box-shadow:0 -10px 50px rgba(0,0,0,.5);
 }
+
 .close{
-float:right;width:36px;height:36px;padding:0;margin:0;
-background:#292a2f;color:white;border-radius:50%
+  float:right;
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:50%;
+  color:#fff;
+  background:#292b30;
+  font-size:20px;
 }
-h2{color:#ffd34d;margin-bottom:15px}
-.info{color:#999;font-size:13px;line-height:1.6}
 
-.day,.task,.rank{
-padding:15px;margin-top:10px;border-radius:15px;
-background:#17181e;border:1px solid #333
+.modal-title{
+  margin:4px 45px 15px 0;
+  color:#ffd34d;
+  font-size:21px;
+  font-weight:900;
 }
-.day.claimed{background:#555;color:#bbb}
-.day.active{border-color:#ffd34d}
-.seal{float:right;color:#ddd;font-size:11px;font-weight:bold}
 
-.wheelwrap{width:285px;height:285px;margin:20px auto;position:relative}
+.info{
+  color:#999da5;
+  font-size:12px;
+  line-height:1.6;
+}
+
+/* DAILY */
+
+.daily{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  margin-top:15px;
+}
+
+.day{
+  position:relative;
+  padding:15px;
+  border-radius:16px;
+  border:1px solid #303238;
+  background:#15171c;
+}
+
+.day.active{
+  border-color:#e0b332;
+  box-shadow:0 0 15px rgba(255,211,77,.08);
+}
+
+.day.claimed{
+  opacity:.55;
+  background:#44464b;
+}
+
+.day-name{
+  color:#fff;
+  font-weight:bold;
+}
+
+.day-reward{
+  margin-top:5px;
+  color:#ffd34d;
+  font-size:12px;
+}
+
+.seal{
+  position:absolute;
+  right:13px;
+  top:18px;
+  color:#d4d4d4;
+  font-size:10px;
+  font-weight:bold;
+}
+
+/* SPIN */
+
+.wheel-wrap{
+  position:relative;
+  width:285px;
+  height:285px;
+  margin:18px auto 20px;
+}
+
 .pointer{
-position:absolute;z-index:5;left:calc(50% - 14px);top:-5px;
-border-left:
+  position:absolute;
+  z-index:5;
+  left:calc(50% - 13px);
+  top:-4px;
+  width:0;
+  height:0;
+  border-left:13px solid transparent;
+  border-right:13px solid transparent;
+  border-top:28px solid #fff;
+  filter:drop-shadow(0 2px 4px #000);
+}
+
+.wheel{
+  position:relative;
+  width:100%;
+  height:100%;
+  border:8px solid #e6bb3b;
+  border-radius:50%;
+  overflow:hidden;
+  background:conic-gradient(
+    #7e5305 0deg 51.43deg,
+    #d7a92e 51.43deg 102.86deg,
+    #9a6907 102.86deg 154.29deg,
+    #e8c450 154.29deg 205.72deg,
+    #7d5104 205.72deg 257.15deg,
+    #d8aa31 257.15deg 308.58deg,
+    #8b5b05 308.58deg 360deg
+  );
+  box-shadow:
+    0 0 30px rgba(255,210,70,.3),
+    inset 0 0 20px rgba(0,0,0,.4);
+  transition:transform 4s cubic-bezier(.15,.75,.2,1);
+}
+
+.wheel:after{
+  content:"SPIN";
+  position:absolute;
+  left:calc(50% - 38px);
+  top:calc(50% - 38px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  border:4px solid #ffd34d;
+  color:#ffd34d;
+  background:#08090b;
+  font-size:15px;
+  font-weight:900;
+  box-shadow:0 0 15px rgba(255,211,77,.3);
+}
+
+.labels{
+  position:absolute;
+  inset:0;
+}
+
+.labels span{
+  position:absolute;
+  color:#fff;
+  font-size:13px;
+  font-weight:900;
+  text-shadow:0 2px 5px #000;
+}
+
+.labels span:nth-child(1){top:22px;left:126px}
+.labels span:nth-child(2){top:61px;right:38px}
+.labels span:nth-child(3){top:132px;right:19px}
+.labels span:nth-child(4){bottom:55px;right:53px}
+.labels span:nth-child(5){bottom:24px;left:126px}
+.labels span:nth-child(6){bottom:62px;left:40px}
+.labels span:nth-child(7){top:132px;left:18px}
+
+/* TASK */
+
+.task{
+  margin-top:11px;
+  padding:15px;
+  border-radius:17px;
+  border:1px solid #303238;
+  background:#15171c;
+}
+
+.task-title{
+  color:#ffd34d;
+  font-weight:900;
+}
+
+.task-desc{
+  margin-top:5px;
+  color:#858991;
+  font-size:11px;
+}
+
+.task-link{
+  display:block;
+  margin-top:8px;
+  color:#d7d9dd;
+  font-size:10px;
+  word-break:break-all;
+}
+
+/* LEADERBOARD */
+
+.rank{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:10px;
+  padding:16px;
+  border-radius:16px;
+  background:#15171c;
+  border:1px solid #303238;
+}
+
+.rank-left{
+  color:#fff;
+  font-weight:bold;
+}
+
+.rank-right{
+  color:#ffd34d;
+  font-weight:900;
+}
+
+/* WALLET */
+
+.wallet-box{
+  margin-top:12px;
+  padding:18px;
+  text-align:center;
+  border-radius:18px;
+  background:#15171c;
+  border:1px solid #303238;
+}
+
+.wallet-number{
+  color:#ffd34d;
+  font-size:29px;
+  font-weight:900;
+}
+
+/* INPUT */
+
+input{
+  width:100%;
+  margin-top:10px;
+  padding:14px;
+  border:1px solid #3c3e44;
+  border-radius:12px;
+  outline:none;
+  color:#fff;
+  background:#0e0f12;
+}
+
+/* NAV */
+
+.nav{
+  position:fixed;
+  z-index:900;
+  left:0;
+  right:0;
+  bottom:0;
+  display:flex;
+  justify-content:center;
+  padding-bottom:env(safe-area-inset-bottom);
+  border-top:1px solid rgba(255,211,77,.16);
+  background:rgba(5,6,8,.97);
+  backdrop-filter:blur(10px);
+}
+
+.nav button{
+  flex:1;
+  max-width:130px;
+  padding:12px 3px;
+  border:0;
+  color:#777b82;
+  background:none;
+  font-size:10px;
+}
+
+.nav button.active{
+  color:#ffd34d;
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  z-index:2000;
+  left:50%;
+  bottom:85px;
+  transform:translateX(-50%) translateY(20px);
+  padding:12px 18px;
+  border-radius:14px;
+  opacity:0;
+  pointer-events:none;
+  color:#111;
+  background:#ffd34d;
+  font-size:12px;
+  font-weight:bold;
+  transition:.25s;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="header">
+    <div class="crown">👑</div>
+    <div class="logo">MWS REWARDS</div>
+    <div class="subtitle">PREMIUM REWARD EXPERIENCE</div>
+  </div>
+
+  <div class="balance">
+    <div class="balance-label">TOTAL BALANCE</div>
+    <div class="coins" id="coins">0 🪙</div>
+    <div class="usd" id="usd">$0.00</div>
+    <div class="level" id="level">LEVEL 0</div>
+  </div>
+
+  <!-- MINING -->
+
+  <div class="card">
+
+    <div class="card-title">⛏️ MWS MINING</div>
+
+    <div class="card-subtitle">
+      Start mining and earn up to 500 Coins
+    </div>
+
+    <div class="mining-top">
+      <span id="mineStatus">Mining Ready</span>
+      <span id="mineTimer">08h 00m 00s</span>
+    </div>
+
+    <div class="progress">
+      <div class="progress-bar" id="mineProgress"></div>
+    </div>
+
+    <button class="main-btn" id="mineBtn">
+      ⛏️ START MINING
+    </button>
+
+  </div>
+
+  <!-- FEATURES -->
+
+  <div class="grid">
+
+    <div class="feature" id="dailyBtn">
+      <div class="icon">🎁</div>
+      <div class="feature-title">Daily Reward</div>
+      <div class="feature-text">100 Coins Daily</div>
+    </div>
+
+    <div class="feature" id="spinBtnOpen">
+      <div class="icon">🎡</div>
+      <div class="feature-title">Free Spin</div>
+      <div class="feature-text">100–500 Coins</div>
+    </div>
+
+    <div class="feature" id="tasksBtn">
+      <div class="icon">📢</div>
+      <div class="feature-title">Tasks</div>
+      <div class="feature-text">50 Coins Each</div>
+    </div>
+
+    <div class="feature" id="inviteBtn">
+      <div class="icon">👥</div>
+      <div class="feature-title">Invite Friends</div>
+      <div class="feature-text">+100 Coins</div>
+    </div>
+
+    <div class="feature" id="leaderBtn">
+      <div class="icon">🏆</div>
+      <div class="feature-title">Leaderboard</div>
+      <div class="feature-text">Top Rewards</div>
+    </div>
+
+    <div class="feature" id="walletBtn">
+      <div class="icon">👛</div>
+      <div class="feature-title">Wallet</div>
+      <div class="feature-text">Coin Balance</div>
+    </div>
+
+    <div class="feature" id="withdrawBtn">
+      <div class="icon">💸</div>
+      <div class="feature-title">Withdraw</div>
+      <div class="feature-text">From $1.00</div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+
+<div class="nav">
+
+  <button class="active" id="homeNav">
+    🏠<br>Home
+  </button>
+
+  <button id="tasksNav">
+    📢<br>Tasks
+  </button>
+
+  <button id="walletNav">
+    👛<br>Wallet
+  </button>
+
+  <button id="withdrawNav">
+    💸<br>Withdraw
+  </button>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal-bg" id="modalBg">
+
+  <div class="modal">
+
+    <button class="close" id="closeBtn">×</button>
+
+    <div id="modalContent"></div>
+
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* =========================
+   STORAGE
+========================= */
+
+let coins = Number(
+  localStorage.getItem("mwsCoins") || "0"
+);
+
+let mining = JSON.parse(
+  localStorage.getItem("mwsMining") || "null"
+);
+
+let daily = JSON.parse(
+  localStorage.getItem("mwsDaily") || "null"
+);
+
+let spin = JSON.parse(
+  localStorage.getItem("mwsSpin") || "null"
+);
+
+let tasks = JSON.parse(
+  localStorage.getItem("mwsTasks") || "{}"
+);
+
+
+/* =========================
+   SAVE
+========================= */
+
+function saveData(){
+
+  localStorage.setItem(
+    "mwsCoins",
+    String(coins)
+  );
+
+  localStorage.setItem(
+    "mwsMining",
+    JSON.stringify(mining)
+  );
+
+  localStorage.setItem(
+    "mwsDaily",
+    JSON.stringify(daily)
+  );
+
+  localStorage.setItem(
+    "mwsSpin",
+    JSON.stringify(spin)
+  );
+
+  localStorage.setItem(
+    "mwsTasks",
+    JSON.stringify(tasks)
+  );
+}
+
+
+/* =========================
+   BALANCE
+========================= */
+
+function updateBalance(){
+
+  document.getElementById("coins").textContent =
+    coins.toLocaleString() + " 🪙";
+
+  document.getElementById("usd").textContent =
+    "$" + (coins / 10000).toFixed(2);
+
+  document.getElementById("level").textContent =
+    "LEVEL " + Math.floor(coins / 500);
+
+  saveData();
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+function openModal(title,html){
+
+  document.getElementById("modalContent").innerHTML =
+    '<div class="modal-title">' +
+    title +
+    '</div>' +
+    html;
+
+  document.getElementById("modalBg").style.display =
+    "flex";
+}
+
+function closeModal(){
+
+  document.getElementById("modalBg").style.display =
+    "none";
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+let toastTimer;
+
+function toast(message){
+
+  const box =
+    document.getElementById("toast");
+
+  box.textContent = message;
+
+  box.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(function(){
+
+      box.classList.remove("show");
+
+    },2200);
+}
+
+
+/* =========================
+   MINING
+========================= */
+
+const MINING_TIME =
+  8 * 60 * 60 * 1000;
+
+const MINING_REWARD =
+  500;
+
+function startMining(){
+
+  if(mining && mining.active){
+
+    toast("Mining is already active");
+
+    return;
+  }
+
+  mining = {
+    active:true,
+    start:Date.now(),
+    end:Date.now() + MINING_TIME
+  };
+
+  saveData();
+
+  updateMining();
+
+  toast("⛏️ Mining started");
+}
+
+function updateMining(){
+
+  const status =
+    document.getElementById("mineStatus");
+
+  const timer =
+    document.getElementById("mineTimer");
+
+  const bar =
+    document.getElementById("mineProgress");
+
+  const button =
+    document.getElementById("mineBtn");
+
+  if(!mining || !mining.active){
+
+    status.textContent =
+      "Mining Ready";
+
+    timer.textContent =
+      "08h 00m 00s";
+
+    bar.style.width =
+      "0%";
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "⛏️ START MINING";
+
+    return;
+  }
+
+  const remaining =
+    mining.end - Date.now();
+
+  if(remaining <= 0){
+
+    mining.active =
+      false;
+
+    coins += MINING_REWARD;
+
+    saveData();
+
+    updateBalance();
+
+    status.textContent =
+      "Mining Complete";
+
+    timer.textContent =
+      "+500 Coins";
+
+    bar.style.width =
+      "100%";
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "⛏️ START MINING";
+
+    toast("🎉 +500 Coins");
+
+    return;
+  }
+
+  const elapsed =
+    Date.now() - mining.start;
+
+  const progress =
+    Math.min(
+      100,
+      elapsed / MINING_TIME * 100
+    );
+
+  const hours =
+    Math.floor(
+      remaining / 3600000
+    );
+
+  const minutes =
+    Math.floor(
+      (remaining % 3600000) / 60000
+    );
+
+  const seconds =
+    Math.floor(
+      (remaining % 60000) / 1000
+    );
+
+  status.textContent =
+    "⛏️ Mining Active";
+
+  timer.textContent =
+    String(hours).padStart(2,"0") +
+    "h " +
+    String(minutes).padStart(2,"0") +
+    "m " +
+    String(seconds).padStart(2,"0") +
+    "s";
+
+  bar.style.width =
+    progress + "%";
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "⛏️ MINING ACTIVE";
+}
+
+
+/* =========================
+   DAILY REWARD
+========================= */
+
+function dailyStart(){
+
+  const now =
+    new Date();
+
+  now.setHours(10,0,0,0);
+
+  if(
+    Date.now() <
+    now.getTime()
+  ){
+
+    now.setDate(
+      now.getDate() - 1
+    );
+  }
+
+  return now.getTime();
+}
+
+function setupDaily(){
+
+  const start =
+    dailyStart();
+
+  if(!daily){
+
+    daily = {
+      cycleStart:start,
+      claimed:[]
+    };
+
+    saveData();
+
+    return;
+  }
+
+  if(
+    start - daily.cycleStart >=
+    7 * 24 * 60 * 60 * 1000
+  ){
+
+    daily = {
+      cycleStart:start,
+      claimed:[]
+    };
+
+    saveData();
+  }
+}
+
+function openDaily(){
+
+  setupDaily();
+
+  const currentDay =
+    Math.floor(
+      (Date.now() - daily.cycleStart) /
+      86400000
+    ) + 1;
+
+  let html =
+    '<p class="info">' +
+    '🎁 Claim 100 Coins every day at 10:00 AM.' +
+    '<br>After Day 7, a new cycle starts.' +
+    '</p>' +
+    '<div class="daily">';
+
+  for(let i=1;i<=7;i++){
+
+    const claimed =
+      daily.claimed.indexOf(i) !== -1;
+
+    const active =
+      i === currentDay &&
+      !claimed;
+
+    html +=
+      '<div class="day ' +
+      (claimed ? "claimed " : "") +
+      (active ? "active" : "") +
+      '">' +
+
+      '<div class="day-name">' +
+      'DAY ' + i +
+      '</div>' +
+
+      '<div class="day-reward">' +
+      '🪙 100 Coins' +
+      '</div>';
+
+    if(claimed){
+
+      html +=
+        '<span class="seal">✓ CLAIMED</span>';
+
+    }else if(active){
+
+      html +=
+        '<button class="main-btn dailyClaim" ' +
+        'data-day="' + i + '">' +
+        '🎁 CLAIM 100 COINS' +
+        '</button>';
+
+    }else{
+
+      html +=
+        '<button class="main-btn" disabled>' +
+        '🔒 LOCKED' +
+        '</button>';
+    }
+
+    html += "</div>";
+  }
+
+  html += "</div>";
+
+  openModal(
+    "🎁 DAILY REWARDS",
+    html
+  );
+
+  document
+    .querySelectorAll(".dailyClaim")
+    .forEach(function(btn){
+
+      btn.addEventListener(
+        "click",
+        function(){
+
+          claimDaily(
+            Number(
+              btn.getAttribute("data-day")
+            )
+          );
+
+        }
+      );
+
+    });
+}
+
+function claimDaily(day){
+
+  setupDaily();
+
+  const current =
+    Math.floor(
+      (Date.now() - daily.cycleStart) /
+      86400000
+    ) + 1;
+
+  if(day !== current){
+
+    toast("This day is locked");
+
+    return;
+  }
+
+  if(
+    daily.claimed.indexOf(day) !== -1
+  ){
+
+    return;
+  }
+
+  daily.claimed.push(day);
+
+  coins += 100;
+
+  saveData();
+
+  updateBalance();
+
+  toast("🎉 +100 Daily Coins");
+
+  openDaily();
+}
+
+
+/* =========================
+   SPIN
+========================= */
+
+const SPIN_TIME =
+  24 * 60 * 60 * 1000;
+
+const spinRewards = [
+  100,
+  150,
+  200,
+  250,
+  300,
+  400,
+  500
+];
+
+function openSpin(){
+
+  const locked =
+    spin &&
+    Date.now() < spin.next;
+
+  let html =
+    '<div class="wheel-wrap">' +
+
+    '<div class="pointer"></div>' +
+
+    '<div class="wheel" id="spinWheel">' +
+
+    '<div class="labels">' +
+    '<span>100</span>' +
+    '<span>150</span>' +
+    '<span>200</span>' +
+    '<span>250</span>' +
+    '<span>300</span>' +
+    '<span>400</span>' +
+    '<span>500</span>' +
+    '</div>' +
+
+    '</div>' +
+    '</div>';
+
+  if(locked){
+
+    html +=
+      '<button class="main-btn" disabled>' +
+      '⏳ SPIN LOCKED' +
+      '</button>' +
+
+      '<p id="spinTimer" ' +
+      'class="info" ' +
+      'style="text-align:center;margin-top:12px;color:#ffd34d">' +
+      '</p>';
+
+  }else{
+
+    html +=
+      '<button class="main-btn" id="doSpinBtn">' +
+      '🎡 SPIN NOW' +
+      '</button>' +
+
+      '<p class="info" ' +
+      'style="text-align:center;margin-top:10px">' +
+      'One spin every 24 hours' +
+      '</p>';
+  }
+
+  openModal(
+    "🎡 FREE SPIN",
+    html
+  );
+
+  if(locked){
+
+    updateSpinTimer();
+
+  }else{
+
+    document
+      .getElementById("doSpinBtn")
+      .addEventListener(
+        "click",
+        doSpin
+      );
+  }
+}
+
+function updateSpinTimer(){
+
+  const element =
+    document.getElementById(
+      "spinTimer"
+    );
+
+  if(!element || !spin){
+
+    return;
+  }
+
+  const remaining =
+    spin.next - Date.now();
+
+  if(remaining <= 0){
+
+    openSpin();
+
+    return;
+  }
+
+  const h =
+    Math.floor(
+      remai
