@@ -1355,4 +1355,1132 @@ function closeOutside(event){
 
 function toggleTheme(){
 
-  const dark
+      const dark =
+      document.body.classList.toggle("dark-mode");
+
+    if(dark){
+      document.body.style.background = "#0d1117";
+      document.body.style.color = "#ffffff";
+    }else{
+      document.body.style.background = "var(--bg)";
+      document.body.style.color = "var(--dark)";
+    }
+
+    localStorage.setItem(
+      "mwsDarkMode",
+      dark ? "1" : "0"
+    );
+  }
+
+
+/* =========================================
+   LOAD THEME
+========================================= */
+
+(function(){
+
+  if(localStorage.getItem("mwsDarkMode") === "1"){
+
+    document.body.classList.add("dark-mode");
+
+    document.body.style.background = "#0d1117";
+    document.body.style.color = "#ffffff";
+
+  }
+
+})();
+
+
+/* =========================================
+   HOME
+========================================= */
+
+function goHome(){
+
+  closeModal();
+
+  document.querySelectorAll(".nav button")
+    .forEach(function(btn){
+      btn.classList.remove("active");
+    });
+
+  document.getElementById("navHome")
+    .classList.add("active");
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =========================================
+   NAV ACTIVE
+========================================= */
+
+function setNav(id){
+
+  document.querySelectorAll(".nav button")
+    .forEach(function(btn){
+      btn.classList.remove("active");
+    });
+
+  const btn =
+    document.getElementById(id);
+
+  if(btn){
+    btn.classList.add("active");
+  }
+
+}
+
+
+/* =========================================
+   MINING
+========================================= */
+
+function openMining(){
+
+  setNav("navMine");
+
+  showModal(
+    "⛏️ Mining",
+    `
+      <div style="text-align:center">
+
+        <div style="
+          font-size:55px;
+          margin:10px 0;
+        ">👑</div>
+
+        <h3 style="font-size:24px">
+          Mining Reward
+        </h3>
+
+        <p class="modal-text"
+           style="margin-top:10px">
+
+          Complete your daily mining claim
+          and collect your Coins.
+
+        </p>
+
+        <div style="
+          margin-top:18px;
+          padding:18px;
+          border-radius:18px;
+          background:#f5f7fa;
+          font-size:22px;
+          font-weight:900;
+        ">
+
+          🪙
+          <span id="modalMineCoins">
+            500
+          </span>
+          Coins
+
+        </div>
+
+        <button
+          class="modal-btn"
+          onclick="claimMining();closeModal();">
+
+          ✓ Claim 500 Coins
+
+        </button>
+
+      </div>
+    `
+  );
+
+}
+
+
+/* =========================================
+   CLAIM MINING
+========================================= */
+
+function claimMining(){
+
+  const now = Date.now();
+
+  const ONE_DAY =
+    24 * 60 * 60 * 1000;
+
+  if(miningStart &&
+     now - miningStart < ONE_DAY){
+
+    const remaining =
+      ONE_DAY - (now - miningStart);
+
+    const hours =
+      Math.floor(
+        remaining / (60 * 60 * 1000)
+      );
+
+    const minutes =
+      Math.floor(
+        (remaining % (60 * 60 * 1000))
+        / (60 * 1000)
+      );
+
+    document.getElementById("mineStatus")
+      .textContent =
+      "Next claim in "
+      + hours + "h "
+      + minutes + "m";
+
+    return;
+
+  }
+
+  coins += 500;
+
+  miningStart = now;
+
+  document.getElementById("mineAmount")
+    .textContent = "500";
+
+  document.getElementById("mineStatus")
+    .textContent = "Claimed";
+
+  const btn =
+    document.getElementById("mineBtn");
+
+  if(btn){
+    btn.disabled = true;
+    btn.textContent = "✓ Claimed";
+  }
+
+  updateBalance();
+
+  alert("🎉 You received 500 Coins!");
+
+}
+
+
+/* =========================================
+   DAILY REWARD
+========================================= */
+
+function openDaily(){
+
+  let claimed =
+    localStorage.getItem("mwsDailyClaimed")
+      === "1";
+
+  let last =
+    Number(
+      localStorage.getItem("mwsDailyClaimTime")
+      || 0
+    );
+
+  const now = Date.now();
+
+  const ONE_DAY =
+    24 * 60 * 60 * 1000;
+
+  const canClaim =
+    !claimed ||
+    (now - last >= ONE_DAY);
+
+  showModal(
+    "🎁 Daily Reward",
+    `
+      <p class="modal-text">
+        Claim your daily reward once every
+        24 hours.
+      </p>
+
+      <div class="day">
+
+        <div class="day-info">
+
+          <div class="day-name">
+            Today's Reward
+          </div>
+
+          <div class="day-reward">
+            🪙 100 Coins
+          </div>
+
+        </div>
+
+        <button
+          class="${canClaim ? "ready" : ""}"
+          ${canClaim ? "" : "disabled"}
+          onclick="claimDaily()">
+
+          ${canClaim ? "Claim" : "Claimed"}
+
+        </button>
+
+      </div>
+
+      <div class="note">
+        After claiming, your next reward
+        becomes available after 24 hours.
+      </div>
+    `
+  );
+
+}
+
+
+/* =========================================
+   CLAIM DAILY
+========================================= */
+
+function claimDaily(){
+
+  const now = Date.now();
+
+  const last =
+    Number(
+      localStorage.getItem("mwsDailyClaimTime")
+      || 0
+    );
+
+  const ONE_DAY =
+    24 * 60 * 60 * 1000;
+
+  if(last &&
+     now - last < ONE_DAY){
+
+    alert("⏳ Your daily reward is not ready yet.");
+    return;
+
+  }
+
+  coins += 100;
+
+  localStorage.setItem(
+    "mwsDailyClaimTime",
+    String(now)
+  );
+
+  localStorage.setItem(
+    "mwsDailyClaimed",
+    "1"
+  );
+
+  updateBalance();
+
+  alert("🎁 You received 100 Coins!");
+
+  openDaily();
+
+}
+
+
+/* =========================================
+   FREE SPIN
+========================================= */
+
+function openSpin(){
+
+  showModal(
+    "🎡 Free Spin",
+    `
+      <p class="modal-text"
+         style="text-align:center">
+
+        Spin once every 24 hours and win
+        Coins.
+
+      </p>
+
+      <div class="wheel">
+
+        <div class="wheel-label">
+
+          <span>100</span>
+          <span>150</span>
+          <span>200</span>
+          <span>250</span>
+          <span>300</span>
+          <span>400</span>
+          <span>500</span>
+
+        </div>
+
+        <div class="wheel-center">
+          SPIN
+        </div>
+
+      </div>
+
+      <button
+        class="modal-btn"
+        onclick="spinNow()">
+
+        🎡 Spin Now
+
+      </button>
+
+      <div class="note">
+        Available rewards:
+        100, 150, 200, 250, 300, 400 and
+        500 Coins.
+      </div>
+    `
+  );
+
+}
+
+
+/* =========================================
+   SPIN NOW
+========================================= */
+
+function spinNow(){
+
+  const now = Date.now();
+
+  const ONE_DAY =
+    24 * 60 * 60 * 1000;
+
+  if(lastSpin &&
+     now - lastSpin < ONE_DAY){
+
+    const remaining =
+      ONE_DAY - (now - lastSpin);
+
+    const hours =
+      Math.floor(
+        remaining / (60 * 60 * 1000)
+      );
+
+    const minutes =
+      Math.floor(
+        (remaining % (60 * 60 * 1000))
+        / (60 * 1000)
+      );
+
+    alert(
+      "⏳ Next spin in "
+      + hours + "h "
+      + minutes + "m"
+    );
+
+    return;
+
+  }
+
+  const rewards =
+    [100,150,200,250,300,400,500];
+
+  const reward =
+    rewards[
+      Math.floor(
+        Math.random() * rewards.length
+      )
+    ];
+
+  lastSpin = now;
+
+  coins += reward;
+
+  updateBalance();
+
+  alert(
+    "🎉 Congratulations!\n\n"
+    + "You won "
+    + reward
+    + " Coins!"
+  );
+
+  openSpin();
+
+}
+
+
+/* =========================================
+   TASKS / SUPPORT
+========================================= */
+
+function openTasks(){
+
+  showModal(
+    "🎧 Customer Support",
+    `
+      <p class="modal-text">
+
+        Need help with MWS Rewards?
+        Contact our support team.
+
+      </p>
+
+      <button
+        class="modal-btn"
+        onclick="openSupport()">
+
+        💬 Contact Support
+
+      </button>
+
+      <div class="note">
+        We will help you with your
+        account and rewards.
+      </div>
+    `
+  );
+
+}
+
+
+/* =========================================
+   SUPPORT
+========================================= */
+
+function openSupport(){
+
+  const support =
+    "https://t.me/MWSRewardsBot";
+
+  if(tg && tg.openTelegramLink){
+
+    tg.openTelegramLink(support);
+
+  }else{
+
+    window.open(
+      support,
+      "_blank"
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   WALLET
+========================================= */
+
+function openWallet(){
+
+  showModal(
+    "💳 Wallet",
+    `
+      <p class="modal-text">
+
+        Connect your preferred wallet
+        to use wallet features.
+
+      </p>
+
+      <button
+        class="modal-btn"
+        onclick="openTonkeeper()">
+
+        💎 Tonkeeper
+
+      </button>
+
+      <button
+        class="modal-btn"
+        style="background:#172238"
+        onclick="openTrustWallet()">
+
+        🔐 Trust Wallet
+
+      </button>
+
+      <div class="note">
+        Never share your recovery phrase
+        or private key with anyone.
+      </div>
+    `
+  );
+
+}
+
+
+/* =========================================
+   TONKEEPER
+========================================= */
+
+function openTonkeeper(){
+
+  window.open(
+    "https://tonkeeper.com/",
+    "_blank"
+  );
+
+}
+
+
+/* =========================================
+   TRUST WALLET
+========================================= */
+
+function openTrustWallet(){
+
+  window.open(
+    "https://trustwallet.com/",
+    "_blank"
+  );
+
+}
+
+
+/* =========================================
+   WITHDRAW
+========================================= */
+
+function openWithdraw(){
+
+  showModal(
+    "💳 Withdraw",
+    `
+      <p class="modal-text">
+
+        Minimum withdrawal:
+        <b>10,000 Coins = $1.00</b>
+
+      </p>
+
+      <input
+        id="withdrawAmount"
+        class="input"
+        type="number"
+        min="10000"
+        placeholder="Enter Coins"
+      >
+
+      <input
+        id="withdrawWallet"
+        class="input"
+        type="text"
+        placeholder="Enter TON wallet address"
+      >
+
+      <div class="note">
+        Withdrawal requests may be reviewed
+        before processing.
+      </div>
+
+      <button
+        class="modal-btn"
+        onclick="submitWithdraw()">
+
+        💸 Request Withdrawal
+
+      </button>
+    `
+  );
+
+}
+
+
+/* =========================================
+   SUBMIT WITHDRAW
+========================================= */
+
+function submitWithdraw(){
+
+  const amount =
+    Number(
+      document.getElementById(
+        "withdrawAmount"
+      ).value
+    );
+
+  const wallet =
+    document.getElementById(
+      "withdrawWallet"
+    ).value.trim();
+
+  if(!amount || amount < 10000){
+
+    alert(
+      "Minimum withdrawal is 10,000 Coins."
+    );
+
+    return;
+
+  }
+
+  if(amount > coins){
+
+    alert(
+      "❌ You don't have enough Coins."
+    );
+
+    return;
+
+  }
+
+  if(!wallet){
+
+    alert(
+      "Please enter your wallet address."
+    );
+
+    return;
+
+  }
+
+  coins -= amount;
+
+  updateBalance();
+
+  alert(
+    "✅ Withdrawal request submitted.\n\n"
+    + "Amount: "
+    + amount.toLocaleString()
+    + " Coins"
+  );
+
+  closeModal();
+
+}
+
+
+/* =========================================
+   TEAM
+========================================= */
+
+function openTeam(){
+
+  setNav("navTeam");
+
+  const botUsername =
+    "MWSRewardsBot";
+
+  const userId =
+    telegramUser &&
+    telegramUser.id
+      ? telegramUser.id
+      : "user";
+
+  const referral =
+    "https://t.me/"
+    + botUsername
+    + "?start=ref_"
+    + userId;
+
+  showModal(
+    "👥 My Team",
+    `
+      <p class="modal-text">
+
+        Invite friends and earn
+        <b>500 Coins</b> for eligible
+        referrals.
+
+      </p>
+
+      <div class="ref-box">
+
+        <input
+          readonly
+          value="${referral}"
+        >
+
+        <button
+          class="copy"
+          onclick="copyText('${referral}')">
+
+          Copy
+
+        </button>
+
+      </div>
+
+      <button
+        class="modal-btn"
+        onclick="shareReferral()">
+
+        ✈️ Invite Friends
+
+      </button>
+    `
+  );
+
+}
+
+
+/* =========================================
+   PROFILE
+========================================= */
+
+function openProfile(){
+
+  setNav("navProfile");
+
+  const name =
+    getUserName();
+
+  showModal(
+    "♙ Profile",
+    `
+      <div class="profile">
+
+        <div class="avatar">
+          ${name.replace("@","").charAt(0).toUpperCase()}
+        </div>
+
+        <div class="profile-name">
+          ${name}
+        </div>
+
+        <div class="profile-id">
+          MWS Rewards Member
+        </div>
+
+        <div class="stat-grid">
+
+          <div class="stat">
+
+            <strong>
+              ${coins.toLocaleString()}
+            </strong>
+
+            <span>
+              Total Coins
+            </span>
+
+          </div>
+
+          <div class="stat">
+
+            <strong>
+              ${Math.floor(coins/500)}
+            </strong>
+
+            <span>
+              Level
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+    `
+  );
+
+}
+
+
+/* =========================================
+   TELEGRAM CHANNEL
+========================================= */
+
+function openTelegram(){
+
+  const channel =
+    "https://t.me/DXAFIYA";
+
+  if(tg && tg.openTelegramLink){
+
+    tg.openTelegramLink(channel);
+
+  }else{
+
+    window.open(
+      channel,
+      "_blank"
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   REFERRAL LINK
+========================================= */
+
+function getReferralLink(){
+
+  const botUsername =
+    "MWSRewardsBot";
+
+  const userId =
+    telegramUser &&
+    telegramUser.id
+      ? telegramUser.id
+      : "user";
+
+  return (
+    "https://t.me/"
+    + botUsername
+    + "?start=ref_"
+    + userId
+  );
+
+}
+
+
+document.getElementById("refLink")
+  .value =
+  getReferralLink();
+
+
+/* =========================================
+   COPY REFERRAL
+========================================= */
+
+function copyReferral(){
+
+  copyText(
+    getReferralLink()
+  );
+
+}
+
+
+function copyText(text){
+
+  if(
+    navigator.clipboard &&
+    navigator.clipboard.writeText
+  ){
+
+    navigator.clipboard.writeText(text)
+      .then(function(){
+
+        alert("✅ Referral link copied!");
+
+      })
+      .catch(function(){
+
+        fallbackCopy(text);
+
+      });
+
+  }else{
+
+    fallbackCopy(text);
+
+  }
+
+}
+
+
+function fallbackCopy(text){
+
+  const input =
+    document.createElement("textarea");
+
+  input.value = text;
+
+  document.body.appendChild(input);
+
+  input.select();
+
+  document.execCommand("copy");
+
+  document.body.removeChild(input);
+
+  alert("✅ Referral link copied!");
+
+}
+
+
+/* =========================================
+   SHARE REFERRAL
+========================================= */
+
+function shareReferral(){
+
+  const link =
+    getReferralLink();
+
+  const text =
+    "🎁 Join MWS Rewards and earn Coins!\n\n"
+    + "Use my referral link:\n"
+    + link;
+
+  const telegramShare =
+    "https://t.me/share/url?url="
+    + encodeURIComponent(link)
+    + "&text="
+    + encodeURIComponent(
+        "🎁 Join MWS Rewards and earn Coins!"
+      );
+
+  if(tg && tg.openTelegramLink){
+
+    tg.openTelegramLink(
+      telegramShare
+    );
+
+  }else{
+
+    window.open(
+      telegramShare,
+      "_blank"
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   NOTIFICATIONS
+========================================= */
+
+function showNotifications(){
+
+  showModal(
+    "🔔 Notifications",
+    `
+      <div class="task">
+
+        <div class="task-name">
+          🎉 Welcome to MWS Rewards
+        </div>
+
+        <div class="task-desc">
+          Complete activities and collect
+          Coins.
+        </div>
+
+      </div>
+
+      <div class="task">
+
+        <div class="task-name">
+          🎁 Daily Reward
+        </div>
+
+        <div class="task-desc">
+          Claim your reward every 24 hours.
+        </div>
+
+      </div>
+
+      <div class="task">
+
+        <div class="task-name">
+          🎡 Free Spin
+        </div>
+
+        <div class="task-desc">
+          Spin once every 24 hours.
+        </div>
+
+      </div>
+    `
+  );
+
+}
+
+
+/* =========================================
+   MODAL ESC KEY
+========================================= */
+
+document.addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key === "Escape"){
+
+      closeModal();
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   UPDATE MINING STATUS
+========================================= */
+
+function updateMiningStatus(){
+
+  const btn =
+    document.getElementById("mineBtn");
+
+  const status =
+    document.getElementById("mineStatus");
+
+  if(!btn || !status){
+    return;
+  }
+
+  const now = Date.now();
+
+  const ONE_DAY =
+    24 * 60 * 60 * 1000;
+
+  if(
+    miningStart &&
+    now - miningStart < ONE_DAY
+  ){
+
+    const remaining =
+      ONE_DAY - (now - miningStart);
+
+    const hours =
+      Math.floor(
+        remaining / (60 * 60 * 1000)
+      );
+
+    const minutes =
+      Math.floor(
+        (remaining % (60 * 60 * 1000))
+        / (60 * 1000)
+      );
+
+    btn.disabled = true;
+    btn.textContent = "✓ Claimed";
+
+    status.textContent =
+      hours + "h "
+      + minutes + "m";
+
+  }else{
+
+    btn.disabled = false;
+    btn.textContent = "✓ Claim";
+
+    status.textContent =
+      "Ready";
+
+  }
+
+}
+
+
+/* =========================================
+   AUTO UPDATE
+========================================= */
+
+setInterval(
+  updateMiningStatus,
+  30000
+);
+
+updateMiningStatus();
+
+
+/* =========================================
+   INITIAL REFERRAL
+========================================= */
+
+(function(){
+
+  const ref =
+    document.getElementById("refLink");
+
+  if(ref){
+
+    ref.value =
+      getReferralLink();
+
+  }
+
+})();
+
+
+</script>
