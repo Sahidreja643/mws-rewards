@@ -1314,4 +1314,45 @@ function showModal(title,body){
           ${title}
         </div>
 
-        <but
+<button class="close" onclick="closeModal()">×</button>
+
+      </div>
+
+      <div class="modal-text">
+        ${body}
+      </div>
+
+    `;
+
+  document.getElementById("modalBg").style.display = "flex";
+
+}
+
+
+/* =========================================
+   CLOSE MODAL
+========================================= */
+
+function closeModal(){
+
+  document.getElementById("modalBg").style.display = "none";
+
+}
+
+
+function closeOutside(event){
+
+  if(event.target.id === "modalBg"){
+    closeModal();
+  }
+
+}
+
+
+/* =========================================
+   THEME
+========================================= */
+
+function toggleTheme(){
+
+  const dark
