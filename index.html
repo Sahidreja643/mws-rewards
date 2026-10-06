@@ -2,1156 +2,1210 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>MWS Rewards</title>
 
 <style>
-*{
-  box-sizing:border-box;
+:root{
+  --bg:#06101c;
+  --panel:#0b1b2c;
+  --panel2:#102840;
+  --text:#f4fbff;
+  --muted:#91a8bb;
+  --cyan:#62e6ff;
+  --blue:#3d8dff;
+  --green:#38e0a4;
+  --red:#ff5f70;
+  --pink:#ff70c7;
+  --violet:#927fff;
+  --orange:#ffb454;
+  --border:rgba(98,230,255,.20);
+}
+
+*{box-sizing:border-box}
+
+html,body{
   margin:0;
   padding:0;
+  background:#040b14;
+  color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
 }
 
-:root{
-  --pink:#e91e55;
-  --pink2:#ff3b72;
-  --blue:#149bd7;
-  --green:#18ad82;
-  --gold:#e4ad32;
-  --dark:#172033;
-  --muted:#8a95a5;
-  --bg:#f7f9fc;
-  --white:#fff;
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% -10%,#17415d 0,#071522 38%,#030911 100%);
 }
 
-body{
-  background:var(--bg);
-  color:var(--dark);
-  min-height:100vh;
-  padding-bottom:100px;
+button,input{
+  font:inherit;
 }
 
 button{
-  font-family:inherit;
+  border:0;
   cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
 }
 
-a{
-  text-decoration:none;
-  color:inherit;
-}
-
-.app{
+#app{
   width:100%;
-  max-width:520px;
+  max-width:760px;
   margin:auto;
+  min-height:100vh;
+  padding-bottom:92px;
 }
 
-/* TOP HEADER */
+/* HEADER */
 
-.top{
-  background:#fff;
-  padding:18px 18px 14px;
+header{
+  padding:18px 15px 10px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  border-bottom:1px solid #edf0f5;
-  position:sticky;
-  top:0;
-  z-index:20;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
   gap:10px;
 }
 
-.brand-logo{
-  width:45px;
-  height:45px;
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:25px;
-  background:linear-gradient(135deg,#111b30,#d9a62d);
-  box-shadow:0 6px 18px rgba(207,157,36,.25);
-}
-
-.brand-name{
+.brand{
   font-size:20px;
   font-weight:900;
-}
-
-.brand-sub{
-  color:#8b94a1;
-  font-size:11px;
-  margin-top:3px;
-}
-
-.top-actions{
-  display:flex;
-  gap:8px;
-}
-
-.top-btn{
-  width:43px;
-  height:43px;
-  border:1px solid #edf0f4;
-  border-radius:50%;
-  background:#fff;
-  font-size:19px;
-  position:relative;
-}
-
-.badge{
-  position:absolute;
-  right:-2px;
-  top:-4px;
-  min-width:19px;
-  height:19px;
-  border-radius:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:var(--pink);
-  color:white;
-  font-size:10px;
-  font-weight:900;
-}
-
-/* CONTENT */
-
-.content{
-  padding:18px;
-}
-
-/* BALANCE */
-
-.balance{
-  position:relative;
-  overflow:hidden;
-  padding:23px;
-  border-radius:27px;
-  background:
-    radial-gradient(circle at 85% 35%,rgba(255,255,255,.20),transparent 20%),
-    linear-gradient(135deg,#461b31,#a71943 55%,#e72b5d);
-  color:#fff;
-  box-shadow:0 16px 35px rgba(220,34,88,.25);
-}
-
-.balance:after{
-  content:"";
-  position:absolute;
-  width:180px;
-  height:180px;
-  border-radius:50%;
-  right:-70px;
-  top:-70px;
-  border:1px solid rgba(255,255,255,.18);
-  box-shadow:
-    0 0 0 18px rgba(255,255,255,.035),
-    0 0 0 38px rgba(255,255,255,.025);
-}
-
-.user-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 12px;
-  border-radius:30px;
-  background:rgba(255,255,255,.12);
-  border:1px solid rgba(255,255,255,.12);
-  font-size:12px;
-  font-weight:800;
-}
-
-.balance-title{
-  margin-top:25px;
-  font-size:12px;
-  letter-spacing:1px;
-  color:#ffc3d3;
-  font-weight:800;
-}
-
-.balance-number{
-  margin-top:5px;
-  font-size:40px;
-  line-height:1;
-  font-weight:900;
-}
-
-.balance-number span{
-  color:#ffd0dc;
-  font-size:21px;
-}
-
-.balance-bottom{
-  display:flex;
-  gap:8px;
-  margin-top:14px;
-  flex-wrap:wrap;
-}
-
-.pill{
-  padding:7px 12px;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:800;
-  background:rgba(255,255,255,.13);
-  border:1px solid rgba(255,255,255,.12);
-}
-
-/* ACTIONS */
-
-.actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:14px;
-}
-
-.action{
-  min-height:68px;
-  border-radius:20px;
-  border:1px solid #edf0f4;
-  font-size:16px;
-  font-weight:900;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-}
-
-.withdraw{
-  color:#fff;
-  background:linear-gradient(135deg,#db174e,#f33368);
-  box-shadow:0 10px 25px rgba(229,31,85,.18);
-}
-
-.deposit{
-  color:#15876c;
-  background:#eafff7;
-  border-color:#93dfca;
-}
-
-/* MINING */
-
-.mining{
-  margin-top:15px;
-  background:#fff;
-  border-radius:27px;
-  padding:19px;
-  border:1px solid #edf0f4;
-  box-shadow:0 8px 25px rgba(27,40,65,.06);
-}
-
-.mining-head{
-  display:flex;
-  align-items:center;
-  gap:13px;
-}
-
-.coin{
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#ed315e,#a80f3c);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
-  color:white;
-  box-shadow:0 7px 20px rgba(225,28,82,.22);
-}
-
-.mining-info{
-  flex:1;
-}
-
-.mining-title{
-  font-size:14px;
-  font-weight:900;
+  letter-spacing:1.4px;
 }
 
 .status{
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-  margin-top:5px;
-  padding:5px 9px;
-  border-radius:20px;
-  background:#e7faf3;
-  color:#13a77c;
-  font-size:10px;
-  font-weight:900;
+  font-size:11px;
+  color:var(--green);
+  border:1px solid rgba(56,224,164,.35);
+  background:rgba(56,224,164,.07);
+  padding:6px 9px;
+  border-radius:999px;
 }
 
-.dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#19bb89;
+/* PAGES */
+
+.page{
+  display:none;
+  padding:8px 15px;
 }
 
-.mining-value{
-  font-size:20px;
-  font-weight:900;
-  margin-top:3px;
-}
-
-.mining-value span{
-  color:var(--pink);
-}
-
-.daily-rate{
-  margin-top:4px;
-  color:#929baa;
-  font-size:12px;
-}
-
-.claim{
-  border:0;
-  border-radius:30px;
-  padding:14px 20px;
-  color:#fff;
-  background:linear-gradient(135deg,#09a879,#20bf91);
-  font-weight:900;
-  box-shadow:0 8px 20px rgba(14,177,132,.20);
-}
-
-.claim:disabled{
-  opacity:.45;
-  cursor:not-allowed;
+.page.active{
+  display:block;
 }
 
 /* CARDS */
 
-.card-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:13px;
-  margin-top:15px;
+.card{
+  background:
+    linear-gradient(150deg,rgba(16,40,64,.96),rgba(7,19,32,.97));
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:16px;
+  margin:10px 0;
+  box-shadow:0 14px 38px rgba(0,0,0,.25);
 }
 
-.feature-card{
-  min-height:150px;
-  padding:18px;
-  background:#fff;
-  border:1px solid #edf0f4;
-  border-radius:25px;
-  box-shadow:0 8px 25px rgba(27,40,65,.05);
-  position:relative;
-  overflow:hidden;
+.balance{
+  text-align:center;
+  padding:20px 12px;
 }
 
-.feature-icon{
-  width:48px;
-  height:48px;
-  border-radius:15px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:23px;
-  margin-bottom:20px;
-}
-
-.purple{
-  background:#eee4ff;
-  color:#8150d9;
-}
-
-.blue{
-  background:#dff4ff;
-  color:#168fc4;
-}
-
-.green{
-  background:#dff9ef;
-  color:#13a77c;
-}
-
-.gold{
-  background:#fff4d8;
-  color:#c28b19;
-}
-
-.feature-title{
-  font-size:16px;
+.live{
+  color:var(--cyan);
+  font-size:18px;
   font-weight:900;
+  min-height:22px;
 }
 
-.feature-text{
-  margin-top:7px;
-  color:#9099a7;
-  font-size:11px;
-  line-height:1.4;
-}
-
-/* CHANNEL */
-
-.channel{
-  margin-top:15px;
-  padding:18px;
-  border-radius:24px;
-  background:linear-gradient(135deg,#e8f9ff,#f5fbff);
-  border:1px solid #d8edf6;
-  display:flex;
-  align-items:center;
-  gap:13px;
-}
-
-.telegram{
-  width:50px;
-  height:50px;
+.coin{
+  width:148px;
+  height:148px;
+  margin:18px auto;
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:#159ed8;
-  color:#fff;
-  font-size:24px;
+  color:#06101b;
+  font-size:27px;
+  font-weight:1000;
+
+  background:
+    radial-gradient(circle at 32% 24%,
+      #ffffff 0,
+      #d9fbff 13%,
+      #79edff 30%,
+      #36c9ef 49%,
+      #2674ce 70%,
+      #081522 100%);
+
+  box-shadow:
+    0 0 25px rgba(98,230,255,.40),
+    0 0 65px rgba(98,230,255,.16),
+    inset 0 0 25px rgba(255,255,255,.75);
 }
 
-.channel-info{
-  flex:1;
+.assets{
+  font-size:33px;
+  font-weight:1000;
+  letter-spacing:.5px;
 }
 
-.channel-title{
+.usd{
+  margin-top:5px;
+  color:var(--cyan);
   font-weight:900;
+}
+
+.notice{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.55;
+}
+
+/* PROGRESS */
+
+.progress{
+  width:100%;
+  height:8px;
+  background:#06101b;
+  border-radius:20px;
+  overflow:hidden;
+  margin:12px 0;
+}
+
+.progress i{
+  display:block;
+  width:0;
+  height:100%;
+  border-radius:20px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  box-shadow:0 0 12px rgba(98,230,255,.35);
+}
+
+/* GRID */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.grid3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+}
+
+.stat{
+  padding:13px;
+  border-radius:16px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.07);
+}
+
+.stat small{
+  color:var(--muted);
+  display:block;
+  font-size:11px;
+}
+
+.stat b{
+  display:block;
+  margin-top:6px;
   font-size:14px;
 }
 
-.channel-text{
-  color:#8d97a5;
+/* BUTTONS */
+
+.btn{
+  width:100%;
+  padding:13px 15px;
+  border-radius:14px;
+  font-weight:900;
+  margin-top:10px;
+  transition:.18s ease;
+}
+
+.btn:active{
+  transform:scale(.97);
+}
+
+.cyan{
+  color:#06101b;
+  background:linear-gradient(135deg,#62e6ff,#2f8cff);
+}
+
+.green{
+  color:#04140e;
+  background:linear-gradient(135deg,#63f0bd,#1bbd86);
+}
+
+.red{
+  color:#fff;
+  background:linear-gradient(135deg,#ff7b89,#df304d);
+}
+
+.pink{
+  color:#fff;
+  background:linear-gradient(135deg,#ff9bdf,#ff59b8);
+}
+
+.violet{
+  color:#fff;
+  background:linear-gradient(135deg,#b4adff,#7663ef);
+}
+
+.orange{
+  color:#201306;
+  background:linear-gradient(135deg,#ffd17e,#ff9c31);
+}
+
+.gray{
+  color:#c4d0da;
+  background:#334453;
+}
+
+/* TASKS */
+
+.task{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  margin:9px 0;
+  border-radius:18px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.065);
+}
+
+.task .icon{
+  width:45px;
+  height:45px;
+  min-width:45px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  background:#102c44;
+  font-size:22px;
+}
+
+.task .info{
+  flex:1;
+  min-width:0;
+}
+
+.task b{
+  display:block;
+  font-size:14px;
+}
+
+.task small{
+  display:block;
+  color:var(--muted);
   font-size:11px;
   margin-top:4px;
 }
 
-.join{
-  border:0;
-  padding:11px 14px;
-  border-radius:13px;
-  color:#fff;
-  background:#159ed8;
+.task button{
+  width:auto;
+  min-width:66px;
+  margin:0;
+  padding:9px 12px;
+}
+
+/* TIMER */
+
+.timer{
+  margin-top:5px;
+  color:var(--orange);
+  font-size:11px;
   font-weight:900;
 }
 
 /* REFERRAL */
 
-.ref-card{
-  margin-top:15px;
-  background:#fff;
-  border-radius:25px;
-  padding:19px;
-  border:1px solid #edf0f4;
+.ref{
+  word-break:break-all;
+  padding:12px;
+  border-radius:13px;
+  background:#06101b;
+  border:1px dashed var(--border);
+  color:var(--cyan);
+  font-size:12px;
 }
 
-.ref-title{
-  font-size:17px;
-  font-weight:900;
-}
-
-.ref-box{
+.row{
   display:flex;
-  margin-top:13px;
-  background:#f1f4f8;
-  border:1px solid #e2e7ed;
-  border-radius:15px;
-  overflow:hidden;
+  gap:9px;
 }
 
-.ref-box input{
+.row>*{
   flex:1;
-  min-width:0;
-  border:0;
-  outline:0;
-  background:transparent;
-  padding:13px;
-  font-size:11px;
-  color:#566171;
 }
 
-.copy{
-  border:0;
-  padding:0 16px;
-  background:var(--pink);
+/* USER */
+
+.user{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.avatar{
+  width:54px;
+  height:54px;
+  min-width:54px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:#06101b;
+  font-weight:1000;
+  background:linear-gradient(135deg,var(--cyan),var(--violet));
+  box-shadow:0 0 22px rgba(98,230,255,.18);
+}
+
+/* FRIEND */
+
+.list{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.friend{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.friendAvatar{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--blue),var(--violet));
   color:#fff;
   font-weight:900;
 }
 
-.invite{
-  width:100%;
-  margin-top:11px;
-  padding:14px;
-  border:0;
-  border-radius:15px;
-  background:#149ed8;
-  color:#fff;
-  font-weight:900;
+.badge{
+  font-size:10px;
+  padding:5px 8px;
+  border-radius:999px;
+  background:rgba(56,224,164,.12);
+  color:var(--green);
+  white-space:nowrap;
+}
+
+/* CERTIFICATE */
+
+.certificate{
+  padding:23px 18px;
+  border-radius:23px;
+
+  background:
+    radial-gradient(circle at 20% 15%,
+      rgba(98,230,255,.27),
+      transparent 28%),
+    radial-gradient(circle at 85% 85%,
+      rgba(146,127,255,.18),
+      transparent 30%),
+    linear-gradient(145deg,#0b1e31,#06101b);
+
+  border:1px solid rgba(220,248,255,.32);
+
+  box-shadow:
+    0 0 35px rgba(98,230,255,.14),
+    inset 0 0 30px rgba(255,255,255,.025);
+
+  text-align:center;
+}
+
+.certmark{
+  font-size:48px;
+  filter:drop-shadow(0 0 10px rgba(98,230,255,.65));
 }
 
 /* NAV */
 
 .nav{
   position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
   z-index:50;
-  bottom:10px;
-  left:50%;
-  transform:translateX(-50%);
-  width:calc(100% - 30px);
-  max-width:490px;
-  height:75px;
-  border-radius:38px;
-  background:rgba(255,255,255,.97);
-  box-shadow:0 12px 35px rgba(24,36,58,.18);
-  border:1px solid #edf0f4;
+  background:rgba(4,12,22,.97);
+  border-top:1px solid var(--border);
+  backdrop-filter:blur(15px);
+}
+
+.navin{
+  max-width:760px;
+  margin:auto;
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  padding:6px;
+  grid-template-columns:repeat(5,1fr);
+  padding:8px 5px;
 }
 
 .nav button{
-  border:0;
   background:none;
-  color:#8993a0;
-  border-radius:32px;
-  font-size:11px;
-  font-weight:700;
+  color:var(--muted);
+  padding:7px 2px;
+  font-size:10px;
+  font-weight:900;
 }
 
-.nav button .nav-icon{
+.nav button span{
   display:block;
-  font-size:22px;
-  margin-bottom:4px;
+  font-size:21px;
+  margin-bottom:3px;
 }
 
 .nav button.active{
-  color:#fff;
-  background:#172238;
-  box-shadow:0 8px 20px rgba(20,31,52,.20);
+  color:var(--cyan);
 }
 
-/* MODAL */
-
-.modal-bg{
-  position:fixed;
-  z-index:100;
-  inset:0;
-  display:none;
-  align-items:flex-end;
-  justify-content:center;
-  background:rgba(9,14,25,.60);
-  backdrop-filter:blur(5px);
-}
+/* MODALS */
 
 .modal{
-  width:100%;
-  max-width:520px;
-  max-height:88vh;
-  overflow:auto;
-  background:#fff;
-  border-radius:28px 28px 0 0;
-  padding:22px;
-  animation:up .22s ease;
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:none;
+  align-items:flex-end;
+  background:rgba(0,0,0,.72);
 }
 
-@keyframes up{
-  from{transform:translateY(100%)}
-  to{transform:translateY(0)}
-}
-
-.modal-head{
+.modal.show{
   display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:18px;
 }
 
-.modal-title{
-  font-size:20px;
-  font-weight:900;
-}
-
-.close{
-  width:38px;
-  height:38px;
-  border:0;
-  border-radius:50%;
-  background:#f0f2f5;
-  font-size:20px;
-}
-
-.modal-text{
-  color:#7e8998;
-  font-size:13px;
-  line-height:1.6;
-}
-
-.modal-btn{
+.sheet{
   width:100%;
-  margin-top:13px;
-  padding:15px;
-  border:0;
-  border-radius:15px;
-  background:var(--pink);
-  color:#fff;
-  font-weight:900;
-}
-
-/* TASK */
-
-.task{
-  margin-top:12px;
-  padding:16px;
-  border:1px solid #e8edf2;
-  border-radius:18px;
-}
-
-.task-name{
-  font-weight:900;
-}
-
-.task-desc{
-  margin-top:5px;
-  color:#8c96a4;
-  font-size:11px;
-}
-
-.task-open{
-  display:block;
-  margin-top:11px;
-  text-align:center;
-  padding:11px;
-  border-radius:12px;
-  background:#e8f7ff;
-  color:#168fc4;
-  font-weight:900;
-}
-
-.task-claim{
-  width:100%;
-  margin-top:8px;
-  padding:11px;
-  border:0;
-  border-radius:12px;
-  background:#12a97e;
-  color:#fff;
-  font-weight:900;
-}
-
-.task-claim:disabled{
-  background:#dfe3e8;
-  color:#87909c;
-}
-
-/* DAILY */
-
-.day{
-  padding:15px;
-  margin-top:10px;
-  border:1px solid #e8edf2;
-  border-radius:17px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.day-info{
-  flex:1;
-}
-
-.day-name{
-  font-weight:900;
-}
-
-.day-reward{
-  color:#909aa7;
-  font-size:11px;
-  margin-top:4px;
-}
-
-.day button{
-  border:0;
-  padding:10px 12px;
-  border-radius:12px;
-  background:#e8edf2;
-  color:#7d8794;
-  font-weight:900;
-}
-
-.day button.ready{
-  color:#fff;
-  background:#12aa7e;
-}
-
-/* SPIN */
-
-.wheel{
-  width:270px;
-  height:270px;
-  margin:15px auto 20px;
-  border-radius:50%;
-  border:9px solid #d7a72f;
-  background:conic-gradient(
-    #b78318 0deg 51.42deg,
-    #f0c95d 51.42deg 102.84deg,
-    #9a6b12 102.84deg 154.26deg,
-    #e8b83d 154.26deg 205.68deg,
-    #b27b14 205.68deg 257.1deg,
-    #f3ce66 257.1deg 308.52deg,
-    #9b6d12 308.52deg 360deg
-  );
-  position:relative;
-  transition:transform 4s cubic-bezier(.12,.78,.18,1);
-  box-shadow:0 10px 30px rgba(181,135,22,.25);
-}
-
-.wheel-center{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  background:#172238;
-  border:5px solid #ffd75e;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#ffd75e;
-  font-weight:900;
-}
-
-.wheel-label{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:100%;
-  height:100%;
-  transform:translate(-50%,-50%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  color:#fff;
-  text-shadow:0 2px 4px #513400;
-}
-
-.wheel-label span{
-  position:absolute;
-}
-
-.wheel-label span:nth-child(1){top:25px}
-.wheel-label span:nth-child(2){right:30px;top:70px}
-.wheel-label span:nth-child(3){right:20px;bottom:70px}
-.wheel-label span:nth-child(4){bottom:25px}
-.wheel-label span:nth-child(5){left:30px;bottom:70px}
-.wheel-label span:nth-child(6){left:22px;top:70px}
-.wheel-label span:nth-child(7){left:50%;top:50%;transform:translate(-50%,-50%)}
-
-/* PROFILE */
-
-.profile{
-  text-align:center;
-  padding:10px 0 15px;
-}
-
-.avatar{
-  width:80px;
-  height:80px;
+  max-width:760px;
   margin:auto;
-  border-radius:50%;
-  background:linear-gradient(135deg,#18233a,#d9a52e);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:32px;
-  font-weight:900;
+  padding:20px;
+  background:#0a1a2b;
+  border:1px solid var(--border);
+  border-bottom:0;
+  border-radius:24px 24px 0 0;
+  max-height:90vh;
+  overflow:auto;
 }
 
-.profile-name{
-  margin-top:10px;
-  font-size:20px;
-  font-weight:900;
+.sheet h2{
+  margin-top:0;
 }
-
-.profile-id{
-  color:#8993a0;
-  font-size:12px;
-  margin-top:4px;
-}
-
-.stat-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:15px;
-}
-
-.stat{
-  background:#f7f9fc;
-  padding:17px;
-  border-radius:17px;
-}
-
-.stat strong{
-  display:block;
-  font-size:20px;
-}
-
-.stat span{
-  color:#9099a7;
-  font-size:11px;
-}
-
-/* FORM */
 
 .input{
   width:100%;
-  margin-top:10px;
   padding:14px;
-  border-radius:14px;
-  border:1px solid #e0e5eb;
-  outline:none;
-  font-size:13px;
-}
-
-.note{
-  margin-top:10px;
-  padding:12px;
+  color:#fff;
+  background:#06111f;
+  border:1px solid var(--border);
   border-radius:13px;
-  background:#fff7df;
-  color:#9b741e;
-  font-size:11px;
-  line-height:1.5;
+  outline:none;
 }
 
-@media(max-width:360px){
-  .content{padding:12px}
-  .balance-number{font-size:34px}
-  .feature-card{padding:15px}
-  .nav{width:calc(100% - 18px)}
+.input:focus{
+  border-color:var(--cyan);
+}
+
+/* WITHDRAW INFO */
+
+.withdrawBox{
+  padding:13px;
+  border-radius:15px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.07);
+  margin:10px 0;
+}
+
+.withdrawBox b{
+  color:var(--cyan);
+}
+
+/* LEVEL TABLE */
+
+.levelRow{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:5px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:12px;
+}
+
+.levelRow span{
+  color:var(--muted);
+}
+
+.levelRow b{
+  color:#fff;
+}
+
+/* MOBILE */
+
+@media(max-width:420px){
+
+  .grid3{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .coin{
+    width:130px;
+    height:130px;
+  }
+
+  .brand{
+    font-size:17px;
+  }
+
+  .assets{
+    font-size:29px;
+  }
+
+  .task{
+    gap:8px;
+  }
+
+  .task .icon{
+    width:40px;
+    min-width:40px;
+    height:40px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div id="app">
 
-<header class="top">
-
-  <div class="brand">
-
-    <div class="brand-logo">👑</div>
-
-    <div>
-      <div class="brand-name">MWS Rewards</div>
-      <div class="brand-sub">Earn • Play • Grow</div>
-    </div>
-
-  </div>
-
-  <div class="top-actions">
-
-    <button class="top-btn" onclick="toggleTheme()">☾</button>
-
-    <button class="top-btn" onclick="showNotifications()">
-      🔔
-      <span class="badge">1</span>
-    </button>
-
-  </div>
-
+<header>
+  <div class="brand">💎 MWS REWARDS</div>
+  <div class="status" id="status">● READY</div>
 </header>
 
 
-<main class="content">
+<!-- ================= MINE ================= -->
 
-  <!-- BALANCE -->
+<section id="mine" class="page active">
 
-  <section class="balance">
+  <div class="card balance">
 
-    <div class="user-pill">
-      👤 <span id="username">@MWS User</span>
+    <div class="live" id="live">+0 Coins</div>
+
+    <div class="coin">MWS</div>
+
+    <div class="assets" id="coins">0</div>
+
+    <div class="usd" id="mws">$0.00 • 0 MWS</div>
+
+    <div class="notice">
+      10,000 Coins = 1 MWS • 500 MWS = 1 USDT
     </div>
 
-    <div class="balance-title">
-      TOTAL BALANCE
+    <div class="progress">
+      <i id="levelbar"></i>
     </div>
 
-    <div class="balance-number">
-      <span id="coins">0</span>
-      <span>COINS</span>
+    <div class="notice" id="levelText">
+      Level 0 • 30 MWS to Level 1
     </div>
 
-    <div id="usd">
-      ≈ $0.00 USD
-    </div>
-
-    <div class="balance-bottom">
-      <div class="pill">🪙 10,000 = $1.00</div>
-      <div class="pill">👑 LEVEL <span id="level">0</span></div>
-    </div>
-
-  </section>
-
-
-  <!-- WITHDRAW / DEPOSIT -->
-
-  <section class="actions">
-
-    <button class="action withdraw"
-            onclick="openWithdraw()">
-      💳 Withdraw →
+    <button class="btn cyan" id="mineBtn">
+      ⛏️ Start Mining
     </button>
 
-    <button class="action deposit"
-            onclick="openWallet()">
-      ⇩ Deposit →
+  </div>
+
+
+  <div class="grid">
+
+    <button class="btn violet" onclick="openCertificate()">
+      🍃 Certificate
     </button>
 
-  </section>
+    <button class="btn pink" onclick="showPage('friends')">
+      👥 Invite Friends
+    </button>
+
+  </div>
 
 
-  <!-- MINING -->
+  <div class="card">
 
-  <section class="mining">
+    <b>⛏️ Mining Status</b>
 
-    <div class="mining-head">
+    <p class="notice" id="mineStatus">
+      Mining is ready to start.
+    </p>
 
-      <div class="coin">👑</div>
+    <div class="stat">
+      <small>Current Mining Speed</small>
+      <b id="mineSpeed">0.556 Coins/s</b>
+    </div>
 
-      <div class="mining-info">
+  </div>
 
-        <div class="mining-title">
-          Mining Status
-        </div>
+</section>
 
-        <div class="status">
-          <span class="dot"></span>
-          <span id="mineStatus">Ready</span>
-        </div>
 
-        <div class="mining-value">
-          <span id="mineAmount">0</span> COINS
-        </div>
+<!-- ================= TASKS ================= -->
 
-        <div class="daily-rate">
-          Daily: 500 Coins
-        </div>
+<section id="tasks" class="page">
 
-      </div>
+  <div class="card">
 
-      <button class="claim"
-              id="mineBtn"
-              onclick="claimMining()">
-        ✓ Claim
+    <h2>🎁 Tasks</h2>
+
+    <p class="notice">
+      Complete a task and claim the reward. Each completed task has a 3-hour cooldown.
+    </p>
+
+  </div>
+
+
+  <div class="task">
+
+    <div class="icon">▶️</div>
+
+    <div class="info">
+
+      <b>YouTube Channel</b>
+
+      <small>
+        Follow / Like / Share • Reward 3 MWS
+      </small>
+
+      <div class="timer" id="youtubeTimer"></div>
+
+    </div>
+
+    <button class="btn red" id="youtubeBtn"
+      onclick="startTask('youtube')">
+      GO
+    </button>
+
+  </div>
+
+
+  <div class="task">
+
+    <div class="icon">📢</div>
+
+    <div class="info">
+
+      <b>Telegram Channel</b>
+
+      <small>
+        React / Follow / Share • Reward 3 MWS
+      </small>
+
+      <div class="timer" id="telegramTimer"></div>
+
+    </div>
+
+    <button class="btn cyan" id="telegramBtn"
+      onclick="startTask('telegram')">
+      GO
+    </button>
+
+  </div>
+
+
+  <div class="card">
+
+    <b>Task Rules</b>
+
+    <p class="notice">
+      YouTube: visit the channel and complete the requested action.
+      Telegram: react, follow and share as requested.
+      After claiming a reward, the task becomes available again after 3 hours.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- ================= MINERS ================= -->
+
+<section id="miners" class="page">
+
+  <div class="card">
+
+    <h2>🍃 Miners</h2>
+
+    <p class="notice">
+      Your MWS level gradually increases your mining speed.
+    </p>
+
+  </div>
+
+
+  <div class="grid3">
+
+    <div class="stat">
+      <small>Current Level</small>
+      <b id="lvl2">0</b>
+    </div>
+
+    <div class="stat">
+      <small>Mining Speed</small>
+      <b id="speed">0.556/s</b>
+    </div>
+
+    <div class="stat">
+      <small>Next Level</small>
+      <b id="next">30 MWS</b>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <b>📈 Level System</b>
+
+    <p class="notice">
+      Level 1 starts at 30 MWS. After that, levels increase gradually
+      according to the MWS balance. Mining speed also increases gradually,
+      rather than jumping suddenly.
+    </p>
+
+    <div class="levelRow">
+      <span>Level</span>
+      <span>MWS Required</span>
+      <span>Speed</span>
+    </div>
+
+    <div class="levelRow">
+      <b>1</b>
+      <b>30 MWS</b>
+      <span>Base+</span>
+    </div>
+
+    <div class="levelRow">
+      <b>10</b>
+      <b>210 MWS</b>
+      <span>Gradual+</span>
+    </div>
+
+    <div class="levelRow">
+      <b>50</b>
+      <b>1,010 MWS</b>
+      <span>Higher</span>
+    </div>
+
+    <div class="levelRow">
+      <b>100+</b>
+      <b>Gradual</b>
+      <span>Continues</span>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= FRIENDS ================= -->
+
+<section id="friends" class="page">
+
+  <div class="card">
+
+    <h2>👥 Friends</h2>
+
+    <p class="notice">
+      Invite friends with your personal referral link.
+    </p>
+
+    <div class="ref" id="refLink">
+      https://t.me/MWS_REWARDS?start=demo
+    </div>
+
+    <div class="row">
+
+      <button class="btn cyan" onclick="copyReferral()">
+        📋 Copy
+      </button>
+
+      <button class="btn pink" onclick="shareReferral()">
+        👥 Invite
       </button>
 
     </div>
 
-  </section>
+  </div>
 
 
-  <!-- MAIN CARDS -->
+  <div class="grid">
 
-  <section class="card-grid">
+    <div class="stat">
+      <small>Joining Reward</small>
+      <b>100 MWS</b>
+    </div>
 
-    <div class="feature-card"
-         onclick="openMining()">
+    <div class="stat">
+      <small>Upline Commission</small>
+      <b>10%</b>
+    </div>
 
-      <div class="feature-icon purple">
-        ⛏️
+    <div class="stat">
+      <small>Total Friends</small>
+      <b id="friendCount">0</b>
+    </div>
+
+    <div class="stat">
+      <small>Referral Earnings</small>
+      <b id="refEarn">0 MWS</b>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <b>My Friends</b>
+
+    <div id="friendList">
+      <p class="notice">
+        No friends yet.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= PROFILE ================= -->
+
+<section id="profile" class="page">
+
+  <div class="card">
+
+    <div class="user">
+
+      <div class="avatar" id="avatar">
+        M
       </div>
 
-      <div class="feature-title">
-        Mining Active
-      </div>
+      <div>
 
-      <div class="feature-text">
-        View your current mining reward
+        <b id="profileName">
+          MWS Member
+        </b>
+
+        <div class="notice">
+          Telegram User ID:
+          <span id="uid">Not connected</span>
+        </div>
+
       </div>
 
     </div>
 
+  </div>
 
-    <div class="feature-card"
-         onclick="openTasks()">
 
-      <div class="feature-icon blue">
-        🎧
-      </div>
+  <div class="grid">
 
-      <div class="feature-title">
-        Customer Support
-      </div>
-
-      <div class="feature-text">
-        We are here to help you
-      </div>
-
+    <div class="stat">
+      <small>MWS Balance</small>
+      <b id="assetMws">0 MWS</b>
     </div>
 
-
-    <div class="feature-card"
-         onclick="openDaily()">
-
-      <div class="feature-icon green">
-        🎁
-      </div>
-
-      <div class="feature-title">
-        Daily Reward
-      </div>
-
-      <div class="feature-text">
-        Claim 100 Coins every day
-      </div>
-
+    <div class="stat">
+      <small>USDT Value</small>
+      <b id="assetUsd">$0.00</b>
     </div>
 
-
-    <div class="feature-card"
-         onclick="openSpin()">
-
-      <div class="feature-icon gold">
-        🎡
-      </div>
-
-      <div class="feature-title">
-        Free Spin
-      </div>
-
-      <div class="feature-text">
-        Win up to 500 Coins
-      </div>
-
+    <div class="stat">
+      <small>Level</small>
+      <b id="profileLevel">0</b>
     </div>
 
-  </section>
-
-
-  <!-- TELEGRAM -->
-
-  <section class="channel">
-
-    <div class="telegram">
-      ✈️
+    <div class="stat">
+      <small>Mining Coins</small>
+      <b id="profileCoins">0</b>
     </div>
 
-    <div class="channel-info">
-
-      <div class="channel-title">
-        Join Our Telegram Channel
-      </div>
-
-      <div class="channel-text">
-        Join channel & earn rewards
-      </div>
-
-    </div>
-
-    <button class="join"
-            onclick="openTelegram()">
-      Join Now →
-    </button>
-
-  </section>
+  </div>
 
 
-  <!-- REFERRAL -->
+  <div class="card">
 
-  <section class="ref-card">
+    <h3>⚙️ Settings</h3>
 
-    <div class="ref-title">
-      👥 Invite Friends & Earn
-    </div>
+    <div class="list">
 
-    <div class="channel-text">
-      Invite friends and get 500 Coins.
-    </div>
+      <span>🔊 Sound Effects</span>
 
-    <div class="ref-box">
-
-      <input id="refLink"
-             readonly>
-
-      <button class="copy"
-              onclick="copyReferral()">
-        Copy
+      <button class="btn gray"
+        id="soundBtn"
+        onclick="toggleSound()">
+        Enabled
       </button>
 
     </div>
 
-    <button class="invite"
-            onclick="shareReferral()">
-      ✈️ Invite Friends on Telegram
+
+    <div class="list">
+
+      <span>🆘 Support</span>
+
+      <button class="btn green"
+        onclick="openSupport()">
+        Support
+      </button>
+
+    </div>
+
+
+    <div class="list">
+
+      <span>💸 Withdraw</span>
+
+      <button class="btn cyan"
+        onclick="openWithdraw()">
+        Open
+      </button>
+
+    </div>
+
+
+    <div class="list">
+
+      <span>📜 History</span>
+
+      <button class="btn violet"
+        onclick="openHistory()">
+        Open
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+</div>
+
+
+<!-- ================= BOTTOM NAV ================= -->
+
+<div class="nav">
+
+  <div class="navin">
+
+    <button class="active" data-page="mine">
+      <span>⛏️</span>
+      Mine
     </button>
 
-  </section>
+    <button data-page="tasks">
+      <span>🎁</span>
+      Tasks
+    </button>
 
-</main>
+    <button data-page="miners">
+      <span>🍃</span>
+      Miners
+    </button>
 
+    <button data-page="friends">
+      <span>👥</span>
+      Friends
+    </button>
 
-<!-- BOTTOM NAV -->
+    <button data-page="profile">
+      <span>👤</span>
+      Profile
+    </button>
 
-<nav class="nav">
+  </div>
 
-  <button class="active"
-          id="navHome"
-          onclick="goHome()">
-
-    <span class="nav-icon">⌂</span>
-    Home
-
-  </button>
-
-  <button id="navMine"
-          onclick="openMining()">
-
-    <span class="nav-icon">↗</span>
-    Mine
-
-  </button>
-
-  <button id="navTeam"
-          onclick="openTeam()">
-
-    <span class="nav-icon">♧</span>
-    Team
-
-  </button>
-
-  <button id="navProfile"
-          onclick="openProfile()">
-
-    <span class="nav-icon">♙</span>
-    Profile
-
-  </button>
-
-</nav>
+</div>
 
 
-<!-- MODAL -->
+<!-- ================= WITHDRAW MODAL ================= -->
 
-<div class="modal-bg"
-     id="modalBg"
-     onclick="closeOutside(event)">
+<div class="modal" id="withdrawModal">
 
-  <div class="modal"
-       onclick="event.stopPropagation()">
+  <div class="sheet">
 
-    <div id="modalContent"></div>
+    <h2>💸 Withdraw USDT</h2>
+
+    <div class="withdrawBox">
+      <small class="notice">Minimum Withdrawal</small>
+      <br>
+      <b>500 MWS = 1 USDT</b>
+    </div>
+
+    <div class="withdrawBox">
+      <small class="notice">Withdrawal Fee</small>
+      <br>
+      <b>70 MWS</b>
+    </div>
+
+    <p class="notice" id="withdrawAvailability">
+      Withdraw available after 30 days, In Sha Allah.
+    </p>
+
+    <input
+      class="input"
+      id="withdrawAmount"
+      type="number"
+      min="500"
+      placeholder="Enter MWS amount">
+
+    <input
+      class="input"
+      id="walletAddress"
+      type="text"
+      placeholder="Enter your wallet address"
+      style="margin-top:10px">
+
+    <div class="row">
+
+      <button class="btn violet"
+        onclick="maxWithdraw()">
+        MAX
+      </button>
+
+      <button class="btn gray"
+        onclick="closeWithdraw()">
+        Cancel
+      </button>
+
+    </div>
+
+    <button class="btn cyan"
+      onclick="confirmWithdraw()">
+      Confirm Withdrawal
+    </button>
+
+    <p class="notice">
+      The real USDT transfer requires a secure backend/payment system.
+      This front-end does not send blockchain transactions.
+    </p>
+
+  </div>
+
+</div>
+
+
+<!-- ================= CERTIFICATE MODAL ================= -->
+
+<div class="modal" id="certModal">
+
+  <div class="sheet">
+
+    <div class="certificate">
+
+      <div class="certmark">
+        🍃
+      </div>
+
+      <h2>MWS REWARDS</h2>
+
+      <h3>
+        OFFICIAL MEMBER CERTIFICATE
+      </h3>
+
+      <p id="certName">
+        MWS Member
+      </p>
+
+      <p class="notice">
+        User ID:
+        <span id="certId">
+          Not connected
+        </span>
+      </p>
+
+      <div class="grid">
+
+        <div class="stat">
+          <small>MWS Balance</small>
+          <b id="certMws">0</b>
+        </div>
+
+        <div class="stat">
+          <small>Level</small>
+          <b id="certLevel">0</b>
+        </div>
+
+      </div>
+
+      <p class="notice">
+        Verified MWS Member • Premium Diamond Edition
+      </p>
+
+    </div>
+
+    <button class="btn gray"
+      onclick="closeCertificate()">
+      Close
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ================= HISTORY MODAL ================= -->
+
+<div class="modal" id="historyModal">
+
+  <div class="sheet">
+
+    <h2>📜 Withdrawal History</h2>
+
+    <div id="historyList">
+
+      <p class="notice">
+        No withdrawal history yet.
+      </p>
+
+    </div>
+
+    <button class="btn gray"
+      onclick="closeHistory()">
+      Close
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ================= SUPPORT MODAL ================= -->
+
+<div class="modal" id="supportModal">
+
+  <div class="sheet">
+
+    <h2>🆘 MWS Support</h2>
+
+    <p class="notice">
+      Need help? Contact MWS Support.
+    </p>
+
+    <button class="btn green"
+      onclick="window.open('https://t.me/MWS_Helpline','_blank')">
+      🆘 Contact Support
+    </button>
+
+    <button class="btn gray"
+      onclick="closeSupport()">
+      Close
+    </button>
 
   </div>
 
@@ -1160,1327 +1214,200 @@ a{
 
 <script>
 
-/* =========================================
-   TELEGRAM MINI APP
-========================================= */
+/* =========================================================
+   MWS REWARDS - FRONT END
+   ========================================================= */
 
-let tg = null;
+const COINS_PER_MWS = 10000;
 
-try{
+const MWS_PER_USDT = 500;
 
-  if(window.Telegram &&
-     window.Telegram.WebApp){
+const WITHDRAW_FEE = 70;
 
-    tg = window.Telegram.WebApp;
+const MIN_WITHDRAW = 500;
 
-    tg.ready();
-    tg.expand();
+const MINING_CYCLE = 5 * 60 * 60 * 1000;
 
-  }
+const TASK_COOLDOWN = 3 * 60 * 60 * 1000;
 
-}catch(e){}
 
+/* ================= STATE ================= */
 
-/* =========================================
-   USER
-========================================= */
+const state = {
 
-let telegramUser = null;
+  coins:Number(localStorage.getItem("mwsCoins") || 0),
 
-try{
+  mws:Number(localStorage.getItem("mwsMws") || 0),
 
-  if(tg && tg.initDataUnsafe){
+  mining:false,
 
-    telegramUser =
-      tg.initDataUnsafe.user || null;
+  miningStart:Number(localStorage.getItem("mwsMiningStart") || 0),
 
-  }
+  sound:true,
 
-}catch(e){}
+  referralEarnings:Number(
+    localStorage.getItem("mwsReferralEarnings") || 0
+  ),
 
+  friends:JSON.parse(
+    localStorage.getItem("mwsFriends") || "[]"
+  ),
 
-function getUserName(){
+  history:JSON.parse(
+    localStorage.getItem("mwsWithdrawHistory") || "[]"
+  ),
 
-  if(!telegramUser){
-    return "@MWS User";
-  }
+  tasks:JSON.parse(
+    localStorage.getItem("mwsTasks") || "{}"
+  )
 
-  if(telegramUser.username){
-    return "@"+telegramUser.username;
-  }
+};
 
-  if(telegramUser.first_name){
-    return telegramUser.first_name;
-  }
 
-  return "@MWS User";
-}
+/* ================= TELEGRAM USER ================= */
 
+let tgUser = null;
 
-document.getElementById("username")
-.textContent = getUserName();
+if(window.Telegram && Telegram.WebApp){
 
+  Telegram.WebApp.ready();
 
-/* =========================================
-   STORAGE
-========================================= */
+  try{
 
-let coins =
-  Number(localStorage.getItem("mwsCoins") || 0);
+    tgUser = Telegram.WebApp.initDataUnsafe?.user || null;
 
-let miningStart =
-  Number(localStorage.getItem("mwsMiningStart") || 0);
+  }catch(e){
 
-let lastDaily =
-  Number(localStorage.getItem("mwsDailyClaim") || 0);
+    tgUser = null;
 
-let lastSpin =
-  Number(localStorage.getItem("mwsSpinClaim") || 0);
-
-let taskClaims =
-  JSON.parse(
-    localStorage.getItem("mwsTaskClaims") || "{}"
-  );
-
-
-function save(){
-
-  localStorage.setItem(
-    "mwsCoins",
-    String(coins)
-  );
-
-  localStorage.setItem(
-    "mwsMiningStart",
-    String(miningStart)
-  );
-
-  localStorage.setItem(
-    "mwsDailyClaim",
-    String(lastDaily)
-  );
-
-  localStorage.setItem(
-    "mwsSpinClaim",
-    String(lastSpin)
-  );
-
-  localStorage.setItem(
-    "mwsTaskClaims",
-    JSON.stringify(taskClaims)
-  );
-
-}
-
-
-/* =========================================
-   BALANCE
-========================================= */
-
-function updateBalance(){
-
-  document.getElementById("coins")
-    .textContent =
-    coins.toLocaleString();
-
-  document.getElementById("usd")
-    .textContent =
-    "≈ $"+(coins/10000).toFixed(2)+" USD";
-
-  document.getElementById("level")
-    .textContent =
-    Math.floor(coins/500);
-
-  save();
-
-}
-
-
-updateBalance();
-
-
-/* =========================================
-   MODAL
-========================================= */
-
-function showModal(title,body){
-
-  document.getElementById("modalContent")
-    .innerHTML = `
-
-      <div class="modal-head">
-
-        <div class="modal-title">
-          ${title}
-        </div>
-
-<button class="close" onclick="closeModal()">×</button>
-
-      </div>
-
-      <div class="modal-text">
-        ${body}
-      </div>
-
-    `;
-
-  document.getElementById("modalBg").style.display = "flex";
-
-}
-
-
-/* =========================================
-   CLOSE MODAL
-========================================= */
-
-function closeModal(){
-
-  document.getElementById("modalBg").style.display = "none";
-
-}
-
-
-function closeOutside(event){
-
-  if(event.target.id === "modalBg"){
-    closeModal();
   }
 
 }
 
 
-/* =========================================
-   THEME
-========================================= */
+/* ================= USER INFO ================= */
 
-function toggleTheme(){
+function userName(){
 
-      const dark =
-      document.body.classList.toggle("dark-mode");
+  if(!tgUser)
+             return 'MWS Member';
 
-    if(dark){
-      document.body.style.background = "#0d1117";
-      document.body.style.color = "#ffffff";
-    }else{
-      document.body.style.background = "var(--bg)";
-      document.body.style.color = "var(--dark)";
+    if(tgUser.username){
+        return '@' + tgUser.username;
     }
 
-    localStorage.setItem(
-      "mwsDarkMode",
-      dark ? "1" : "0"
-    );
-  }
-
-
-/* =========================================
-   LOAD THEME
-========================================= */
-
-(function(){
-
-  if(localStorage.getItem("mwsDarkMode") === "1"){
-
-    document.body.classList.add("dark-mode");
-
-    document.body.style.background = "#0d1117";
-    document.body.style.color = "#ffffff";
-
-  }
-
-})();
-
-
-/* =========================================
-   HOME
-========================================= */
-
-function goHome(){
-
-  closeModal();
-
-  document.querySelectorAll(".nav button")
-    .forEach(function(btn){
-      btn.classList.remove("active");
-    });
-
-  document.getElementById("navHome")
-    .classList.add("active");
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-
-/* =========================================
-   NAV ACTIVE
-========================================= */
-
-function setNav(id){
-
-  document.querySelectorAll(".nav button")
-    .forEach(function(btn){
-      btn.classList.remove("active");
-    });
-
-  const btn =
-    document.getElementById(id);
-
-  if(btn){
-    btn.classList.add("active");
-  }
-
-}
-
-
-/* =========================================
-   MINING
-========================================= */
-
-function openMining(){
-
-  setNav("navMine");
-
-  showModal(
-    "⛏️ Mining",
-    `
-      <div style="text-align:center">
-
-        <div style="
-          font-size:55px;
-          margin:10px 0;
-        ">👑</div>
-
-        <h3 style="font-size:24px">
-          Mining Reward
-        </h3>
-
-        <p class="modal-text"
-           style="margin-top:10px">
-
-          Complete your daily mining claim
-          and collect your Coins.
-
-        </p>
-
-        <div style="
-          margin-top:18px;
-          padding:18px;
-          border-radius:18px;
-          background:#f5f7fa;
-          font-size:22px;
-          font-weight:900;
-        ">
-
-          🪙
-          <span id="modalMineCoins">
-            500
-          </span>
-          Coins
-
-        </div>
-
-        <button
-          class="modal-btn"
-          onclick="claimMining();closeModal();">
-
-          ✓ Claim 500 Coins
-
-        </button>
-
-      </div>
-    `
-  );
-
-}
-
-
-/* =========================================
-   CLAIM MINING
-========================================= */
-
-function claimMining(){
-
-  const now = Date.now();
-
-  const ONE_DAY =
-    24 * 60 * 60 * 1000;
-
-  if(miningStart &&
-     now - miningStart < ONE_DAY){
-
-    const remaining =
-      ONE_DAY - (now - miningStart);
-
-    const hours =
-      Math.floor(
-        remaining / (60 * 60 * 1000)
-      );
-
-    const minutes =
-      Math.floor(
-        (remaining % (60 * 60 * 1000))
-        / (60 * 1000)
-      );
-
-    document.getElementById("mineStatus")
-      .textContent =
-      "Next claim in "
-      + hours + "h "
-      + minutes + "m";
-
-    return;
-
-  }
-
-  coins += 500;
-
-  miningStart = now;
-
-  document.getElementById("mineAmount")
-    .textContent = "500";
-
-  document.getElementById("mineStatus")
-    .textContent = "Claimed";
-
-  const btn =
-    document.getElementById("mineBtn");
-
-  if(btn){
-    btn.disabled = true;
-    btn.textContent = "✓ Claimed";
-  }
-
-  updateBalance();
-
-  alert("🎉 You received 500 Coins!");
-
-}
-
-
-/* =========================================
-   DAILY REWARD
-========================================= */
-
-function openDaily(){
-
-  let claimed =
-    localStorage.getItem("mwsDailyClaimed")
-      === "1";
-
-  let last =
-    Number(
-      localStorage.getItem("mwsDailyClaimTime")
-      || 0
-    );
-
-  const now = Date.now();
-
-  const ONE_DAY =
-    24 * 60 * 60 * 1000;
-
-  const canClaim =
-    !claimed ||
-    (now - last >= ONE_DAY);
-
-  showModal(
-    "🎁 Daily Reward",
-    `
-      <p class="modal-text">
-        Claim your daily reward once every
-        24 hours.
-      </p>
-
-      <div class="day">
-
-        <div class="day-info">
-
-          <div class="day-name">
-            Today's Reward
-          </div>
-
-          <div class="day-reward">
-            🪙 100 Coins
-          </div>
-
-        </div>
-
-        <button
-          class="${canClaim ? "ready" : ""}"
-          ${canClaim ? "" : "disabled"}
-          onclick="claimDaily()">
-
-          ${canClaim ? "Claim" : "Claimed"}
-
-        </button>
-
-      </div>
-
-      <div class="note">
-        After claiming, your next reward
-        becomes available after 24 hours.
-      </div>
-    `
-  );
-
-}
-
-
-/* =========================================
-   CLAIM DAILY
-========================================= */
-
-function claimDaily(){
-
-  const now = Date.now();
-
-  const last =
-    Number(
-      localStorage.getItem("mwsDailyClaimTime")
-      || 0
-    );
-
-  const ONE_DAY =
-    24 * 60 * 60 * 1000;
-
-  if(last &&
-     now - last < ONE_DAY){
-
-    alert("⏳ Your daily reward is not ready yet.");
-    return;
-
-  }
-
-  coins += 100;
-
-  localStorage.setItem(
-    "mwsDailyClaimTime",
-    String(now)
-  );
-
-  localStorage.setItem(
-    "mwsDailyClaimed",
-    "1"
-  );
-
-  updateBalance();
-
-  alert("🎁 You received 100 Coins!");
-
-  openDaily();
-
-}
-
-
-/* =========================================
-   FREE SPIN
-========================================= */
-
-function openSpin(){
-
-  showModal(
-    "🎡 Free Spin",
-    `
-      <p class="modal-text"
-         style="text-align:center">
-
-        Spin once every 24 hours and win
-        Coins.
-
-      </p>
-
-      <div class="wheel">
-
-        <div class="wheel-label">
-
-          <span>100</span>
-          <span>150</span>
-          <span>200</span>
-          <span>250</span>
-          <span>300</span>
-          <span>400</span>
-          <span>500</span>
-
-        </div>
-
-        <div class="wheel-center">
-          SPIN
-        </div>
-
-      </div>
-
-      <button
-        class="modal-btn"
-        onclick="spinNow()">
-
-        🎡 Spin Now
-
-      </button>
-
-      <div class="note">
-        Available rewards:
-        100, 150, 200, 250, 300, 400 and
-        500 Coins.
-      </div>
-    `
-  );
-
-}
-
-
-/* =========================================
-   SPIN NOW
-========================================= */
-
-function spinNow(){
-
-  const now = Date.now();
-
-  const ONE_DAY =
-    24 * 60 * 60 * 1000;
-
-  if(lastSpin &&
-     now - lastSpin < ONE_DAY){
-
-    const remaining =
-      ONE_DAY - (now - lastSpin);
-
-    const hours =
-      Math.floor(
-        remaining / (60 * 60 * 1000)
-      );
-
-    const minutes =
-      Math.floor(
-        (remaining % (60 * 60 * 1000))
-        / (60 * 1000)
-      );
-
-    alert(
-      "⏳ Next spin in "
-      + hours + "h "
-      + minutes + "m"
-    );
-
-    return;
-
-  }
-
-  const rewards =
-    [100,150,200,250,300,400,500];
-
-  const reward =
-    rewards[
-      Math.floor(
-        Math.random() * rewards.length
-      )
-    ];
-
-  lastSpin = now;
-
-  coins += reward;
-
-  updateBalance();
-
-  alert(
-    "🎉 Congratulations!\n\n"
-    + "You won "
-    + reward
-    + " Coins!"
-  );
-
-  openSpin();
-
-}
-
-
-/* =========================================
-   TASKS / SUPPORT
-========================================= */
-
-function openTasks(){
-
-  showModal(
-    "🎧 Customer Support",
-    `
-      <p class="modal-text">
-
-        Need help with MWS Rewards?
-        Contact our support team.
-
-      </p>
-
-      <button
-        class="modal-btn"
-        onclick="openSupport()">
-
-        💬 Contact Support
-
-      </button>
-
-      <div class="note">
-        We will help you with your
-        account and rewards.
-      </div>
-    `
-  );
-
-}
-
-
-/* =========================================
-   SUPPORT
-========================================= */
-
-function openSupport(){
-
-  const support =
-    "https://t.me/MWSRewardsBot";
-
-  if(tg && tg.openTelegramLink){
-
-    tg.openTelegramLink(support);
-
-  }else{
-
-    window.open(
-      support,
-      "_blank"
-    );
-
-  }
-
-}
-
-
-/* =========================================
-   WALLET
-========================================= */
-
-function openWallet(){
-
-  showModal(
-    "💳 Wallet",
-    `
-      <p class="modal-text">
-
-        Connect your preferred wallet
-        to use wallet features.
-
-      </p>
-
-      <button
-        class="modal-btn"
-        onclick="openTonkeeper()">
-
-        💎 Tonkeeper
-
-      </button>
-
-      <button
-        class="modal-btn"
-        style="background:#172238"
-        onclick="openTrustWallet()">
-
-        🔐 Trust Wallet
-
-      </button>
-
-      <div class="note">
-        Never share your recovery phrase
-        or private key with anyone.
-      </div>
-    `
-  );
-
-}
-
-
-/* =========================================
-   TONKEEPER
-========================================= */
-
-function openTonkeeper(){
-
-  window.open(
-    "https://tonkeeper.com/",
-    "_blank"
-  );
-
-}
-
-
-/* =========================================
-   TRUST WALLET
-========================================= */
-
-function openTrustWallet(){
-
-  window.open(
-    "https://trustwallet.com/",
-    "_blank"
-  );
-
-}
-
-
-/* =========================================
-   WITHDRAW
-========================================= */
-
-function openWithdraw(){
-
-  showModal(
-    "💳 Withdraw",
-    `
-      <p class="modal-text">
-
-        Minimum withdrawal:
-        <b>10,000 Coins = $1.00</b>
-
-      </p>
-
-      <input
-        id="withdrawAmount"
-        class="input"
-        type="number"
-        min="10000"
-        placeholder="Enter Coins"
-      >
-
-      <input
-        id="withdrawWallet"
-        class="input"
-        type="text"
-        placeholder="Enter TON wallet address"
-      >
-
-      <div class="note">
-        Withdrawal requests may be reviewed
-        before processing.
-      </div>
-
-      <button
-        class="modal-btn"
-        onclick="submitWithdraw()">
-
-        💸 Request Withdrawal
-
-      </button>
-    `
-  );
-
-}
-
-
-/* =========================================
-   SUBMIT WITHDRAW
-========================================= */
-
-function submitWithdraw(){
-
-  const amount =
-    Number(
-      document.getElementById(
-        "withdrawAmount"
-      ).value
-    );
-
-  const wallet =
-    document.getElementById(
-      "withdrawWallet"
-    ).value.trim();
-
-  if(!amount || amount < 10000){
-
-    alert(
-      "Minimum withdrawal is 10,000 Coins."
-    );
-
-    return;
-
-  }
-
-  if(amount > coins){
-
-    alert(
-      "❌ You don't have enough Coins."
-    );
-
-    return;
-
-  }
-
-  if(!wallet){
-
-    alert(
-      "Please enter your wallet address."
-    );
-
-    return;
-
-  }
-
-  coins -= amount;
-
-  updateBalance();
-
-  alert(
-    "✅ Withdrawal request submitted.\n\n"
-    + "Amount: "
-    + amount.toLocaleString()
-    + " Coins"
-  );
-
-  closeModal();
-
-}
-
-
-/* =========================================
-   TEAM
-========================================= */
-
-function openTeam(){
-
-  setNav("navTeam");
-
-  const botUsername =
-    "MWSRewardsBot";
-
-  const userId =
-    telegramUser &&
-    telegramUser.id
-      ? telegramUser.id
-      : "user";
-
-  const referral =
-    "https://t.me/"
-    + botUsername
-    + "?start=ref_"
-    + userId;
-
-  showModal(
-    "👥 My Team",
-    `
-      <p class="modal-text">
-
-        Invite friends and earn
-        <b>500 Coins</b> for eligible
-        referrals.
-
-      </p>
-
-      <div class="ref-box">
-
-        <input
-          readonly
-          value="${referral}"
-        >
-
-        <button
-          class="copy"
-          onclick="copyText('${referral}')">
-
-          Copy
-
-        </button>
-
-      </div>
-
-      <button
-        class="modal-btn"
-        onclick="shareReferral()">
-
-        ✈️ Invite Friends
-
-      </button>
-    `
-  );
-
-}
-
-
-/* =========================================
-   PROFILE
-========================================= */
-
-function openProfile(){
-
-  setNav("navProfile");
-
-  const name =
-    getUserName();
-
-  showModal(
-    "♙ Profile",
-    `
-      <div class="profile">
-
-        <div class="avatar">
-          ${name.replace("@","").charAt(0).toUpperCase()}
-        </div>
-
-        <div class="profile-name">
-          ${name}
-        </div>
-
-        <div class="profile-id">
-          MWS Rewards Member
-        </div>
-
-        <div class="stat-grid">
-
-          <div class="stat">
-
-            <strong>
-              ${coins.toLocaleString()}
-            </strong>
-
-            <span>
-              Total Coins
-            </span>
-
-          </div>
-
-          <div class="stat">
-
-            <strong>
-              ${Math.floor(coins/500)}
-            </strong>
-
-            <span>
-              Level
-            </span>
-
-          </div>
-
-        </div>
-
-      </div>
-    `
-  );
-
-}
-
-
-/* =========================================
-   TELEGRAM CHANNEL
-========================================= */
-
-function openTelegram(){
-
-  const channel =
-    "https://t.me/DXAFIYA";
-
-  if(tg && tg.openTelegramLink){
-
-    tg.openTelegramLink(channel);
-
-  }else{
-
-    window.open(
-      channel,
-      "_blank"
-    );
-
-  }
-
-}
-
-
-/* =========================================
-   REFERRAL LINK
-========================================= */
-
-function getReferralLink(){
-
-  const botUsername =
-    "MWSRewardsBot";
-
-  const userId =
-    telegramUser &&
-    telegramUser.id
-      ? telegramUser.id
-      : "user";
-
-  return (
-    "https://t.me/"
-    + botUsername
-    + "?start=ref_"
-    + userId
-  );
-
-}
-
-
-document.getElementById("refLink")
-  .value =
-  getReferralLink();
-
-
-/* =========================================
-   COPY REFERRAL
-========================================= */
-
-function copyReferral(){
-
-  copyText(
-    getReferralLink()
-  );
-
-}
-
-
-function copyText(text){
-
-  if(
-    navigator.clipboard &&
-    navigator.clipboard.writeText
-  ){
-
-    navigator.clipboard.writeText(text)
-      .then(function(){
-
-        alert("✅ Referral link copied!");
-
-      })
-      .catch(function(){
-
-        fallbackCopy(text);
-
-      });
-
-  }else{
-
-    fallbackCopy(text);
-
-  }
-
-}
-
-
-function fallbackCopy(text){
-
-  const input =
-    document.createElement("textarea");
-
-  input.value = text;
-
-  document.body.appendChild(input);
-
-  input.select();
-
-  document.execCommand("copy");
-
-  document.body.removeChild(input);
-
-  alert("✅ Referral link copied!");
-
-}
-
-
-/* =========================================
-   SHARE REFERRAL
-========================================= */
-
-function shareReferral(){
-
-  const link =
-    getReferralLink();
-
-  const text =
-    "🎁 Join MWS Rewards and earn Coins!\n\n"
-    + "Use my referral link:\n"
-    + link;
-
-  const telegramShare =
-    "https://t.me/share/url?url="
-    + encodeURIComponent(link)
-    + "&text="
-    + encodeURIComponent(
-        "🎁 Join MWS Rewards and earn Coins!"
-      );
-
-  if(tg && tg.openTelegramLink){
-
-    tg.openTelegramLink(
-      telegramShare
-    );
-
-  }else{
-
-    window.open(
-      telegramShare,
-      "_blank"
-    );
-
-  }
-
-}
-
-
-/* =========================================
-   NOTIFICATIONS
-========================================= */
-
-function showNotifications(){
-
-  showModal(
-    "🔔 Notifications",
-    `
-      <div class="task">
-
-        <div class="task-name">
-          🎉 Welcome to MWS Rewards
-        </div>
-
-        <div class="task-desc">
-          Complete activities and collect
-          Coins.
-        </div>
-
-      </div>
-
-      <div class="task">
-
-        <div class="task-name">
-          🎁 Daily Reward
-        </div>
-
-        <div class="task-desc">
-          Claim your reward every 24 hours.
-        </div>
-
-      </div>
-
-      <div class="task">
-
-        <div class="task-name">
-          🎡 Free Spin
-        </div>
-
-        <div class="task-desc">
-          Spin once every 24 hours.
-        </div>
-
-      </div>
-    `
-  );
-
-}
-
-
-/* =========================================
-   MODAL ESC KEY
-========================================= */
-
-document.addEventListener(
-  "keydown",
-  function(event){
-
-    if(event.key === "Escape"){
-
-      closeModal();
-
+    if(tgUser.first_name){
+        return tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
     }
 
-  }
-);
-
-
-/* =========================================
-   UPDATE MINING STATUS
-========================================= */
-
-function updateMiningStatus(){
-
-  const btn =
-    document.getElementById("mineBtn");
-
-  const status =
-    document.getElementById("mineStatus");
-
-  if(!btn || !status){
-    return;
-  }
-
-  const now = Date.now();
-
-  const ONE_DAY =
-    24 * 60 * 60 * 1000;
-
-  if(
-    miningStart &&
-    now - miningStart < ONE_DAY
-  ){
-
-    const remaining =
-      ONE_DAY - (now - miningStart);
-
-    const hours =
-      Math.floor(
-        remaining / (60 * 60 * 1000)
-      );
-
-    const minutes =
-      Math.floor(
-        (remaining % (60 * 60 * 1000))
-        / (60 * 1000)
-      );
-
-    btn.disabled = true;
-    btn.textContent = "✓ Claimed";
-
-    status.textContent =
-      hours + "h "
-      + minutes + "m";
-
-  }else{
-
-    btn.disabled = false;
-    btn.textContent = "✓ Claim";
-
-    status.textContent =
-      "Ready";
-
-  }
-
+    return 'MWS Member';
 }
 
 
-/* =========================================
-   AUTO UPDATE
-========================================= */
+/* ================= USER ID ================= */
 
-setInterval(
-  updateMiningStatus,
-  30000
-);
+function userId(){
 
-updateMiningStatus();
+    if(!tgUser){
+        return 'Not connected';
+    }
+
+    return String(tgUser.id || 'Not connected');
+}
 
 
-/* =========================================
-   INITIAL REFERRAL
-========================================= */
+/* ================= USER PROFILE ================= */
 
-(function(){
+function updateUserProfile(){
 
-  const ref =
-    document.getElementById("refLink");
+    const name = userName();
+    const id = userId();
 
-  if(ref){
+    const profileName = document.getElementById('profileName');
+    const uid = document.getElementById('uid');
+    const certName = document.getElementById('certName');
+    const certId = document.getElementById('certId');
 
-    ref.value =
-      getReferralLink();
+    if(profileName){
+        profileName.textContent = name;
+    }
 
-  }
+    if(uid){
+        uid.textContent = id;
+    }
 
-})();
+    if(certName){
+        certName.textContent = name;
+    }
 
+    if(certId){
+        certId.textContent = id;
+    }
+}
+
+
+/* ================= TELEGRAM INIT ================= */
+
+function initTelegram(){
+
+    if(window.Telegram && Telegram.WebApp){
+
+        try{
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+        }catch   
+     (e){
+
+        }
+
+        updateUserProfile();
+    }
+}
+
+
+/* ================= PAGE START ================= */
+
+initTelegram();
+render();
+
+
+/* ================= NAVIGATION ================= */
+
+document.querySelectorAll('.nav button').forEach(function(button){
+
+    button.addEventListener('click',function(){
+
+        const page = button.getAttribute('data-page');
+
+        if(page){
+            showPage(page);
+        }
+
+    });
+
+});
+
+
+/* ================= MODAL CLOSE ================= */
+
+document.querySelectorAll('.modal').forEach(function(modal){
+
+    modal.addEventListener('click',function(e){
+
+        if(e.target === modal){
+            modal.classList.remove('show');
+        }
+
+    });
+
+});
+
+
+/* ================= APP READY ================= */
+
+console.log('MWS REWARDS Mini App loaded successfully.');
 
 </script>
+</body>
+</html>
+      
