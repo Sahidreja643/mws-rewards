@@ -1290,6 +1290,1165 @@ if(window.Telegram && Telegram.WebApp){
 function userName(){
 
   if(!tgUser)
+        return "MWS Member";
+
+  return (
+    tgUser.first_name ||
+    tgUser.username ||
+    "MWS Member"
+  );
+}
+
+
+/* ================= SAVE ================= */
+
+function saveState(){
+
+  localStorage.setItem(
+    "mwsCoins",
+    String(Math.floor(state.coins))
+  );
+
+  localStorage.setItem(
+    "mwsMws",
+    String(state.mws)
+  );
+
+  localStorage.setItem(
+    "mwsReferralEarnings",
+    String(state.referralEarnings)
+  );
+
+  localStorage.setItem(
+    "mwsFriends",
+    JSON.stringify(state.friends)
+  );
+
+  localStorage.setItem(
+    "mwsWithdrawHistory",
+    JSON.stringify(state.history)
+  );
+
+  localStorage.setItem(
+    "mwsTasks",
+    JSON.stringify(state.tasks)
+  );
+
+}
+
+
+/* ================= LEVEL ================= */
+
+function getLevel(){
+
+  return Math.floor(state.mws / 30);
+
+}
+
+
+/* ================= MINING SPEED ================= */
+
+function getMiningSpeed(){
+
+  const level = getLevel();
+
+  const base = 10000 / (5 * 60 * 60);
+
+  return base * (
+    1 +
+    Math.min(level,50) * 0.018 +
+    Math.max(0,level - 50) * 0.004
+  );
+
+}
+
+
+/* ================= RENDER ================= */
+
+function render(){
+
+  const level = getLevel();
+
+  const speed = getMiningSpeed();
+
+  document.getElementById("coins").textContent =
+    Math.floor(state.coins).toLocaleString();
+
+  document.getElementById("mws").textContent =
+    "$" +
+    (state.mws / MWS_PER_USDT).toFixed(2) +
+    " • " +
+    state.mws.toFixed(2) +
+    " MWS";
+
+  document.getElementById("lvl2").textContent =
+    level;
+
+  document.getElementById("speed").textContent =
+    speed.toFixed(3) + "/s";
+
+  document.getElementById("mineSpeed").textContent =
+    speed.toFixed(3) + " Coins/s";
+
+  document.getElementById("next").textContent =
+    ((level + 1) * 30).toFixed(0) + " MWS";
+
+  const remaining =
+    Math.max(
+      0,
+      ((level + 1) * 30) - state.mws
+    );
+
+  document.getElementById("levelText").textContent =
+    "Level " +
+    level +
+    " • " +
+    remaining.toFixed(2) +
+    " MWS to next level";
+
+  const progress =
+    ((state.mws % 30) / 30) * 100;
+
+  document.getElementById("levelbar").style.width =
+    Math.min(100,progress) + "%";
+
+
+  /* PROFILE */
+
+  document.getElementById("profileName").textContent =
+    userName();
+
+  document.getElementById("uid").textContent =
+    tgUser?.id || "Not connected";
+
+  document.getElementById("avatar").textContent =
+    userName().charAt(0).toUpperCase();
+
+  document.getElementById("assetMws").textContent =
+    state.mws.toFixed(2) + " MWS";
+
+  document.getElementById("assetUsd").textContent =
+    "$" +
+    (state.mws / MWS_PER_USDT).toFixed(2);
+
+  document.getElementById("profileLevel").textContent =
+    level;
+
+  document.getElementById("profileCoins").textContent =
+    Math.floor(state.coins).toLocaleString();
+
+
+  /* FRIENDS */
+
+  document.getElementById("friendCount").textContent =
+    state.friends.length;
+
+  document.getElementById("refEarn").textContent =
+    state.referralEarnings.toFixed(2) + " MWS";
+
+
+  /* CERTIFICATE */
+
+  document.getElementById("certName").textContent =
+    userName();
+
+  document.getElementById("certId").textContent =
+    tgUser?.id || "Not connected";
+
+  document.getElementById("certMws").textContent =
+    state.mws.toFixed(2);
+
+  document.getElementById("certLevel").textContent =
+    level;
+
+
+  /* MINING BUTTON */
+
+  const miningButton =
+    document.getElementById("mineBtn");
+
+  if(state.mining){
+
+    miningButton.textContent =
+      "🟢 Claim & Stop Mining";
+
+  }else{
+
+    miningButton.textContent =
+      "⛏️ Start Mining";
+
+  }
+
+}
+
+
+/* ================= PAGE NAVIGATION ================= */
+
+function showPage(page){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(function(p){
+
+      p.classList.remove("active");
+
+    });
+
+
+  const target =
+    document.getElementById(page);
+
+  if(target){
+
+    target.classList.add("active");
+
+  }
+
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(function(btn){
+
+      btn.classList.toggle(
+        "active",
+        btn.dataset.page === page
+      );
+
+    });
+
+}
+
+
+/* ================= NAV BUTTONS ================= */
+
+document
+  .querySelectorAll(".nav button")
+  .forEach(function(btn){
+
+    btn.addEventListener("click",function(){
+
+      showPage(btn.dataset.page);
+
+    });
+
+  });
+
+
+/* ================= MINING ================= */
+
+let miningTimer = null;
+
+
+function startMining(){
+
+  if(state.mining){
+
+    claimMining();
+
+    return;
+
+  }
+
+
+  state.mining = true;
+
+  state.miningStart = Date.now();
+
+  localStorage.setItem(
+    "mwsMiningStart",
+    String(state.miningStart)
+  );
+
+  document.getElementById("status").textContent =
+    "● MINING";
+
+  document.getElementById("mineStatus").textContent =
+    "Mining is active. You can claim at any time. Maximum cycle: 5 hours.";
+
+  updateMining();
+
+  clearInterval(miningTimer);
+
+  miningTimer =
+    setInterval(updateMining,1000);
+
+  render();
+
+}
+
+
+function updateMining(){
+
+  if(!state.mining){
+
+    return;
+
+  }
+
+
+  const elapsed =
+    Date.now() - state.miningStart;
+
+
+  if(elapsed >= MINING_CYCLE){
+
+    claimMining();
+
+    return;
+
+  }
+
+
+  const seconds =
+    elapsed / 1000;
+
+  const earned =
+    Math.min(
+      10000,
+      seconds * getMiningSpeed()
+    );
+
+
+  document.getElementById("live").textContent =
+    "+" + earned.toFixed(2) + " Coins";
+
+
+  const remaining =
+    Math.max(
+      0,
+      MINING_CYCLE - elapsed
+    );
+
+
+  const hours =
+    Math.floor(
+      remaining / 3600000
+    );
+
+  const minutes =
+    Math.floor(
+      (remaining % 3600000) / 60000
+    );
+
+  document.getElementById("mineStatus").textContent =
+    "Mining active • " +
+    hours +
+    "h " +
+    minutes +
+    "m remaining";
+
+}
+
+
+function claimMining(){
+
+  if(!state.mining){
+
+    return;
+
+  }
+
+
+  const elapsed =
+    Math.min(
+      MINING_CYCLE,
+      Date.now() - state.miningStart
+    );
+
+
+  const earned =
+    Math.min(
+      10000,
+      (elapsed / 1000) * getMiningSpeed()
+    );
+
+
+  state.coins += earned;
+
+
+  while(state.coins >= COINS_PER_MWS){
+
+    state.coins -= COINS_PER_MWS;
+
+    state.mws += 1;
+
+  }
+
+
+  state.mining = false;
+
+  state.miningStart = 0;
+
+  localStorage.removeItem(
+    "mwsMiningStart"
+  );
+
+  clearInterval(miningTimer);
+
+  miningTimer = null;
+
+
+  document.getElementById("live").textContent =
+    "Mining claimed";
+
+
+  document.getElementById("mineStatus").textContent =
+    "Mining cycle complete. Start again for a new cycle.";
+
+
+  document.getElementById("status").textContent =
+    "● READY";
+
+
+  saveState();
+
+  render();
+
+}
+
+
+document
+  .getElementById("mineBtn")
+  .addEventListener(
+    "click",
+    startMining
+  );
+
+
+/* ================= RESUME MINING ================= */
+
+if(state.miningStart > 0){
+
+  const elapsed =
+    Date.now() - state.miningStart;
+
+  if(elapsed < MINING_CYCLE){
+
+    state.mining = true;
+
+    document.getElementById("status").textContent =
+      "● MINING";
+
+    miningTimer =
+      setInterval(updateMining,1000);
+
+    updateMining();
+
+  }else{
+
+    state.mining = false;
+
+    state.miningStart = 0;
+
+    localStorage.removeItem(
+      "mwsMiningStart"
+    );
+
+  }
+
+}
+
+
+/* ================= TASK SYSTEM ================= */
+
+function startTask(type){
+
+  const now = Date.now();
+
+  const last =
+    Number(state.tasks[type] || 0);
+
+  if(now - last < TASK_COOLDOWN){
+
+    updateTaskTimers();
+
+    return;
+
+  }
+
+
+  if(type === "youtube"){
+
+    window.open(
+      "https://www.youtube.com/@MWS_Eran",
+      "_blank"
+    );
+
+  }
+
+
+  if(type === "telegram"){
+
+    window.open(
+      "https://t.me/MWS_MINE",
+      "_blank"
+    );
+
+  }
+
+
+  setTimeout(function(){
+
+    const confirmTask =
+      confirm(
+        "Did you complete the task?\n\nPress OK to claim 3 MWS."
+      );
+
+
+    if(!confirmTask){
+
+      return;
+
+    }
+
+
+    state.mws += 3;
+
+    state.tasks[type] =
+      Date.now();
+
+
+    saveState();
+
+    render();
+
+    alert(
+      "🎉 3 MWS reward added successfully!"
+    );
+
+  },500);
+
+}
+
+
+function updateTaskTimers(){
+
+  const tasks = [
+    ["youtube","youtubeBtn","youtubeTimer"],
+    ["telegram","telegramBtn","telegramTimer"]
+  ];
+
+
+  tasks.forEach(function(item){
+
+    const type = item[0];
+
+    const btn = document.getElementById(item[1]);
+
+    const timerText =
+      document.getElementById(item[2]);
+
+
+    const last =
+      Number(state.tasks[type] || 0);
+
+
+    const remaining =
+      TASK_COOLDOWN -
+      (Date.now() - last);
+
+
+    if(remaining > 0){
+
+      const totalMinutes =
+        Math.ceil(
+          remaining / 60000
+        );
+
+      const hours =
+        Math.floor(
+          totalMinutes / 60
+        );
+
+      const minutes =
+        totalMinutes % 60;
+
+
+      timerText.textContent =
+        "⏳ Available in " +
+        hours +
+        "h " +
+        minutes +
+        "m";
+
+
+      btn.textContent =
+        "WAIT";
+
+      btn.classList.remove("red","cyan");
+
+      btn.classList.add("gray");
+
+    }else{
+
+      timerText.textContent =
+        "✓ Ready to claim";
+
+
+      btn.textContent =
+        "GO";
+
+      btn.classList.remove("gray");
+
+      if(type === "youtube"){
+
+        btn.classList.add("red");
+
+      }else{
+
+        btn.classList.add("cyan");
+
+      }
+
+    }
+
+  });
+
+}
+
+
+setInterval(
+  updateTaskTimers,
+  1000
+);
+
+
+/* ================= REFERRAL LINK ================= */
+
+function createReferralLink(){
+
+  if(tgUser?.id){
+
+    return (
+      "https://t.me/MWS_REWARDS?start=" +
+      tgUser.id
+    );
+
+  }
+
+
+  return "https://t.me/MWS_REWARDS?start=demo";
+
+}
+
+
+document.getElementById("refLink").textContent =
+  createReferralLink();
+
+
+/* ================= COPY REFERRAL ================= */
+
+function copyReferral(){
+
+  const text =
+    document.getElementById("refLink").textContent;
+
+
+  if(navigator.clipboard){
+
+    navigator.clipboard
+      .writeText(text)
+      .then(function(){
+
+        alert(
+          "✅ Referral link copied!"
+        );
+
+      })
+      .catch(function(){
+
+        alert(text);
+
+      });
+
+  }else{
+
+    alert(text);
+
+  }
+
+}
+
+
+/* ================= SHARE REFERRAL ================= */
+
+function shareReferral(){
+
+  const link =
+    encodeURIComponent(
+      createReferralLink()
+    );
+
+
+  const message =
+    encodeURIComponent(
+      "🎁 Join MWS REWARDS and start earning rewards!"
+    );
+
+
+  window.open(
+    "https://t.me/share/url?url=" +
+    link +
+    "&text=" +
+    message,
+    "_blank"
+  );
+
+}
+
+
+/* ================= FRIENDS DISPLAY ================= */
+
+function renderFriends(){
+
+  const box =
+    document.getElementById("friendList");
+
+
+  if(!state.friends.length){
+
+    box.innerHTML =
+      '<p class="notice">No friends yet.</p>';
+
+    return;
+
+  }
+
+
+  box.innerHTML = "";
+
+
+  state.friends.forEach(function(friend,index){
+
+    const div =
+      document.createElement("div");
+
+    div.className = "list";
+
+
+    div.innerHTML =
+
+      '<div class="friend">' +
+
+        '<div class="friendAvatar">' +
+          (friend.name || "M").charAt(0).toUpperCase() +
+        '</div>' +
+
+        '<div>' +
+          '<b>' +
+            (friend.name || "MWS Friend") +
+          '</b>' +
+
+          '<div class="notice">' +
+            "Friend #" +
+            (index + 1) +
+          '</div>' +
+        '</div>' +
+
+      '</div>' +
+
+      '<div class="badge">' +
+        "10% Commission" +
+      '</div>';
+
+
+    box.appendChild(div);
+
+  });
+
+}
+
+
+/* ================= ADD FRIEND DEMO ================= */
+
+function addFriend(name){
+
+  const friendName =
+    name || "MWS Friend";
+
+
+  state.friends.push({
+
+    name:friendName,
+
+    joinedAt:Date.now()
+
+  });
+
+
+  /* 10% referral commission */
+
+  const commission =
+    3 * 0.10;
+
+
+  state.referralEarnings +=
+    commission;
+
+
+  state.mws +=
+    commission;
+
+
+  saveState();
+
+  render();
+
+  renderFriends();
+
+}
+
+
+/* ================= WITHDRAW ================= */
+
+function openWithdraw(){
+
+  document
+    .getElementById("withdrawModal")
+    .classList.add("show");
+
+}
+
+
+function closeWithdraw(){
+
+  document
+    .getElementById("withdrawModal")
+    .classList.remove("show");
+
+}
+
+
+function maxWithdraw(){
+
+  document
+    .getElementById("withdrawAmount")
+    .value =
+    Math.floor(state.mws);
+
+}
+
+
+function confirmWithdraw(){
+
+  const amount =
+    Number(
+      document.getElementById(
+        "withdrawAmount"
+      ).value
+    );
+
+
+  const wallet =
+    document.getElementById(
+      "walletAddress"
+    ).value.trim();
+
+
+  if(state.mws < MIN_WITHDRAW){
+
+    alert(
+      "Minimum withdrawal is 500 MWS."
+    );
+
+    return;
+
+  }
+
+
+  if(amount < MIN_WITHDRAW){
+
+    alert(
+      "Enter at least 500 MWS."
+    );
+
+    return;
+
+  }
+
+
+  if(amount > state.mws){
+
+    alert(
+      "Insufficient MWS balance."
+    );
+
+    return;
+
+  }
+
+
+  if(!wallet){
+
+    alert(
+      "Please enter your wallet address."
+    );
+
+    return;
+
+  }
+
+
+  const payout =
+    amount - WITHDRAW_FEE;
+
+
+  if(payout <= 0){
+
+    alert(
+      "Withdrawal amount is too small after the 70 MWS fee."
+    );
+
+    return;
+
+  }
+
+
+  state.mws -= amount;
+
+
+  state.history.unshift({
+
+    amount:amount,
+
+    fee:WITHDRAW_FEE,
+
+    payout:payout,
+
+    wallet:wallet,
+
+    date:new Date().toLocaleString(),
+
+    status:"Pending"
+
+  });
+
+
+  saveState();
+
+  render();
+
+  renderHistory();
+
+  closeWithdraw();
+
+
+  alert(
+    "✅ Withdrawal request saved.\n\n" +
+    "Payout: " +
+    (payout / MWS_PER_USDT).toFixed(2) +
+    " USDT\n\n" +
+    "Status: Pending"
+  );
+
+}
+
+
+/* ================= HISTORY ================= */
+
+function openHistory(){
+
+  renderHistory();
+
+  document
+    .getElementById("historyModal")
+    .classList.add("show");
+
+}
+
+
+function closeHistory(){
+
+  document
+    .getElementById("historyModal")
+    .classList.remove("show");
+
+}
+
+
+function renderHistory(){
+
+  const box =
+    document.getElementById("historyList");
+
+
+  if(!state.history.length){
+
+    box.innerHTML =
+      '<p class="notice">No withdrawal history yet.</p>';
+
+    return;
+
+  }
+
+
+  box.innerHTML = "";
+
+
+  state.history.forEach(function(item){
+
+    const div =
+      document.createElement("div");
+
+    div.className = "withdrawBox";
+
+
+    div.innerHTML =
+
+      "<b>" +
+      (item.payout / MWS_PER_USDT).toFixed(2) +
+      " USDT</b>" +
+
+      '<p class="notice">' +
+      "Requested: " +
+      item.amount +
+      " MWS<br>" +
+
+      "Fee: " +
+      item.fee +
+      " MWS<br>" +
+
+      "Date: " +
+      item.date +
+      "<br>" +
+
+      "Status: " +
+      item.status +
+      "</p>";
+
+
+    box.appendChild(div);
+
+  });
+
+}
+
+
+/* ================= CERTIFICATE ================= */
+
+function openCertificate(){
+
+  render();
+
+  document
+    .getElementById("certModal")
+    .classList.add("show");
+
+}
+
+
+function closeCertificate(){
+
+  document
+    .getElementById("certModal")
+    .classList.remove("show");
+
+}
+
+
+/* ================= SUPPORT ================= */
+
+function openSupport(){
+
+  document
+    .getElementById("supportModal")
+    .classList.add("show");
+
+}
+
+
+function closeSupport(){
+
+  document
+    .getElementById("supportModal")
+    .classList.remove("show");
+
+}
+
+
+/* ================= SOUND ================= */
+
+function toggleSound(){
+
+  state.sound =
+    !state.sound;
+
+
+  document.getElementById(
+    "soundBtn"
+  ).textContent =
+    state.sound
+      ? "Enabled"
+      : "Muted";
+
+}
+
+
+/* ================= MODAL BACKGROUND CLOSE ================= */
+
+document
+  .querySelectorAll(".modal")
+  .forEach(function(modal){
+
+    modal.addEventListener(
+      "click",
+      function(e){
+
+        if(e.target === modal){
+
+          modal.classList.remove("show");
+
+        }
+
+      }
+    );
+
+  });
+
+
+/* ================= TELEGRAM EXPAND ================= */
+
+try{
+
+  if(
+    window.Telegram &&
+    Telegram.WebApp
+  ){
+
+    Telegram.WebApp.ready();
+
+    Telegram.WebApp.expand();
+
+  }
+
+}catch(e){
+
+  console.log(
+    "Telegram WebApp mode unavailable."
+  );
+
+}
+
+
+/* ================= INITIAL LOAD ================= */
+
+render();
+
+renderFriends();
+
+renderHistory();
+
+updateTaskTimers();
+
+
+console.log(
+  "MWS REWARDS Mini App loaded successfully."
+);
+
+</script>
+
+</body>
+</html>
              return 'MWS Member';
 
     if(tgUser.username){
