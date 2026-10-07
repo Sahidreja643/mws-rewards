@@ -1,2572 +1,550 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>MWS Rewards</title>
-
-<style>
-:root{
-  --bg:#06101c;
-  --panel:#0b1b2c;
-  --panel2:#102840;
-  --text:#f4fbff;
-  --muted:#91a8bb;
-  --cyan:#62e6ff;
-  --blue:#3d8dff;
-  --green:#38e0a4;
-  --red:#ff5f70;
-  --pink:#ff70c7;
-  --violet:#927fff;
-  --orange:#ffb454;
-  --border:rgba(98,230,255,.20);
-}
-
-*{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:#040b14;
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
-  min-height:100vh;
-  background:
-    radial-gradient(circle at 50% -10%,#17415d 0,#071522 38%,#030911 100%);
-}
-
-button,input{
-  font:inherit;
-}
-
-button{
-  border:0;
-  cursor:pointer;
-}
-
-#app{
-  width:100%;
-  max-width:760px;
-  margin:auto;
-  min-height:100vh;
-  padding-bottom:92px;
-}
-
-/* HEADER */
-
-header{
-  padding:18px 15px 10px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.brand{
-  font-size:20px;
-  font-weight:900;
-  letter-spacing:1.4px;
-}
-
-.status{
-  font-size:11px;
-  color:var(--green);
-  border:1px solid rgba(56,224,164,.35);
-  background:rgba(56,224,164,.07);
-  padding:6px 9px;
-  border-radius:999px;
-}
-
-/* PAGES */
-
-.page{
-  display:none;
-  padding:8px 15px;
-}
-
-.page.active{
-  display:block;
-}
-
-/* CARDS */
-
-.card{
-  background:
-    linear-gradient(150deg,rgba(16,40,64,.96),rgba(7,19,32,.97));
-  border:1px solid var(--border);
-  border-radius:22px;
-  padding:16px;
-  margin:10px 0;
-  box-shadow:0 14px 38px rgba(0,0,0,.25);
-}
-
-.balance{
-  text-align:center;
-  padding:20px 12px;
-}
-
-.live{
-  color:var(--cyan);
-  font-size:18px;
-  font-weight:900;
-  min-height:22px;
-}
-
-.coin{
-  width:148px;
-  height:148px;
-  margin:18px auto;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#06101b;
-  font-size:27px;
-  font-weight:1000;
-
-  background:
-    radial-gradient(circle at 32% 24%,
-      #ffffff 0,
-      #d9fbff 13%,
-      #79edff 30%,
-      #36c9ef 49%,
-      #2674ce 70%,
-      #081522 100%);
-
-  box-shadow:
-    0 0 25px rgba(98,230,255,.40),
-    0 0 65px rgba(98,230,255,.16),
-    inset 0 0 25px rgba(255,255,255,.75);
-}
-
-.assets{
-  font-size:33px;
-  font-weight:1000;
-  letter-spacing:.5px;
-}
-
-.usd{
-  margin-top:5px;
-  color:var(--cyan);
-  font-weight:900;
-}
-
-.notice{
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.55;
-}
-
-/* PROGRESS */
-
-.progress{
-  width:100%;
-  height:8px;
-  background:#06101b;
-  border-radius:20px;
-  overflow:hidden;
-  margin:12px 0;
-}
-
-.progress i{
-  display:block;
-  width:0;
-  height:100%;
-  border-radius:20px;
-  background:linear-gradient(90deg,var(--blue),var(--cyan));
-  box-shadow:0 0 12px rgba(98,230,255,.35);
-}
-
-/* GRID */
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-
-.grid3{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:9px;
-}
-
-.stat{
-  padding:13px;
-  border-radius:16px;
-  background:rgba(255,255,255,.035);
-  border:1px solid rgba(255,255,255,.07);
-}
-
-.stat small{
-  color:var(--muted);
-  display:block;
-  font-size:11px;
-}
-
-.stat b{
-  display:block;
-  margin-top:6px;
-  font-size:14px;
-}
-
-/* BUTTONS */
-
-.btn{
-  width:100%;
-  padding:13px 15px;
-  border-radius:14px;
-  font-weight:900;
-  margin-top:10px;
-  transition:.18s ease;
-}
-
-.btn:active{
-  transform:scale(.97);
-}
-
-.cyan{
-  color:#06101b;
-  background:linear-gradient(135deg,#62e6ff,#2f8cff);
-}
-
-.green{
-  color:#04140e;
-  background:linear-gradient(135deg,#63f0bd,#1bbd86);
-}
-
-.red{
-  color:#fff;
-  background:linear-gradient(135deg,#ff7b89,#df304d);
-}
-
-.pink{
-  color:#fff;
-  background:linear-gradient(135deg,#ff9bdf,#ff59b8);
-}
-
-.violet{
-  color:#fff;
-  background:linear-gradient(135deg,#b4adff,#7663ef);
-}
-
-.orange{
-  color:#201306;
-  background:linear-gradient(135deg,#ffd17e,#ff9c31);
-}
-
-.gray{
-  color:#c4d0da;
-  background:#334453;
-}
-
-/* TASKS */
-
-.task{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:14px;
-  margin:9px 0;
-  border-radius:18px;
-  background:rgba(255,255,255,.035);
-  border:1px solid rgba(255,255,255,.065);
-}
-
-.task .icon{
-  width:45px;
-  height:45px;
-  min-width:45px;
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  background:#102c44;
-  font-size:22px;
-}
-
-.task .info{
-  flex:1;
-  min-width:0;
-}
-
-.task b{
-  display:block;
-  font-size:14px;
-}
-
-.task small{
-  display:block;
-  color:var(--muted);
-  font-size:11px;
-  margin-top:4px;
-}
-
-.task button{
-  width:auto;
-  min-width:66px;
-  margin:0;
-  padding:9px 12px;
-}
-
-/* TIMER */
-
-.timer{
-  margin-top:5px;
-  color:var(--orange);
-  font-size:11px;
-  font-weight:900;
-}
-
-/* REFERRAL */
-
-.ref{
-  word-break:break-all;
-  padding:12px;
-  border-radius:13px;
-  background:#06101b;
-  border:1px dashed var(--border);
-  color:var(--cyan);
-  font-size:12px;
-}
-
-.row{
-  display:flex;
-  gap:9px;
-}
-
-.row>*{
-  flex:1;
-}
-
-/* USER */
-
-.user{
-  display:flex;
-  align-items:center;
-  gap:11px;
-}
-
-.avatar{
-  width:54px;
-  height:54px;
-  min-width:54px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  color:#06101b;
-  font-weight:1000;
-  background:linear-gradient(135deg,var(--cyan),var(--violet));
-  box-shadow:0 0 22px rgba(98,230,255,.18);
-}
-
-/* FRIEND */
-
-.list{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:12px 0;
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-
-.friend{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.friendAvatar{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,var(--blue),var(--violet));
-  color:#fff;
-  font-weight:900;
-}
-
-.badge{
-  font-size:10px;
-  padding:5px 8px;
-  border-radius:999px;
-  background:rgba(56,224,164,.12);
-  color:var(--green);
-  white-space:nowrap;
-}
-
-/* CERTIFICATE */
-
-.certificate{
-  padding:23px 18px;
-  border-radius:23px;
-
-  background:
-    radial-gradient(circle at 20% 15%,
-      rgba(98,230,255,.27),
-      transparent 28%),
-    radial-gradient(circle at 85% 85%,
-      rgba(146,127,255,.18),
-      transparent 30%),
-    linear-gradient(145deg,#0b1e31,#06101b);
-
-  border:1px solid rgba(220,248,255,.32);
-
-  box-shadow:
-    0 0 35px rgba(98,230,255,.14),
-    inset 0 0 30px rgba(255,255,255,.025);
-
-  text-align:center;
-}
-
-.certmark{
-  font-size:48px;
-  filter:drop-shadow(0 0 10px rgba(98,230,255,.65));
-}
-
-/* NAV */
-
-.nav{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  z-index:50;
-  background:rgba(4,12,22,.97);
-  border-top:1px solid var(--border);
-  backdrop-filter:blur(15px);
-}
-
-.navin{
-  max-width:760px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  padding:8px 5px;
-}
-
-.nav button{
-  background:none;
-  color:var(--muted);
-  padding:7px 2px;
-  font-size:10px;
-  font-weight:900;
-}
-
-.nav button span{
-  display:block;
-  font-size:21px;
-  margin-bottom:3px;
-}
-
-.nav button.active{
-  color:var(--cyan);
-}
-
-/* MODALS */
-
-.modal{
-  position:fixed;
-  inset:0;
-  z-index:100;
-  display:none;
-  align-items:flex-end;
-  background:rgba(0,0,0,.72);
-}
-
-.modal.show{
-  display:flex;
-}
-
-.sheet{
-  width:100%;
-  max-width:760px;
-  margin:auto;
-  padding:20px;
-  background:#0a1a2b;
-  border:1px solid var(--border);
-  border-bottom:0;
-  border-radius:24px 24px 0 0;
-  max-height:90vh;
-  overflow:auto;
-}
-
-.sheet h2{
-  margin-top:0;
-}
-
-.input{
-  width:100%;
-  padding:14px;
-  color:#fff;
-  background:#06111f;
-  border:1px solid var(--border);
-  border-radius:13px;
-  outline:none;
-}
-
-.input:focus{
-  border-color:var(--cyan);
-}
-
-/* WITHDRAW INFO */
-
-.withdrawBox{
-  padding:13px;
-  border-radius:15px;
-  background:rgba(255,255,255,.035);
-  border:1px solid rgba(255,255,255,.07);
-  margin:10px 0;
-}
-
-.withdrawBox b{
-  color:var(--cyan);
-}
-
-/* LEVEL TABLE */
-
-.levelRow{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:5px;
-  padding:10px 0;
-  border-bottom:1px solid rgba(255,255,255,.05);
-  font-size:12px;
-}
-
-.levelRow span{
-  color:var(--muted);
-}
-
-.levelRow b{
-  color:#fff;
-}
-
-/* MOBILE */
-
-@media(max-width:420px){
-
-  .grid3{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .coin{
-    width:130px;
-    height:130px;
-  }
-
-  .brand{
-    font-size:17px;
-  }
-
-  .assets{
-    font-size:29px;
-  }
-
-  .task{
-    gap:8px;
-  }
-
-  .task .icon{
-    width:40px;
-    min-width:40px;
-    height:40px;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>MWS REWARDS</title>
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-dark: #070a12;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --primary-cyan: #06b6d4;
+      --primary-blue: #3b82f6;
+      --accent-glow: rgba(6, 182, 212, 0.25);
+      --text-main: #f9fafb;
+      --text-sub: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-bottom: 70px;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 16px;
+    }
+
+    /* Header Balance Area */
+    .balance-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border: 1px solid var(--primary-cyan);
+      box-shadow: 0 0 15px var(--accent-glow);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .balance-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--primary-cyan);
+      margin-bottom: 6px;
+    }
+
+    .balance-main {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .balance-sub {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--card-border);
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    .balance-sub span {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Navigation Sections */
+    .page-section {
+      display: none;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    /* UI Components & Cards */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(90deg, var(--primary-cyan), var(--primary-blue));
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--accent-glow);
+      transition: opacity 0.2s;
+    }
+
+    .btn:active {
+      opacity: 0.8;
+    }
+
+    .btn-secondary {
+      background: #1f2937;
+      border: 1px solid var(--card-border);
+      box-shadow: none;
+      margin-top: 8px;
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 65px;
+      background-color: #0b0f19;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 480px;
+      margin: 0 auto;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-sub);
+      cursor: pointer;
+    }
+
+    .nav-item .icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
+
+    .nav-item.active {
+      color: var(--primary-cyan);
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+      padding: 16px;
+    }
+
+    .modal {
+      background-color: var(--card-bg);
+      border: 1px solid var(--primary-cyan);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-sub);
+    }
+
+    /* Certificate Specifics */
+    .certificate-card {
+      background: linear-gradient(135deg, #091322 0%, #17253d 100%);
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .certificate-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-cyan);
+      letter-spacing: 2px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #06b6d4;
+      color: #000;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-top: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: #090d16;
+      color: #fff;
+      margin-bottom: 12px;
+      outline: none;
+    }
+  </style>
 </head>
-
 <body>
 
-<div id="app">
-
-<header>
-  <div class="brand">💎 MWS REWARDS</div>
-  <div class="status" id="status">● READY</div>
-</header>
-
-
-<!-- ================= MINE ================= -->
-
-<section id="mine" class="page active">
-
-  <div class="card balance">
-
-    <div class="live" id="live">+0 Coins</div>
-
-    <div class="coin">MWS</div>
-
-    <div class="assets" id="coins">0</div>
-
-    <div class="usd" id="mws">$0.00 • 0 MWS</div>
-
-    <div class="notice">
-      10,000 Coins = 1 MWS • 500 MWS = 1 USDT
+  <div class="container">
+    <!-- Balance Summary Card -->
+    <div class="balance-card">
+      <div class="balance-title">Main Coins Balance</div>
+      <div class="balance-main" id="uiCoins">0</div>
+      <div class="balance-sub">
+        <div>MWS: <span id="uiMws">0.00</span></div>
+        <div>Value: $<span id="uiUsdt">0.00</span> USDT</div>
+      </div>
     </div>
 
-    <div class="progress">
-      <i id="levelbar"></i>
-    </div>
-
-    <div class="notice" id="levelText">
-      Level 0 • 30 MWS to Level 1
-    </div>
-
-    <button class="btn cyan" id="mineBtn">
-      ⛏️ Start Mining
-    </button>
-
-  </div>
-
-
-  <div class="grid">
-
-    <button class="btn violet" onclick="openCertificate()">
-      🍃 Certificate
-    </button>
-
-    <button class="btn pink" onclick="showPage('friends')">
-      👥 Invite Friends
-    </button>
-
-  </div>
-
-
-  <div class="card">
-
-    <b>⛏️ Mining Status</b>
-
-    <p class="notice" id="mineStatus">
-      Mining is ready to start.
-    </p>
-
-    <div class="stat">
-      <small>Current Mining Speed</small>
-      <b id="mineSpeed">0.556 Coins/s</b>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- ================= TASKS ================= -->
-
-<section id="tasks" class="page">
-
-  <div class="card">
-
-    <h2>🎁 Tasks</h2>
-
-    <p class="notice">
-      Complete a task and claim the reward. Each completed task has a 3-hour cooldown.
-    </p>
-
-  </div>
-
-
-  <div class="task">
-
-    <div class="icon">▶️</div>
-
-    <div class="info">
-
-      <b>YouTube Channel</b>
-
-      <small>
-        Follow / Like / Share • Reward 3 MWS
-      </small>
-
-      <div class="timer" id="youtubeTimer"></div>
-
-    </div>
-
-    <button class="btn red" id="youtubeBtn"
-      onclick="startTask('youtube')">
-      GO
-    </button>
-
-  </div>
-
-
-  <div class="task">
-
-    <div class="icon">📢</div>
-
-    <div class="info">
-
-      <b>Telegram Channel</b>
-
-      <small>
-        React / Follow / Share • Reward 3 MWS
-      </small>
-
-      <div class="timer" id="telegramTimer"></div>
-
-    </div>
-
-    <button class="btn cyan" id="telegramBtn"
-      onclick="startTask('telegram')">
-      GO
-    </button>
-
-  </div>
-
-
-  <div class="card">
-
-    <b>Task Rules</b>
-
-    <p class="notice">
-      YouTube: visit the channel and complete the requested action.
-      Telegram: react, follow and share as requested.
-      After claiming a reward, the task becomes available again after 3 hours.
-    </p>
-
-  </div>
-
-</section>
-
-
-<!-- ================= MINERS ================= -->
-
-<section id="miners" class="page">
-
-  <div class="card">
-
-    <h2>🍃 Miners</h2>
-
-    <p class="notice">
-      Your MWS level gradually increases your mining speed.
-    </p>
-
-  </div>
-
-
-  <div class="grid3">
-
-    <div class="stat">
-      <small>Current Level</small>
-      <b id="lvl2">0</b>
-    </div>
-
-    <div class="stat">
-      <small>Mining Speed</small>
-      <b id="speed">0.556/s</b>
-    </div>
-
-    <div class="stat">
-      <small>Next Level</small>
-      <b id="next">30 MWS</b>
-    </div>
-
-  </div>
-
-
-  <div class="card">
-
-    <b>📈 Level System</b>
-
-    <p class="notice">
-      Level 1 starts at 30 MWS. After that, levels increase gradually
-      according to the MWS balance. Mining speed also increases gradually,
-      rather than jumping suddenly.
-    </p>
-
-    <div class="levelRow">
-      <span>Level</span>
-      <span>MWS Required</span>
-      <span>Speed</span>
-    </div>
-
-    <div class="levelRow">
-      <b>1</b>
-      <b>30 MWS</b>
-      <span>Base+</span>
-    </div>
-
-    <div class="levelRow">
-      <b>10</b>
-      <b>210 MWS</b>
-      <span>Gradual+</span>
-    </div>
-
-    <div class="levelRow">
-      <b>50</b>
-      <b>1,010 MWS</b>
-      <span>Higher</span>
-    </div>
-
-    <div class="levelRow">
-      <b>100+</b>
-      <b>Gradual</b>
-      <span>Continues</span>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- ================= FRIENDS ================= -->
-
-<section id="friends" class="page">
-
-  <div class="card">
-
-    <h2>👥 Friends</h2>
-
-    <p class="notice">
-      Invite friends with your personal referral link.
-    </p>
-
-    <div class="ref" id="refLink">
-      https://t.me/MWS_REWARDS?start=demo
-    </div>
-
-    <div class="row">
-
-      <button class="btn cyan" onclick="copyReferral()">
-        📋 Copy
-      </button>
-
-      <button class="btn pink" onclick="shareReferral()">
-        👥 Invite
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <div class="grid">
-
-    <div class="stat">
-      <small>Joining Reward</small>
-      <b>100 MWS</b>
-    </div>
-
-    <div class="stat">
-      <small>Upline Commission</small>
-      <b>10%</b>
-    </div>
-
-    <div class="stat">
-      <small>Total Friends</small>
-      <b id="friendCount">0</b>
-    </div>
-
-    <div class="stat">
-      <small>Referral Earnings</small>
-      <b id="refEarn">0 MWS</b>
-    </div>
-
-  </div>
-
-
-  <div class="card">
-
-    <b>My Friends</b>
-
-    <div id="friendList">
-      <p class="notice">
-        No friends yet.
-      </p>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- ================= PROFILE ================= -->
-
-<section id="profile" class="page">
-
-  <div class="card">
-
-    <div class="user">
-
-      <div class="avatar" id="avatar">
-        M
+    <!-- 1. MINE PAGE -->
+    <div id="page-mine" class="page-section active">
+      <div class="card" style="text-align: center;">
+        <h3>⛏️ MWS Mining Rigid</h3>
+        <p style="color: var(--text-sub); font-size: 13px; margin: 8px 0;" id="miningStatus">Status: READY</p>
+        
+        <div style="font-size: 24px; font-weight: bold; margin: 12px 0; color: var(--primary-cyan);" id="liveEarned">0 Coins</div>
+        
+        <button class="btn" id="btnMine" onclick="toggleMining()">⛏️ Start Mining</button>
       </div>
 
-      <div>
-
-        <b id="profileName">
-          MWS Member
-        </b>
-
-        <div class="notice">
-          Telegram User ID:
-          <span id="uid">Not connected</span>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
+          <span>Current Level: <b id="uiLevel">Level 1</b></span>
+          <span>Speed: <b id="uiSpeed">10 Coins/m</b></span>
         </div>
-
       </div>
 
+      <button class="btn btn-secondary" onclick="openCertificate()">🍃 Official Member Certificate</button>
+      <button class="btn btn-secondary" onclick="switchPage('friends')">👥 Invite Friends</button>
     </div>
 
-  </div>
-
-
-  <div class="grid">
-
-    <div class="stat">
-      <small>MWS Balance</small>
-      <b id="assetMws">0 MWS</b>
-    </div>
-
-    <div class="stat">
-      <small>USDT Value</small>
-      <b id="assetUsd">$0.00</b>
-    </div>
-
-    <div class="stat">
-      <small>Level</small>
-      <b id="profileLevel">0</b>
-    </div>
-
-    <div class="stat">
-      <small>Mining Coins</small>
-      <b id="profileCoins">0</b>
-    </div>
-
-  </div>
-
-
-  <div class="card">
-
-    <h3>⚙️ Settings</h3>
-
-    <div class="list">
-
-      <span>🔊 Sound Effects</span>
-
-      <button class="btn gray"
-        id="soundBtn"
-        onclick="toggleSound()">
-        Enabled
-      </button>
-
-    </div>
-
-
-    <div class="list">
-
-      <span>🆘 Support</span>
-
-      <button class="btn green"
-        onclick="openSupport()">
-        Support
-      </button>
-
-    </div>
-
-
-    <div class="list">
-
-      <span>💸 Withdraw</span>
-
-      <button class="btn cyan"
-        onclick="openWithdraw()">
-        Open
-      </button>
-
-    </div>
-
-
-    <div class="list">
-
-      <span>📜 History</span>
-
-      <button class="btn violet"
-        onclick="openHistory()">
-        Open
-      </button>
-
-    </div>
-
-  </div>
-
-</section>
-
-</div>
-
-
-<!-- ================= BOTTOM NAV ================= -->
-
-<div class="nav">
-
-  <div class="navin">
-
-    <button class="active" data-page="mine">
-      <span>⛏️</span>
-      Mine
-    </button>
-
-    <button data-page="tasks">
-      <span>🎁</span>
-      Tasks
-    </button>
-
-    <button data-page="miners">
-      <span>🍃</span>
-      Miners
-    </button>
-
-    <button data-page="friends">
-      <span>👥</span>
-      Friends
-    </button>
-
-    <button data-page="profile">
-      <span>👤</span>
-      Profile
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- ================= WITHDRAW MODAL ================= -->
-
-<div class="modal" id="withdrawModal">
-
-  <div class="sheet">
-
-    <h2>💸 Withdraw USDT</h2>
-
-    <div class="withdrawBox">
-      <small class="notice">Minimum Withdrawal</small>
-      <br>
-      <b>500 MWS = 1 USDT</b>
-    </div>
-
-    <div class="withdrawBox">
-      <small class="notice">Withdrawal Fee</small>
-      <br>
-      <b>70 MWS</b>
-    </div>
-
-    <p class="notice" id="withdrawAvailability">
-      Withdraw available after 30 days, In Sha Allah.
-    </p>
-
-    <input
-      class="input"
-      id="withdrawAmount"
-      type="number"
-      min="500"
-      placeholder="Enter MWS amount">
-
-    <input
-      class="input"
-      id="walletAddress"
-      type="text"
-      placeholder="Enter your wallet address"
-      style="margin-top:10px">
-
-    <div class="row">
-
-      <button class="btn violet"
-        onclick="maxWithdraw()">
-        MAX
-      </button>
-
-      <button class="btn gray"
-        onclick="closeWithdraw()">
-        Cancel
-      </button>
-
-    </div>
-
-    <button class="btn cyan"
-      onclick="confirmWithdraw()">
-      Confirm Withdrawal
-    </button>
-
-    <p class="notice">
-      The real USDT transfer requires a secure backend/payment system.
-      This front-end does not send blockchain transactions.
-    </p>
-
-  </div>
-
-</div>
-
-
-<!-- ================= CERTIFICATE MODAL ================= -->
-
-<div class="modal" id="certModal">
-
-  <div class="sheet">
-
-    <div class="certificate">
-
-      <div class="certmark">
-        🍃
+    <!-- 2. TASKS PAGE -->
+    <div id="page-tasks" class="page-section">
+      <h3 style="margin-bottom: 12px;">🎁 Earn Rewards</h3>
+      
+      <div class="card" id="task1">
+        <h4>▶️ Join YouTube Channel</h4>
+        <p style="font-size: 12px; color: var(--text-sub); margin: 4px 0;">Reward: 3 MWS</p>
+        <button class="btn" style="padding: 8px; margin-top: 8px;" onclick="completeTask(1)">GO Task</button>
       </div>
 
-      <h2>MWS REWARDS</h2>
+      <div class="card" id="task2">
+        <h4>📢 Join Telegram Channel</h4>
+        <p style="font-size: 12px; color: var(--text-sub); margin: 4px 0;">Reward: 3 MWS</p>
+        <button class="btn" style="padding: 8px; margin-top: 8px;" onclick="completeTask(2)">GO Task</button>
+      </div>
+    </div>
 
-      <h3>
-        OFFICIAL MEMBER CERTIFICATE
-      </h3>
+    <!-- 3. MINERS PAGE -->
+    <div id="page-miners" class="page-section">
+      <h3 style="margin-bottom: 12px;">🍃 Upgrade Mining Rig</h3>
+      <div class="card">
+        <h4>Level 1 Mining Rig</h4>
+        <p style="font-size: 13px; color: var(--text-sub); margin: 6px 0;">Current: Level 1 (30 MWS required for Level 2)</p>
+        <button class="btn" onclick="upgradeLevel()">Upgrade Rig (30 MWS)</button>
+      </div>
+    </div>
 
-      <p id="certName">
-        MWS Member
-      </p>
-
-      <p class="notice">
-        User ID:
-        <span id="certId">
-          Not connected
-        </span>
-      </p>
-
-      <div class="grid">
-
-        <div class="stat">
-          <small>MWS Balance</small>
-          <b id="certMws">0</b>
+    <!-- 4. FRIENDS PAGE -->
+    <div id="page-friends" class="page-section">
+      <h3 style="margin-bottom: 12px;">👥 Referral System</h3>
+      <div class="card">
+        <p style="font-size: 13px; color: var(--text-sub);">Earn 10% commission from your friends' activities!</p>
+        <div style="margin: 12px 0;">
+          <input type="text" id="refLink" value="https://t.me/MWS_Rewards_Bot?start=user123" readonly>
+          <button class="btn" onclick="copyReferral()">📋 Copy Referral Link</button>
         </div>
-
-        <div class="stat">
-          <small>Level</small>
-          <b id="certLevel">0</b>
-        </div>
-
       </div>
 
-      <p class="notice">
-        Verified MWS Member • Premium Diamond Edition
-      </p>
-
+      <div class="card">
+        <h4>Your Invites (<span id="friendCount">0</span>)</h4>
+        <p style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">No active referral joins tracked yet.</p>
+      </div>
     </div>
 
-    <button class="btn gray"
-      onclick="closeCertificate()">
-      Close
-    </button>
+    <!-- 5. PROFILE PAGE -->
+    <div id="page-profile" class="page-section">
+      <div class="card" style="text-align: center;">
+        <div style="font-size: 40px; margin-bottom: 8px;">👤</div>
+        <h3 id="tgUserName">Telegram User</h3>
+        <p style="font-size: 12px; color: var(--text-sub);" id="tgUserId">ID: 00000000</p>
+      </div>
 
-  </div>
-
-</div>
-
-
-<!-- ================= HISTORY MODAL ================= -->
-
-<div class="modal" id="historyModal">
-
-  <div class="sheet">
-
-    <h2>📜 Withdrawal History</h2>
-
-    <div id="historyList">
-
-      <p class="notice">
-        No withdrawal history yet.
-      </p>
-
+      <div class="card">
+        <button class="btn btn-secondary" onclick="openWithdrawModal()">💸 Withdraw Funds</button>
+        <button class="btn btn-secondary" onclick="openSupport()">🆘 Telegram Helpline</button>
+      </div>
     </div>
-
-    <button class="btn gray"
-      onclick="closeHistory()">
-      Close
-    </button>
-
   </div>
 
-</div>
-
-
-<!-- ================= SUPPORT MODAL ================= -->
-
-<div class="modal" id="supportModal">
-
-  <div class="sheet">
-
-    <h2>🆘 MWS Support</h2>
-
-    <p class="notice">
-      Need help? Contact MWS Support.
-    </p>
-
-    <button class="btn green"
-      onclick="window.open('https://t.me/MWS_Helpline','_blank')">
-      🆘 Contact Support
-    </button>
-
-    <button class="btn gray"
-      onclick="closeSupport()">
-      Close
-    </button>
-
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchPage('mine')">
+      <div class="icon">⛏️</div>
+      <div>Mine</div>
+    </div>
+    <div class="nav-item" onclick="switchPage('tasks')">
+      <div class="icon">🎁</div>
+      <div>Tasks</div>
+    </div>
+    <div class="nav-item" onclick="switchPage('miners')">
+      <div class="icon">🍃</div>
+      <div>Miners</div>
+    </div>
+    <div class="nav-item" onclick="switchPage('friends')">
+      <div class="icon">👥</div>
+      <div>Friends</div>
+    </div>
+    <div class="nav-item" onclick="switchPage('profile')">
+      <div class="icon">👤</div>
+      <div>Profile</div>
+    </div>
   </div>
 
-</div>
-
-
-<script>
-
-/* =========================================================
-   MWS REWARDS - FRONT END
-   ========================================================= */
-
-const COINS_PER_MWS = 10000;
-
-const MWS_PER_USDT = 500;
-
-const WITHDRAW_FEE = 70;
-
-const MIN_WITHDRAW = 500;
-
-const MINING_CYCLE = 5 * 60 * 60 * 1000;
-
-const TASK_COOLDOWN = 3 * 60 * 60 * 1000;
-
-
-/* ================= STATE ================= */
-
-const state = {
-
-  coins:Number(localStorage.getItem("mwsCoins") || 0),
-
-  mws:Number(localStorage.getItem("mwsMws") || 0),
-
-  mining:false,
-
-  miningStart:Number(localStorage.getItem("mwsMiningStart") || 0),
-
-  sound:true,
-
-  referralEarnings:Number(
-    localStorage.getItem("mwsReferralEarnings") || 0
-  ),
-
-  friends:JSON.parse(
-    localStorage.getItem("mwsFriends") || "[]"
-  ),
-
-  history:JSON.parse(
-    localStorage.getItem("mwsWithdrawHistory") || "[]"
-  ),
-
-  tasks:JSON.parse(
-    localStorage.getItem("mwsTasks") || "{}"
-  )
-
-};
-
-
-/* ================= TELEGRAM USER ================= */
-
-let tgUser = null;
-
-if(window.Telegram && Telegram.WebApp){
-
-  Telegram.WebApp.ready();
-
-  try{
-
-    tgUser = Telegram.WebApp.initDataUnsafe?.user || null;
-
-  }catch(e){
-
-    tgUser = null;
-
-  }
-
-}
-
-
-/* ================= USER INFO ================= */
-
-function userName(){
-
-  if(!tgUser)
-        return "MWS Member";
-
-  return (
-    tgUser.first_name ||
-    tgUser.username ||
-    "MWS Member"
-  );
-}
-
-
-/* ================= SAVE ================= */
-
-function saveState(){
-
-  localStorage.setItem(
-    "mwsCoins",
-    String(Math.floor(state.coins))
-  );
-
-  localStorage.setItem(
-    "mwsMws",
-    String(state.mws)
-  );
-
-  localStorage.setItem(
-    "mwsReferralEarnings",
-    String(state.referralEarnings)
-  );
-
-  localStorage.setItem(
-    "mwsFriends",
-    JSON.stringify(state.friends)
-  );
-
-  localStorage.setItem(
-    "mwsWithdrawHistory",
-    JSON.stringify(state.history)
-  );
-
-  localStorage.setItem(
-    "mwsTasks",
-    JSON.stringify(state.tasks)
-  );
-
-}
-
-
-/* ================= LEVEL ================= */
-
-function getLevel(){
-
-  return Math.floor(state.mws / 30);
-
-}
-
-
-/* ================= MINING SPEED ================= */
-
-function getMiningSpeed(){
-
-  const level = getLevel();
-
-  const base = 10000 / (5 * 60 * 60);
-
-  return base * (
-    1 +
-    Math.min(level,50) * 0.018 +
-    Math.max(0,level - 50) * 0.004
-  );
-
-}
-
-
-/* ================= RENDER ================= */
-
-function render(){
-
-  const level = getLevel();
-
-  const speed = getMiningSpeed();
-
-  document.getElementById("coins").textContent =
-    Math.floor(state.coins).toLocaleString();
-
-  document.getElementById("mws").textContent =
-    "$" +
-    (state.mws / MWS_PER_USDT).toFixed(2) +
-    " • " +
-    state.mws.toFixed(2) +
-    " MWS";
-
-  document.getElementById("lvl2").textContent =
-    level;
-
-  document.getElementById("speed").textContent =
-    speed.toFixed(3) + "/s";
-
-  document.getElementById("mineSpeed").textContent =
-    speed.toFixed(3) + " Coins/s";
-
-  document.getElementById("next").textContent =
-    ((level + 1) * 30).toFixed(0) + " MWS";
-
-  const remaining =
-    Math.max(
-      0,
-      ((level + 1) * 30) - state.mws
-    );
-
-  document.getElementById("levelText").textContent =
-    "Level " +
-    level +
-    " • " +
-    remaining.toFixed(2) +
-    " MWS to next level";
-
-  const progress =
-    ((state.mws % 30) / 30) * 100;
-
-  document.getElementById("levelbar").style.width =
-    Math.min(100,progress) + "%";
-
-
-  /* PROFILE */
-
-  document.getElementById("profileName").textContent =
-    userName();
-
-  document.getElementById("uid").textContent =
-    tgUser?.id || "Not connected";
-
-  document.getElementById("avatar").textContent =
-    userName().charAt(0).toUpperCase();
-
-  document.getElementById("assetMws").textContent =
-    state.mws.toFixed(2) + " MWS";
-
-  document.getElementById("assetUsd").textContent =
-    "$" +
-    (state.mws / MWS_PER_USDT).toFixed(2);
-
-  document.getElementById("profileLevel").textContent =
-    level;
-
-  document.getElementById("profileCoins").textContent =
-    Math.floor(state.coins).toLocaleString();
-
-
-  /* FRIENDS */
-
-  document.getElementById("friendCount").textContent =
-    state.friends.length;
-
-  document.getElementById("refEarn").textContent =
-    state.referralEarnings.toFixed(2) + " MWS";
-
-
-  /* CERTIFICATE */
-
-  document.getElementById("certName").textContent =
-    userName();
-
-  document.getElementById("certId").textContent =
-    tgUser?.id || "Not connected";
-
-  document.getElementById("certMws").textContent =
-    state.mws.toFixed(2);
-
-  document.getElementById("certLevel").textContent =
-    level;
-
-
-  /* MINING BUTTON */
-
-  const miningButton =
-    document.getElementById("mineBtn");
-
-  if(state.mining){
-
-    miningButton.textContent =
-      "🟢 Claim & Stop Mining";
-
-  }else{
-
-    miningButton.textContent =
-      "⛏️ Start Mining";
-
-  }
-
-}
-
-
-/* ================= PAGE NAVIGATION ================= */
-
-function showPage(page){
-
-  document
-    .querySelectorAll(".page")
-    .forEach(function(p){
-
-      p.classList.remove("active");
-
-    });
-
-
-  const target =
-    document.getElementById(page);
-
-  if(target){
-
-    target.classList.add("active");
-
-  }
-
-
-  document
-    .querySelectorAll(".nav button")
-    .forEach(function(btn){
-
-      btn.classList.toggle(
-        "active",
-        btn.dataset.page === page
-      );
-
-    });
-
-}
-
-
-/* ================= NAV BUTTONS ================= */
-
-document
-  .querySelectorAll(".nav button")
-  .forEach(function(btn){
-
-    btn.addEventListener("click",function(){
-
-      showPage(btn.dataset.page);
-
-    });
-
-  });
-
-
-/* ================= MINING ================= */
-
-let miningTimer = null;
-
-
-function startMining(){
-
-  if(state.mining){
-
-    claimMining();
-
-    return;
-
-  }
-
-
-  state.mining = true;
-
-  state.miningStart = Date.now();
-
-  localStorage.setItem(
-    "mwsMiningStart",
-    String(state.miningStart)
-  );
-
-  document.getElementById("status").textContent =
-    "● MINING";
-
-  document.getElementById("mineStatus").textContent =
-    "Mining is active. You can claim at any time. Maximum cycle: 5 hours.";
-
-  updateMining();
-
-  clearInterval(miningTimer);
-
-  miningTimer =
-    setInterval(updateMining,1000);
-
-  render();
-
-}
-
-
-function updateMining(){
-
-  if(!state.mining){
-
-    return;
-
-  }
-
-
-  const elapsed =
-    Date.now() - state.miningStart;
-
-
-  if(elapsed >= MINING_CYCLE){
-
-    claimMining();
-
-    return;
-
-  }
-
-
-  const seconds =
-    elapsed / 1000;
-
-  const earned =
-    Math.min(
-      10000,
-      seconds * getMiningSpeed()
-    );
-
-
-  document.getElementById("live").textContent =
-    "+" + earned.toFixed(2) + " Coins";
-
-
-  const remaining =
-    Math.max(
-      0,
-      MINING_CYCLE - elapsed
-    );
-
-
-  const hours =
-    Math.floor(
-      remaining / 3600000
-    );
-
-  const minutes =
-    Math.floor(
-      (remaining % 3600000) / 60000
-    );
-
-  document.getElementById("mineStatus").textContent =
-    "Mining active • " +
-    hours +
-    "h " +
-    minutes +
-    "m remaining";
-
-}
-
-
-function claimMining(){
-
-  if(!state.mining){
-
-    return;
-
-  }
-
-
-  const elapsed =
-    Math.min(
-      MINING_CYCLE,
-      Date.now() - state.miningStart
-    );
-
-
-  const earned =
-    Math.min(
-      10000,
-      (elapsed / 1000) * getMiningSpeed()
-    );
-
-
-  state.coins += earned;
-
-
-  while(state.coins >= COINS_PER_MWS){
-
-    state.coins -= COINS_PER_MWS;
-
-    state.mws += 1;
-
-  }
-
-
-  state.mining = false;
-
-  state.miningStart = 0;
-
-  localStorage.removeItem(
-    "mwsMiningStart"
-  );
-
-  clearInterval(miningTimer);
-
-  miningTimer = null;
-
-
-  document.getElementById("live").textContent =
-    "Mining claimed";
-
-
-  document.getElementById("mineStatus").textContent =
-    "Mining cycle complete. Start again for a new cycle.";
-
-
-  document.getElementById("status").textContent =
-    "● READY";
-
-
-  saveState();
-
-  render();
-
-}
-
-
-document
-  .getElementById("mineBtn")
-  .addEventListener(
-    "click",
-    startMining
-  );
-
-
-/* ================= RESUME MINING ================= */
-
-if(state.miningStart > 0){
-
-  const elapsed =
-    Date.now() - state.miningStart;
-
-  if(elapsed < MINING_CYCLE){
-
-    state.mining = true;
-
-    document.getElementById("status").textContent =
-      "● MINING";
-
-    miningTimer =
-      setInterval(updateMining,1000);
-
-    updateMining();
-
-  }else{
-
-    state.mining = false;
-
-    state.miningStart = 0;
-
-    localStorage.removeItem(
-      "mwsMiningStart"
-    );
-
-  }
-
-}
-
-
-/* ================= TASK SYSTEM ================= */
-
-function startTask(type){
-
-  const now = Date.now();
-
-  const last =
-    Number(state.tasks[type] || 0);
-
-  if(now - last < TASK_COOLDOWN){
-
-    updateTaskTimers();
-
-    return;
-
-  }
-
-
-  if(type === "youtube"){
-
-    window.open(
-      "https://www.youtube.com/@MWS_Eran",
-      "_blank"
-    );
-
-  }
-
-
-  if(type === "telegram"){
-
-    window.open(
-      "https://t.me/MWS_MINE",
-      "_blank"
-    );
-
-  }
-
-
-  setTimeout(function(){
-
-    const confirmTask =
-      confirm(
-        "Did you complete the task?\n\nPress OK to claim 3 MWS."
-      );
-
-
-    if(!confirmTask){
-
-      return;
-
-    }
-
-
-    state.mws += 3;
-
-    state.tasks[type] =
-      Date.now();
-
-
-    saveState();
-
-    render();
-
-    alert(
-      "🎉 3 MWS reward added successfully!"
-    );
-
-  },500);
-
-}
-
-
-function updateTaskTimers(){
-
-  const tasks = [
-    ["youtube","youtubeBtn","youtubeTimer"],
-    ["telegram","telegramBtn","telegramTimer"]
-  ];
-
-
-  tasks.forEach(function(item){
-
-    const type = item[0];
-
-    const btn = document.getElementById(item[1]);
-
-    const timerText =
-      document.getElementById(item[2]);
-
-
-    const last =
-      Number(state.tasks[type] || 0);
-
-
-    const remaining =
-      TASK_COOLDOWN -
-      (Date.now() - last);
-
-
-    if(remaining > 0){
-
-      const totalMinutes =
-        Math.ceil(
-          remaining / 60000
-        );
-
-      const hours =
-        Math.floor(
-          totalMinutes / 60
-        );
-
-      const minutes =
-        totalMinutes % 60;
-
-
-      timerText.textContent =
-        "⏳ Available in " +
-        hours +
-        "h " +
-        minutes +
-        "m";
-
-
-      btn.textContent =
-        "WAIT";
-
-      btn.classList.remove("red","cyan");
-
-      btn.classList.add("gray");
-
-    }else{
-
-      timerText.textContent =
-        "✓ Ready to claim";
-
-
-      btn.textContent =
-        "GO";
-
-      btn.classList.remove("gray");
-
-      if(type === "youtube"){
-
-        btn.classList.add("red");
-
-      }else{
-
-        btn.classList.add("cyan");
-
+  <!-- Modal Wrapper -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent">
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // App State Management
+    let state = {
+      coins: Number(localStorage.getItem('mwsCoins')) || 0,
+      mws: Number(localStorage.getItem('mwsMws')) || 0,
+      level: Number(localStorage.getItem('mwsLevel')) || 1,
+      miningStart: Number(localStorage.getItem('mwsMiningStart')) || 0,
+      isMining: false
+    };
+
+    let miningInterval = null;
+
+    // Telegram Integration
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.Telegram && window.Telegram.WebApp) {
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+
+        const user = Telegram.WebApp.initDataUnsafe?.user;
+        if (user) {
+          document.getElementById('tgUserName').textContent = `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Telegram Member';
+          document.getElementById('tgUserId').textContent = `ID: ${user.id || 'N/A'}`;
+          document.getElementById('refLink').value = `https://t.me/MWS_Rewards_Bot?start=${user.id}`;
+        }
       }
-
-    }
-
-  });
-
-}
-
-
-setInterval(
-  updateTaskTimers,
-  1000
-);
-
-
-/* ================= REFERRAL LINK ================= */
-
-function createReferralLink(){
-
-  if(tgUser?.id){
-
-    return (
-      "https://t.me/MWS_REWARDS?start=" +
-      tgUser.id
-    );
-
-  }
-
-
-  return "https://t.me/MWS_REWARDS?start=demo";
-
-}
-
-
-document.getElementById("refLink").textContent =
-  createReferralLink();
-
-
-/* ================= COPY REFERRAL ================= */
-
-function copyReferral(){
-
-  const text =
-    document.getElementById("refLink").textContent;
-
-
-  if(navigator.clipboard){
-
-    navigator.clipboard
-      .writeText(text)
-      .then(function(){
-
-        alert(
-          "✅ Referral link copied!"
-        );
-
-      })
-      .catch(function(){
-
-        alert(text);
-
-      });
-
-  }else{
-
-    alert(text);
-
-  }
-
-}
-
-
-/* ================= SHARE REFERRAL ================= */
-
-function shareReferral(){
-
-  const link =
-    encodeURIComponent(
-      createReferralLink()
-    );
-
-
-  const message =
-    encodeURIComponent(
-      "🎁 Join MWS REWARDS and start earning rewards!"
-    );
-
-
-  window.open(
-    "https://t.me/share/url?url=" +
-    link +
-    "&text=" +
-    message,
-    "_blank"
-  );
-
-}
-
-
-/* ================= FRIENDS DISPLAY ================= */
-
-function renderFriends(){
-
-  const box =
-    document.getElementById("friendList");
-
-
-  if(!state.friends.length){
-
-    box.innerHTML =
-      '<p class="notice">No friends yet.</p>';
-
-    return;
-
-  }
-
-
-  box.innerHTML = "";
-
-
-  state.friends.forEach(function(friend,index){
-
-    const div =
-      document.createElement("div");
-
-    div.className = "list";
-
-
-    div.innerHTML =
-
-      '<div class="friend">' +
-
-        '<div class="friendAvatar">' +
-          (friend.name || "M").charAt(0).toUpperCase() +
-        '</div>' +
-
-        '<div>' +
-          '<b>' +
-            (friend.name || "MWS Friend") +
-          '</b>' +
-
-          '<div class="notice">' +
-            "Friend #" +
-            (index + 1) +
-          '</div>' +
-        '</div>' +
-
-      '</div>' +
-
-      '<div class="badge">' +
-        "10% Commission" +
-      '</div>';
-
-
-    box.appendChild(div);
-
-  });
-
-}
-
-
-/* ================= ADD FRIEND DEMO ================= */
-
-function addFriend(name){
-
-  const friendName =
-    name || "MWS Friend";
-
-
-  state.friends.push({
-
-    name:friendName,
-
-    joinedAt:Date.now()
-
-  });
-
-
-  /* 10% referral commission */
-
-  const commission =
-    3 * 0.10;
-
-
-  state.referralEarnings +=
-    commission;
-
-
-  state.mws +=
-    commission;
-
-
-  saveState();
-
-  render();
-
-  renderFriends();
-
-}
-
-
-/* ================= WITHDRAW ================= */
-
-function openWithdraw(){
-
-  document
-    .getElementById("withdrawModal")
-    .classList.add("show");
-
-}
-
-
-function closeWithdraw(){
-
-  document
-    .getElementById("withdrawModal")
-    .classList.remove("show");
-
-}
-
-
-function maxWithdraw(){
-
-  document
-    .getElementById("withdrawAmount")
-    .value =
-    Math.floor(state.mws);
-
-}
-
-
-function confirmWithdraw(){
-
-  const amount =
-    Number(
-      document.getElementById(
-        "withdrawAmount"
-      ).value
-    );
-
-
-  const wallet =
-    document.getElementById(
-      "walletAddress"
-    ).value.trim();
-
-
-  if(state.mws < MIN_WITHDRAW){
-
-    alert(
-      "Minimum withdrawal is 500 MWS."
-    );
-
-    return;
-
-  }
-
-
-  if(amount < MIN_WITHDRAW){
-
-    alert(
-      "Enter at least 500 MWS."
-    );
-
-    return;
-
-  }
-
-
-  if(amount > state.mws){
-
-    alert(
-      "Insufficient MWS balance."
-    );
-
-    return;
-
-  }
-
-
-  if(!wallet){
-
-    alert(
-      "Please enter your wallet address."
-    );
-
-    return;
-
-  }
-
-
-  const payout =
-    amount - WITHDRAW_FEE;
-
-
-  if(payout <= 0){
-
-    alert(
-      "Withdrawal amount is too small after the 70 MWS fee."
-    );
-
-    return;
-
-  }
-
-
-  state.mws -= amount;
-
-
-  state.history.unshift({
-
-    amount:amount,
-
-    fee:WITHDRAW_FEE,
-
-    payout:payout,
-
-    wallet:wallet,
-
-    date:new Date().toLocaleString(),
-
-    status:"Pending"
-
-  });
-
-
-  saveState();
-
-  render();
-
-  renderHistory();
-
-  closeWithdraw();
-
-
-  alert(
-    "✅ Withdrawal request saved.\n\n" +
-    "Payout: " +
-    (payout / MWS_PER_USDT).toFixed(2) +
-    " USDT\n\n" +
-    "Status: Pending"
-  );
-
-}
-
-
-/* ================= HISTORY ================= */
-
-function openHistory(){
-
-  renderHistory();
-
-  document
-    .getElementById("historyModal")
-    .classList.add("show");
-
-}
-
-
-function closeHistory(){
-
-  document
-    .getElementById("historyModal")
-    .classList.remove("show");
-
-}
-
-
-function renderHistory(){
-
-  const box =
-    document.getElementById("historyList");
-
-
-  if(!state.history.length){
-
-    box.innerHTML =
-      '<p class="notice">No withdrawal history yet.</p>';
-
-    return;
-
-  }
-
-
-  box.innerHTML = "";
-
-
-  state.history.forEach(function(item){
-
-    const div =
-      document.createElement("div");
-
-    div.className = "withdrawBox";
-
-
-    div.innerHTML =
-
-      "<b>" +
-      (item.payout / MWS_PER_USDT).toFixed(2) +
-      " USDT</b>" +
-
-      '<p class="notice">' +
-      "Requested: " +
-      item.amount +
-      " MWS<br>" +
-
-      "Fee: " +
-      item.fee +
-      " MWS<br>" +
-
-      "Date: " +
-      item.date +
-      "<br>" +
-
-      "Status: " +
-      item.status +
-      "</p>";
-
-
-    box.appendChild(div);
-
-  });
-
-}
-
-
-/* ================= CERTIFICATE ================= */
-
-function openCertificate(){
-
-  render();
-
-  document
-    .getElementById("certModal")
-    .classList.add("show");
-
-}
-
-
-function closeCertificate(){
-
-  document
-    .getElementById("certModal")
-    .classList.remove("show");
-
-}
-
-
-/* ================= SUPPORT ================= */
-
-function openSupport(){
-
-  document
-    .getElementById("supportModal")
-    .classList.add("show");
-
-}
-
-
-function closeSupport(){
-
-  document
-    .getElementById("supportModal")
-    .classList.remove("show");
-
-}
-
-
-/* ================= SOUND ================= */
-
-function toggleSound(){
-
-  state.sound =
-    !state.sound;
-
-
-  document.getElementById(
-    "soundBtn"
-  ).textContent =
-    state.sound
-      ? "Enabled"
-      : "Muted";
-
-}
-
-
-/* ================= MODAL BACKGROUND CLOSE ================= */
-
-document
-  .querySelectorAll(".modal")
-  .forEach(function(modal){
-
-    modal.addEventListener(
-      "click",
-      function(e){
-
-        if(e.target === modal){
-
-          modal.classList.remove("show");
-
-        }
-
+      updateUI();
+      checkMiningState();
+    });
+
+    // Navigation Switching
+    function switchPage(pageId) {
+      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(`page-${pageId}`).classList.add('active');
+      
+      const navs = ['mine', 'tasks', 'miners', 'friends', 'profile'];
+      const index = navs.indexOf(pageId);
+      if (index !== -1) {
+        document.querySelectorAll('.nav-item')[index].classList.add('active');
       }
-    );
+    }
 
-  });
+    // UI Updater
+    function updateUI() {
+      document.getElementById('uiCoins').textContent = Math.floor(state.coins).toLocaleString();
+      
+      // Conversions: 10,000 Coins = 1 MWS | 500 MWS = 1 USDT
+      const totalMws = state.mws + (state.coins / 10000);
+      const usdtValue = totalMws / 500;
 
+      document.getElementById('uiMws').textContent = totalMws.toFixed(2);
+      document.getElementById('uiUsdt').textContent = usdtValue.toFixed(2);
+      document.getElementById('uiLevel').textContent = `Level ${state.level}`;
 
-/* ================= TELEGRAM EXPAND ================= */
+      localStorage.setItem('mwsCoins', state.coins);
+      localStorage.setItem('mwsMws', state.mws);
+      localStorage.setItem('mwsLevel', state.level);
+    }
 
-try{
+    // Mining Logic (5-Hour Cycle)
+    function toggleMining() {
+      if (!state.isMining) {
+        state.miningStart = Date.now();
+        localStorage.setItem('mwsMiningStart', state.miningStart);
+        startMiningCycle();
+      } else {
+        // Claim logic
+        claimMining();
+      }
+    }
 
-  if(
-    window.Telegram &&
-    Telegram.WebApp
-  ){
+    function startMiningCycle() {
+      state.isMining = true;
+      document.getElementById('btnMine').textContent = '⏹️ Claim & Stop Mining';
+      document.getElementById('miningStatus').textContent = 'Status: MINING ACTIVE (5h Cycle)';
+      
+      miningInterval = setInterval(() => {
+        const elapsedSec = Math.floor((Date.now() - state.miningStart) / 1000);
+        const maxSec = 5 * 3600; // 5 hours
 
-    Telegram.WebApp.ready();
+        if (elapsedSec >= maxSec) {
+          claimMining();
+        } else {
+          const earned = elapsedSec * (state.level * 2); // Speed scales with level
+          document.getElementById('liveEarned').textContent = `+${earned} Coins`;
+        }
+      }, 1000);
+    }
 
-    Telegram.WebApp.expand();
+    function checkMiningState() {
+      if (state.miningStart > 0) {
+        startMiningCycle();
+      }
+    }
 
-  }
+    function claimMining() {
+      clearInterval(miningInterval);
+      const elapsedSec = Math.floor((Date.now() - state.miningStart) / 1000);
+      const earned = elapsedSec * (state.level * 2);
 
-}catch(e){
+      state.coins += earned;
+      state.isMining = false;
+      state.miningStart = 0;
+      localStorage.removeItem('mwsMiningStart');
 
-  console.log(
-    "Telegram WebApp mode unavailable."
-  );
+      document.getElementById('btnMine').textContent = '⛏️ Start Mining';
+      document.getElementById('miningStatus').textContent = 'Status: READY';
+      document.getElementById('liveEarned').textContent = '0 Coins';
+      
+      updateUI();
+      alert(`Claimed ${earned} Coins successfully!`);
+    }
 
-}
+    // Task Functionality
+    function completeTask(taskId) {
+      state.mws += 3;
+      updateUI();
+      alert('Task Completed! You earned 3 MWS.');
+    }
 
+    // Upgrade Rig
+    function upgradeLevel() {
+      if (state.mws >= 30) {
+        state.mws -= 30;
+        state.level += 1;
+        updateUI();
+        alert('Rig upgraded to Level 2!');
+      } else {
+        alert('Insufficient MWS balance. (Requires 30 MWS)');
+      }
+    }
 
-/* ================= INITIAL LOAD ================= */
+    // Referrals
+    function copyReferral() {
+      const copyText = document.getElementById('refLink');
+      copyText.select();
+      navigator.clipboard.writeText(copyText.value);
+      alert('Referral link copied to clipboard!');
+    }
 
-render();
+    // Modals
+    function openCertificate() {
+      const name = document.getElementById('tgUserName').textContent;
+      const body = `
+        <div class="certificate-card">
+          <div class="certificate-title">MWS REWARDS</div>
+          <p style="font-size: 10px; letter-spacing: 1px; color: #9ca3af; margin-top: 2px;">OFFICIAL MEMBER CERTIFICATE</p>
+          <hr style="border-color: #1f2937; margin: 12px 0;">
+          <h3>${name}</h3>
+          <p style="font-size: 12px; color: #06b6d4; margin-top: 4px;">Verified MWS Member</p>
+          <div class="badge">PREMIUM DIAMOND EDITION</div>
+        </div>
+      `;
+      showModal(body);
+    }
 
-renderFriends();
+    function openWithdrawModal() {
+      const body = `
+        <h3>💸 Withdraw Funds</h3>
+        <p style="font-size: 12px; color: var(--text-sub); margin: 8px 0;">Min limit: 500 MWS (1 USDT). Fee: 70 MWS.</p>
+        <input type="number" placeholder="Enter MWS Amount">
+        <input type="text" placeholder="Enter Wallet Address (USDT)">
+        <button class="btn" onclick="alert('Withdrawals unlock 30 days after registration.')">Confirm Withdrawal</button>
+      `;
+      showModal(body);
+    }
 
-renderHistory();
+    function openSupport() {
+      window.open('https://t.me/MWS_Helpline', '_blank');
+    }
 
-updateTaskTimers();
+    function showModal(contentHtml) {
+      document.getElementById('modalBody').innerHTML = contentHtml;
+      document.getElementById('modalOverlay').style.display = 'flex';
+    }
 
-
-console.log(
-  "MWS REWARDS Mini App loaded successfully."
-);
-
-</script>
-
+    function closeModal() {
+      document.getElementById('modalOverlay').style.display = 'none';
+    }
+  </script>
 </body>
-</html>
-             return 'MWS Member';
-
-    if(tgUser.username){
-        return '@' + tgUser.username;
-    }
-
-    if(tgUser.first_name){
-        return tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
-    }
-
-    return 'MWS Member';
-}
-
-
-/* ================= USER ID ================= */
-
-function userId(){
-
-    if(!tgUser){
-        return 'Not connected';
-    }
-
-    return String(tgUser.id || 'Not connected');
-}
-
-
-/* ================= USER PROFILE ================= */
-
-function updateUserProfile(){
-
-    const name = userName();
-    const id = userId();
-
-    const profileName = document.getElementById('profileName');
-    const uid = document.getElementById('uid');
-    const certName = document.getElementById('certName');
-    const certId = document.getElementById('certId');
-
-    if(profileName){
-        profileName.textContent = name;
-    }
-
-    if(uid){
-        uid.textContent = id;
-    }
-
-    if(certName){
-        certName.textContent = name;
-    }
-
-    if(certId){
-        certId.textContent = id;
-    }
-}
-
-
-/* ================= TELEGRAM INIT ================= */
-
-function initTelegram(){
-
-    if(window.Telegram && Telegram.WebApp){
-
-        try{
-            Telegram.WebApp.ready();
-            Telegram.WebApp.expand();
-        }catch   
-     (e){
-
-        }
-
-        updateUserProfile();
-    }
-}
-
-
-/* ================= PAGE START ================= */
-
-initTelegram();
-render();
-
-
-/* ================= NAVIGATION ================= */
-
-document.querySelectorAll('.nav button').forEach(function(button){
-
-    button.addEventListener('click',function(){
-
-        const page = button.getAttribute('data-page');
-
-        if(page){
-            showPage(page);
-        }
-
-    });
-
-});
-
-
-/* ================= MODAL CLOSE ================= */
-
-document.querySelectorAll('.modal').forEach(function(modal){
-
-    modal.addEventListener('click',function(e){
-
-        if(e.target === modal){
-            modal.classList.remove('show');
-        }
-
-    });
-
-});
-
-
-/* ================= APP READY ================= */
-
-console.log('MWS REWARDS Mini App loaded successfully.');
-
-</script>
-</body>
-</html>
+  </html>
       
