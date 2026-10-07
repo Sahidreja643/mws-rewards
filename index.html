@@ -1,496 +1,7428 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ATF LITE WebApp</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --bg-dark: #070d19;
-      --card-bg: #0f172a;
-      --accent-green: #10b981;
-      --accent-sky: #38bdf8;
-      --accent-blue: #2563eb;
-      --text-white: #f8fafc;
-      --text-sub: #94a3b8;
-      --border-color: rgba(56, 189, 248, 0.2);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ATF LITE</title>
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-dark); color: var(--text-white); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    /* Header Bar */
-    .user-header { padding: 12px 16px; background: #0b1329; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; z-index: 10; }
-    .user-info { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--accent-sky); display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; overflow: hidden; border: 2px solid var(--accent-green); }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .user-details h4 { font-size: 14px; color: var(--text-white); }
-    .user-details p { font-size: 11px; color: var(--text-sub); }
-    .status-badge { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
-    .status-badge.verified { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border-color: var(--accent-green); }
+<style>
+:root{
+  --bg:#070d19;
+  --card:#0f172a;
+  --card2:#111c32;
+  --cyan:#38bdf8;
+  --blue:#2563eb;
+  --green:#10b981;
+  --red:#ef4444;
+  --orange:#f59e0b;
+  --pink:#ec4899;
+  --purple:#8b5cf6;
+  --text:#fff;
+  --muted:#94a3b8;
+  --border:#22314d;
+}
 
-    /* Content Area */
-    .content-container { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 80px; position: relative; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+*{box-sizing:border-box}
 
-    /* TAB 1: MINE */
-    #tab-mine { background: radial-gradient(circle at center, #0b1e36 0%, #070d19 100%); min-height: 100%; text-align: center; }
-    .balance-card { background: rgba(15, 23, 42, 0.85); border: 1px solid var(--accent-sky); border-radius: 20px; padding: 16px; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(56, 189, 248, 0.15); }
-    .balance-title { font-size: 11px; color: var(--accent-sky); text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
-    .balance-amount { font-size: 24px; font-weight: bold; color: var(--accent-green); margin: 4px 0; }
-    .conversion-info { font-size: 12px; color: var(--text-sub); }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
 
-    /* Round Coin Sphere */
-    .coin-display-wrap { width: 200px; height: 200px; margin: 15px auto; border-radius: 50%; background: radial-gradient(circle, #1e3a8a 0%, #0f172a 70%); border: 4px solid var(--accent-sky); display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(56, 189, 248, 0.3); }
-    .coin-live-points { font-size: 26px; font-weight: 900; color: #ffffff; text-shadow: 0 0 10px var(--accent-sky); }
-    .coin-speed-rate { font-size: 12px; color: var(--accent-green); font-weight: bold; margin-top: 4px; }
+button,input{
+  font:inherit;
+}
 
-    /* Action Buttons */
-    .btn-action-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-    .btn-mine-start { width: 100%; padding: 14px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); border: none; border-radius: 30px; color: #fff; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-    .btn-mine-claim { width: 100%; padding: 14px; background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); border: none; border-radius: 30px; color: #000; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3); }
-    .btn-mine-claim:disabled { opacity: 0.5; cursor: not-allowed; }
-    .timer-info-text { font-size: 13px; color: var(--accent-sky); font-weight: bold; margin-top: 8px; }
+button{
+  cursor:pointer;
+}
 
-    /* TAB 2: TASKS */
-    #tab-tasks { background: #0b1329; border-radius: 16px; padding: 14px; }
-    .task-card { background: #1e293b; border: 1px solid var(--border-color); border-radius: 14px; padding: 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-    .btn-go { background: var(--accent-sky); color: #000; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
-    .btn-claim { background: var(--accent-green) !important; color: #fff !important; }
+.app{
+  width:100%;
+  max-width:700px;
+  margin:auto;
+  padding:14px 12px 95px;
+}
 
-    /* TAB 3: MINERS */
-    #tab-miners { background: #0b1329; border-radius: 16px; padding: 14px; }
-    .miner-scroll-list { max-height: 60vh; overflow-y: auto; margin-top: 10px; }
-    .miner-card { background: #1e293b; border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 16px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
-    .btn-buy { background: var(--accent-green); color: #000; border: none; padding: 6px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+.page{
+  display:none;
+}
 
-    /* TAB 4: FRIENDS */
-    #tab-friends { background: #0b1329; border-radius: 16px; padding: 14px; }
-    .ref-box { background: #1e293b; border: 1px solid var(--accent-green); border-radius: 14px; padding: 14px; margin-bottom: 16px; }
-    .ref-btn-group { display: flex; gap: 10px; margin-top: 10px; }
-    .btn-ref { flex: 1; padding: 10px; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; font-size: 12px; }
-    .btn-copy { background: var(--accent-sky); color: #000; }
-    .btn-invite { background: var(--accent-green); color: #fff; }
-    .pyramid-tree { background: #0f172a; border-radius: 14px; padding: 20px 10px; text-align: center; border: 1px solid var(--border-color); }
-    .p-level { display: flex; justify-content: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
-    .p-node { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-sky); color: #000; display: flex; align-items: center; justify-content: center; font-size: 13px; box-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
+.page.active{
+  display:block;
+}
 
-    /* TAB 5: PROFILE */
-    #tab-profile { background: #0b1329; border-radius: 16px; padding: 14px; }
-    .warning-box { background: rgba(239, 68, 68, 0.15); border: 2px solid #ef4444; border-radius: 14px; padding: 14px; margin-bottom: 14px; color: #fca5a5; }
-    .warning-title { font-size: 14px; font-weight: bold; color: #ef4444; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-    
-    .notice-box { background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%); border-radius: 14px; padding: 14px; margin-bottom: 14px; color: #fff; text-align: center; }
-    .countdown-box { background: rgba(0,0,0,0.4); padding: 8px; border-radius: 20px; font-size: 14px; font-weight: bold; color: var(--accent-green); margin-top: 8px; border: 1px solid var(--accent-green); }
+.card{
+  background:linear-gradient(145deg,#101b30,#0a1222);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:18px;
+  margin-bottom:14px;
+}
 
-    .helpline-box { background: #1e293b; border: 1px solid var(--accent-sky); border-radius: 14px; padding: 14px; margin-bottom: 14px; text-align: center; }
-    .btn-helpline { background: var(--accent-sky); color: #000; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 8px; font-size: 13px; width: 100%; }
+h1,h2,h3,p{
+  margin-top:0;
+}
 
-    /* Certificate Card */
-    .certificate-card { background: #0f172a; border: 2px solid var(--accent-green); border-radius: 14px; padding: 16px; margin-bottom: 14px; text-align: center; position: relative; box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
-    .cert-header { font-size: 11px; text-transform: uppercase; color: var(--accent-sky); letter-spacing: 1px; }
-    .cert-title { font-size: 16px; font-weight: bold; color: var(--accent-green); margin: 6px 0; }
-    .cert-details { font-size: 12px; color: var(--text-sub); text-align: left; margin-top: 10px; line-height: 1.6; }
+.title{
+  color:var(--cyan);
+  font-size:24px;
+  font-weight:800;
+  margin-bottom:5px;
+}
 
-    /* Bottom Nav */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: #0b1329; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 10; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 11px; cursor: pointer; gap: 4px; }
-    .nav-item i { font-size: 18px; }
-    .nav-item.active { color: var(--accent-green); }
-  </style>
+.subtitle{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.balanceCard{
+  text-align:center;
+  padding:20px 16px;
+}
+
+.balanceLabel{
+  color:var(--cyan);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:1px;
+}
+
+.totalCoins{
+  color:var(--green);
+  font-size:31px;
+  font-weight:900;
+  margin:9px 0;
+  word-break:break-word;
+}
+
+.totalValue{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.miningCircle{
+  width:min(76vw,290px);
+  height:min(76vw,290px);
+  margin:22px auto;
+  border-radius:50%;
+  border:4px solid var(--cyan);
+  box-shadow:0 0 25px rgba(56,189,248,.45),inset 0 0 35px rgba(37,99,235,.25);
+  background:radial-gradient(circle,#13233e,#060c18 72%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+}
+
+.currentLabel{
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:.5px;
+}
+
+.livePoints{
+  font-size:34px;
+  font-weight:900;
+  color:#fff;
+  margin:8px 0;
+}
+
+.speedBadge{
+  display:inline-block;
+  padding:7px 12px;
+  border-radius:999px;
+  background:rgba(16,185,129,.16);
+  border:1px solid var(--green);
+  color:#6ee7b7;
+  font-size:12px;
+  font-weight:700;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.btn{
+  border:0;
+  border-radius:15px;
+  min-height:48px;
+  padding:12px 14px;
+  font-weight:800;
+  color:white;
+}
+
+.btn:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+.green{
+  background:linear-gradient(135deg,#10b981,#059669);
+}
+
+.cyan{
+  background:linear-gradient(135deg,#38bdf8,#2563eb);
+}
+
+.pink{
+  background:linear-gradient(135deg,#db2777,#ec4899);
+}
+
+.orange{
+  background:linear-gradient(135deg,#f59e0b,#d97706);
+}
+
+.red{
+  background:linear-gradient(135deg,#ef4444,#b91c1c);
+}
+
+.timer{
+  text-align:center;
+  color:var(--cyan);
+  font-weight:800;
+  margin:13px 0 3px;
+}
+
+.sectionTitle{
+  color:var(--cyan);
+  font-size:23px;
+  font-weight:900;
+  margin:8px 0 4px;
+}
+
+.task{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  background:#1e293b;
+  border:1px solid #334155;
+  border-radius:18px;
+  padding:16px;
+  margin:12px 0;
+}
+
+.taskInfo{
+  min-width:0;
+}
+
+.taskName{
+  font-weight:800;
+  font-size:15px;
+}
+
+.taskReward{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+}
+
+.smallBtn{
+  min-width:78px;
+  min-height:42px;
+  border:0;
+  border-radius:12px;
+  color:white;
+  font-weight:800;
+}
+
+.certBtn{
+  width:100%;
+  margin-top:12px;
+  box-shadow:0 0 20px rgba(236,72,153,.25);
+}
+
+.levelGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.levelCard{
+  min-height:165px;
+  border-radius:18px;
+  padding:15px;
+  border:1px solid #334155;
+  background:#0f172a;
+  position:relative;
+  overflow:hidden;
+}
+
+.levelCard.active{
+  border-color:var(--green);
+  box-shadow:0 0 18px rgba(16,185,129,.28);
+}
+
+.levelNumber{
+  font-weight:900;
+  font-size:16px;
+}
+
+.levelSpeed{
+  color:var(--cyan);
+  font-size:25px;
+  font-weight:900;
+  margin-top:17px;
+}
+
+.speedUnit{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.need{
+  color:var(--orange);
+  font-size:11px;
+  margin-top:10px;
+  min-height:15px;
+}
+
+.levelStatus{
+  margin-top:11px;
+  width:100%;
+  padding:8px;
+  border-radius:10px;
+  text-align:center;
+  font-size:11px;
+  font-weight:900;
+  background:#1e293b;
+  color:var(--muted);
+}
+
+.levelCard.active .levelStatus{
+  background:rgba(16,185,129,.18);
+  color:#6ee7b7;
+}
+
+.levelCard.unlocked .levelStatus{
+  background:rgba(56,189,248,.14);
+  color:var(--cyan);
+}
+
+.profile{
+  text-align:center;
+}
+
+.avatar{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#1e40af,#0ea5e9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  margin:0 auto 10px;
+}
+
+.profileName{
+  font-size:21px;
+  font-weight:900;
+}
+
+.profileId{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
+.verified{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:rgba(16,185,129,.15);
+  color:#6ee7b7;
+  border:1px solid var(--green);
+  font-size:11px;
+  font-weight:900;
+}
+
+.unverified{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:rgba(239,68,68,.12);
+  color:#fca5a5;
+  border:1px solid var(--red);
+  font-size:11px;
+  font-weight:900;
+}
+
+.refBox{
+  display:flex;
+  gap:8px;
+}
+
+.refInput{
+  flex:1;
+  min-width:0;
+  background:#07101f;
+  border:1px solid var(--cyan);
+  color:#fff;
+  border-radius:12px;
+  padding:12px;
+  font-size:12px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.stat{
+  background:#0f172a;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:15px;
+  text-align:center;
+}
+
+.statValue{
+  color:var(--orange);
+  font-size:20px;
+  font-weight:900;
+  margin-top:5px;
+}
+
+.nav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(700px,100%);
+  background:rgba(7,13,25,.97);
+  border-top:1px solid #22314d;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  padding:8px 5px calc(8px + env(safe-area-inset-bottom));
+  z-index:100;
+}
+
+.nav button{
+  border:0;
+  background:transparent;
+  color:#64748b;
+  font-size:10px;
+  padding:7px 2px;
+}
+
+.nav button.active{
+  color:var(--cyan);
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  z-index:200;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.sheet{
+  width:min(700px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#0b1324;
+  border:1px solid #334155;
+  border-radius:25px 25px 0 0;
+  padding:20px;
+}
+
+.input{
+  width:100%;
+  padding:14px;
+  border-radius:13px;
+  border:1px solid #334155;
+  background:#07101f;
+  color:white;
+  outline:none;
+  margin:7px 0 12px;
+}
+
+.historyItem{
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  margin:8px 0;
+  font-size:12px;
+}
+
+.searchBox{
+  display:flex;
+  gap:8px;
+  margin:15px 0;
+}
+
+.searchBox input{
+  flex:1;
+}
+
+.leader{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:#0f172a;
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:12px;
+  margin:8px 0;
+}
+
+.rank{
+  width:32px;
+  font-weight:900;
+  text-align:center;
+}
+
+.leaderMain{
+  flex:1;
+  min-width:0;
+}
+
+.leaderName{
+  font-weight:800;
+}
+
+.leaderInfo{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.myRank{
+  border:1px solid var(--cyan);
+  background:rgba(56,189,248,.08);
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:85px;
+  transform:translateX(-50%);
+  background:#111827;
+  border:1px solid var(--cyan);
+  color:#fff;
+  padding:11px 16px;
+  border-radius:12px;
+  z-index:500;
+  display:none;
+  font-size:12px;
+}
+
+.toast.show{
+  display:block;
+}
+
+.paymentGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.payment{
+  border:1px solid #334155;
+  background:#0f172a;
+  color:white;
+  border-radius:14px;
+  padding:13px 7px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.payment.selected{
+  border-color:var(--cyan);
+  box-shadow:0 0 12px rgba(56,189,248,.2);
+}
+
+.walletBalance{
+  text-align:center;
+}
+
+.walletAmount{
+  color:var(--orange);
+  font-size:30px;
+  font-weight:900;
+  margin:8px 0;
+}
+
+.network{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+  margin-top:10px;
+}
+
+.networkItem{
+  border:1px solid #334155;
+  border-radius:14px;
+  padding:13px;
+  background:#0f172a;
+  text-align:center;
+}
+
+@media(max-width:430px){
+  .levelGrid{
+    gap:8px;
+  }
+
+  .levelCard{
+    padding:12px;
+    min-height:155px;
+  }
+
+  .levelSpeed{
+    font-size:21px;
+  }
+
+  .nav button{
+    font-size:9px;
+  }
+}
+</style>
 </head>
+
 <body>
 
-  <!-- Header Bar -->
-  <div class="user-header">
-    <div class="user-info">
-      <div class="avatar" id="uAvatar"><i class="fa-solid fa-user"></i></div>
-      <div class="user-details">
-        <h4 id="uName">Loading...</h4>
-        <p>ID: <span id="uId">786001</span></p>
-      </div>
-    </div>
-    <span class="status-badge" id="uStatus">Unverified</span>
+<div class="app">
+
+<!-- ================= MINE PAGE ================= -->
+<section id="mine" class="page active">
+
+  <div class="card balanceCard">
+    <div class="balanceLabel">TOTAL CLAIMED BALANCE</div>
+    <div class="totalCoins" id="totalCoins">0 Coins</div>
+    <div class="totalValue" id="totalValue">0.00 ATF LITE (~ $0.00 USDT)</div>
   </div>
 
-  <div class="content-container">
-    <!-- TAB 1: MINE -->
-    <div id="tab-mine" class="tab-content active">
-      <div class="balance-card">
-        <div class="balance-title">Total Claimed Balance</div>
-        <div class="balance-amount" id="totalCoinDisplay">0 Coins</div>
-        <p class="conversion-info" id="atfDisplay">0.00 ATF LITE (~ $0.00 USDT)</p>
+  <div class="miningCircle">
+    <div class="currentLabel">CURRENT MINING</div>
+    <div class="livePoints" id="livePoints">+0.000</div>
+    <div class="speedBadge" id="speedBadge">⚡ 0.397 Coins/s (Lvl 1)</div>
+  </div>
+
+  <div class="actions">
+    <button class="btn green" id="startMiningBtn" onclick="startMining()">
+      ⛏️ Start Mining (7 Hours)
+    </button>
+
+    <button class="btn cyan" id="claimBtn" onclick="claimPoints()" disabled>
+      💰 Claim Points
+    </button>
+  </div>
+
+  <div class="timer" id="miningTimer">
+    Ready to start mining
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="balanceLabel">MINING STATUS</div>
+    <p id="miningStatus" class="subtitle" style="margin-top:7px">
+      Start mining to begin earning points.
+    </p>
+  </div>
+
+  <div class="actions">
+    <button class="btn pink" onclick="openCertificate()">🏆 Certificate</button>
+    <button class="btn cyan" onclick="showPage('friends')">👥 Invite Friends</button>
+  </div>
+
+</section>
+
+<!-- ================= TASKS PAGE ================= -->
+<section id="tasks" class="page">
+
+  <div class="sectionTitle">Social Tasks</div>
+  <div class="subtitle">Complete tasks to earn ATF LITE!</div>
+
+  <div class="card" style="margin-top:16px">
+
+    <div class="task">
+      <div class="taskInfo">
+        <div class="taskName">Join Telegram Channel</div>
+        <div class="taskReward">
+          Reward: +10 ATF LITE (100,000 Coins)
+        </div>
       </div>
 
-      <div class="coin-display-wrap">
-        <div style="font-size: 11px; color: var(--text-sub);">CURRENT MINING</div>
-        <div class="coin-live-points" id="liveMiningPoints">+0.000</div>
-        <div class="coin-speed-rate" id="speedRateText">⚡ 0.397 Coins/s</div>
-      </div>
-
-      <div class="btn-action-group">
-        <button class="btn-mine-start" id="startMiningBtn" onclick="start7HourMining()">⛏️ Start Mining (7 Hours)</button>
-        <button class="btn-mine-claim" id="claimPointsBtn" onclick="claimMiningPoints()" disabled>💰 Claim Points</button>
-      </div>
-
-      <div class="timer-info-text" id="mineTimerText">Ready to start mining</div>
+      <button class="smallBtn cyan" id="telegramTaskBtn"
+              onclick="startTask('telegram')">
+        Go
+      </button>
     </div>
 
-    <!-- TAB 2: TASKS -->
-    <div id="tab-tasks" class="tab-content">
-      <h3 style="color: var(--accent-sky);">Social Tasks</h3>
-      <p style="font-size:12px; color:var(--text-sub); margin-bottom:12px;">Complete tasks to earn ATF LITE!</p>
-      <div class="task-card">
-        <div>
-          <h4>Join Telegram Channel</h4>
-          <p style="font-size:11px; color:var(--text-sub);">Reward: +10 ATF LITE (100,000 Coins)</p>
+    <div class="task">
+      <div class="taskInfo">
+        <div class="taskName">Subscribe YouTube</div>
+        <div class="taskReward">
+          Reward: +15 ATF LITE (150,000 Coins)
         </div>
-        <button class="btn-go" id="btnTask1" onclick="handleTask(1, 'https://t.me/ATF_LITE')">Go</button>
       </div>
-      <div class="task-card">
-        <div>
-          <h4>Subscribe YouTube</h4>
-          <p style="font-size:11px; color:var(--text-sub);">Reward: +15 ATF LITE (150,000 Coins)</p>
-        </div>
-        <button class="btn-go" id="btnTask2" onclick="handleTask(2, 'https://www.youtube.com/@ATF_LT_Eran')">Go</button>
-      </div>
+
+      <button class="smallBtn cyan" id="youtubeTaskBtn"
+              onclick="startTask('youtube')">
+        Go
+      </button>
     </div>
 
-    <!-- TAB 3: MINERS -->
-    <div id="tab-miners" class="tab-content">
-      <h3 style="color: var(--accent-sky);">Miner Speed Boosters</h3>
-      <p style="font-size:12px; color:var(--text-sub);">Upgrade speed from Level 1 to 500</p>
-      <div class="miner-scroll-list" id="minerList"></div>
-    </div>
+    <button class="btn pink certBtn" onclick="openCertificate()">
+      🏆 Certificate
+    </button>
 
-    <!-- TAB 4: FRIENDS -->
-    <div id="tab-friends" class="tab-content">
-      <h3 style="color: var(--accent-sky);">Invite & Earn</h3>
-      <p style="font-size:12px; color:var(--text-sub); margin-bottom:12px;">Build your network tree & gain higher rewards!</p>
-      <div class="ref-box">
-        <h4 style="font-size:12px; color:var(--accent-sky);">Your Invite Link:</h4>
-        <p id="refLinkText" style="font-size:11px; color:var(--accent-green); word-break:break-all; margin-top:4px;">Generating...</p>
-        <div class="ref-btn-group">
-          <button class="btn-ref btn-copy" onclick="copyRefLink()">Copy Link</button>
-          <a class="btn-ref btn-invite" id="telegramInviteBtn" target="_blank">Invite Friends</a>
-        </div>
-      </div>
-      
-      <!-- Expanded Pyramid Tree -->
-      <div class="pyramid-tree">
-        <h4 style="color:var(--accent-green);">Team Network Structure</h4>
-        <p style="font-size:10px; color:var(--text-sub); margin-top:4px;">You (Level 1)</p>
-        <div class="p-level"><div class="p-node"><i class="fa-solid fa-user"></i></div></div>
-        <p style="font-size:10px; color:var(--accent-sky);">↓ Direct Referral Tier 1</p>
-        <div class="p-level">
-          <div class="p-node"><i class="fa-solid fa-user"></i></div>
-          <div class="p-node"><i class="fa-solid fa-user"></i></div>
-        </div>
-        <p style="font-size:10px; color:var(--accent-sky);">↓ Sub-Team Tier 2</p>
-        <div class="p-level">
-          <div class="p-node"><div style="font-size:9px;">U1</div></div>
-          <div class="p-node"><div style="font-size:9px;">U2</div></div>
-          <div class="p-node"><div style="font-size:9px;">U3</div></div>
-          <div class="p-node"><div style="font-size:9px;">U4</div></div>
-        </div>
-        <p style="font-size:10px; color:var(--accent-sky);">↓ Deep Network Tier 3</p>
-        <div class="p-level">
-          <div class="p-node"><i class="fa-solid fa-users"></i></div>
-          <div class="p-node"><i class="fa-solid fa-users"></i></div>
-          <div class="p-node"><i class="fa-solid fa-users"></i></div>
-          <div class="p-node"><i class="fa-solid fa-users"></i></div>
-          <div class="p-node"><i class="fa-solid fa-users"></i></div>
-          <div class="p-node"><i class="fa-solid fa-users"></i></div>
-        </div>
-      </div>
-    </div>
+  </div>
 
-    <!-- TAB 5: PROFILE -->
-    <div id="tab-profile" class="tab-content">
-      <!-- Strict Verification Warning -->
-      <div class="warning-box">
-        <div class="warning-title"><i class="fa-solid fa-triangle-exclamation"></i> গুরুত্বপূর্ণ সতর্কতা:</div>
-        <p style="font-size:11px; line-height:1.4;">অ্যাকাউন্ট ভেরিফিকেশন (Account Verification) সম্পন্ন না করলে আপনি কোনো প্রকার Withdrawal পাবেন না। আপনার মাইনিং ও টাস্ক সম্পূর্ণ করার তথ্য হেল্পলাইনে পাঠান।</p>
+  <div class="card">
+    <div class="balanceLabel">TASK NOTICE</div>
+    <p class="subtitle" style="margin-top:8px">
+      Complete the required social tasks before requesting account verification.
+    </p>
+  </div>
+
+</section>
+
+<!-- ================= MINERS PAGE ================= -->
+<section id="miners" class="page">
+
+  <div class="sectionTitle">⚡ ATF LITE MINER LEVELS</div>
+  <div class="subtitle">
+    Levels automatically unlock based on your ATF LITE balance.
+  </div>
+
+  <div class="card" style="margin-top:15px">
+    <div class="stats">
+      <div class="stat">
+        <div class="subtitle">Current Level</div>
+        <div class="statValue" id="currentLevel">Level 1</div>
       </div>
 
-      <!-- Withdrawal Delay Notice -->
-      <div class="notice-box">
-        <h4 style="font-size:14px;">In Sha Allah</h4>
-        <p style="font-size:11px; margin-top:4px;">Withdraw option will be available after 30 days. Work with full attention and invite your friends!</p>
-        <div class="countdown-box" id="withdrawCountdown">30d 00h 00m 00s</div>
-      </div>
-
-      <!-- Direct Support Contact -->
-      <div class="helpline-box">
-        <h4 style="font-size:13px; color:var(--accent-sky);">Helpline & Support</h4>
-        <p style="font-size:11px; color:var(--text-sub); margin-top:4px;">ভেরিফিকেশন বা যেকোনো সাহায্যের জন্য সরাসরি হেল্পলাইনে মেসেজ দিন:</p>
-        <a href="https://t.me/ATF_Helpline" target="_blank" class="btn-helpline"><i class="fa-brands fa-telegram"></i> Contact @ATF_Helpline</a>
-      </div>
-
-      <!-- Miner Certificate -->
-      <div class="certificate-card">
-        <div class="cert-header">Official Membership</div>
-        <div class="cert-title">ATF LITE MINER CERTIFICATE</div>
-        <div class="cert-details">
-          <p><strong>Miner Name:</strong> <span id="certName">Loading...</span></p>
-          <p><strong>Miner ID:</strong> <span id="certId">786001</span></p>
-          <p><strong>Account Status:</strong> <span style="color:#ef4444;">Unverified</span></p>
-          <p><strong>Registered Rate:</strong> 0.397 Coins/s</p>
-        </div>
+      <div class="stat">
+        <div class="subtitle">Mining Speed</div>
+        <div class="statValue" id="currentSpeed">0.397</div>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Navigation -->
-  <div class="bottom-nav">
-    <div class="nav-item active" onclick="switchTab('mine', this)"><i class="fa-solid fa-hand-pointer"></i><span>Mine</span></div>
-    <div class="nav-item" onclick="switchTab('tasks', this)"><i class="fa-solid fa-list-check"></i><span>Tasks</span></div>
-    <div class="nav-item" onclick="switchTab('miners', this)"><i class="fa-solid fa-bolt"></i><span>Miners</span></div>
-    <div class="nav-item" onclick="switchTab('friends', this)"><i class="fa-solid fa-user-group"></i><span>Friends</span></div>
-    <div class="nav-item" onclick="switchTab('profile', this)"><i class="fa-solid fa-circle-user"></i><span>Profile</span></div>
+  <div id="levelGrid" class="levelGrid"></div>
+
+</section>
+
+<!-- ================= FRIENDS PAGE ================= -->
+<section id="friends" class="page">
+
+  <div class="sectionTitle">👥 Friends & Invite</div>
+  <div class="subtitle">Invite friends and earn ATF LITE.</div>
+
+  <div class="card profile">
+
+    <div class="avatar" id="friendsAvatar">👤</div>
+    <div class="profileName" id="friendsName">ATF LITE User</div>
+    <div class="profileId" id="friendsId">User ID: 786001</div>
+
+    <div id="friendsVerifyBadge" class="unverified">
+      🔴 Unverified
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="balanceLabel">YOUR REFERRAL LINK</div>
+
+    <div class="refBox" style="margin-top:10px">
+      <input id="refLink" class="refInput" readonly>
+      <button class="smallBtn cyan" onclick="copyReferral()">
+        Copy
+      </button>
+    </div>
+
+    <button class="btn cyan" style="width:100%;margin-top:10px"
+            onclick="shareReferral()">
+      ✈️ Share / Send on Telegram
+    </button>
+
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="subtitle">Total Friends</div>
+      <div class="statValue" id="friendCount">0</div>
+    </div>
+
+    <div class="stat">
+      <div class="subtitle">Ref Earnings</div>
+      <div class="statValue" id="refEarnings">0 Coins</div>
+    </div>
+
+  </div>
+
+  <div class="card">
+    <div class="balanceLabel">TEAM NETWORK</div>
+
+    <div class="network">
+      <div class="networkItem">
+        <b id="teamDirect">0</b>
+        <div class="subtitle">Direct Friends</div>
       </div>
-          <script>
-    // Constants & Conversion Rates
-    // 10,000 Coins = 1 ATF LITE
-    // 500 ATF LITE = $1.00 USDT
-    const BOT_USERNAME = "ATF_LITE_bot"; 
-    const BASIC_SPEED = 0.396825; // Coins per second (10,000 / 25200 seconds)
 
-    // User State & Storage Setup
-    let totalCoins = parseFloat(localStorage.getItem('atf_totalCoins')) || 0;
-    let unclaimedCoins = parseFloat(localStorage.getItem('atf_unclaimedCoins')) || 0;
-    let miningStartTime = parseInt(localStorage.getItem('atf_miningStartTime')) || 0;
-    let isMiningActive = localStorage.getItem('atf_isMiningActive') === 'true';
+      <div class="networkItem">
+        <b id="teamEarnings">0</b>
+        <div class="subtitle">Referral Coins</div>
+      </div>
+    </div>
+  </div>
 
-    // Telegram User Integration
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
-    let userId = "786001";
-    let userName = "User_786001";
-    let photoUrl = "";
+  <div class="card">
+    <button class="btn pink" style="width:100%" onclick="openVerification()">
+      🔐 Request Verification
+    </button>
 
-    if (tg) {
-      tg.expand();
-      if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const u = tg.initDataUnsafe.user;
-        userId = u.id;
-        userName = u.username ? "@" + u.username : (u.first_name + (u.last_name ? " " + u.last_name : ""));
-        if (u.photo_url) photoUrl = u.photo_url;
-      }
+    <p class="subtitle" style="margin-top:10px">
+      Complete all required tasks and submit screenshots for admin review.
+    </p>
+  </div>
+
+</section>
+
+<!-- ================= WALLET PAGE ================= -->
+<section id="wallet" class="page">
+
+  <div class="sectionTitle">👛 Wallet & Withdrawal</div>
+  <div class="subtitle">Withdraw your available ATF LITE balance.</div>
+
+  <div class="card walletBalance" style="margin-top:15px">
+    <div style="font-size:30px">👛</div>
+    <div class="balanceLabel">WITHDRAWABLE BALANCE</div>
+    <div class="walletAmount" id="withdrawBalance">0.00 ATF LITE</div>
+    <div class="totalValue" id="withdrawUsd">~$0.00 USDT</div>
+  </div>
+
+  <div class="card">
+
+    <div class="balanceLabel">PAYMENT METHOD</div>
+
+    <div class="paymentGrid" style="margin-top:10px">
+
+      <button class="payment selected"
+              onclick="selectPayment('TON Wallet')"
+              id="payTon">
+        TON Wallet<br>(Telegram)
+      </button>
+
+      <button class="payment"
+              onclick="selectPayment('USDT TRC20/BEP20')"
+              id="payUsdt">
+        USDT<br>TRC20/BEP20
+      </button>
+
+      <button class="payment"
+              onclick="selectPayment('Binance Pay UID')"
+              id="payBinance">
+        Binance Pay<br>(UID)
+      </button>
+
+    </div>
+
+    <label class="subtitle" style="display:block;margin-top:16px">
+      Wallet / Payment Address
+    </label>
+
+    <input id="walletAddress"
+           class="input"
+           placeholder="Enter your TON or USDT Wallet Address">
+
+    <div style="color:#fbbf24;font-size:12px;margin-bottom:12px">
+      ⚠️ Minimum Withdrawal: 50 ATF LITE (500,000 Coins)
+    </div>
+
+    <button class="btn green" style="width:100%"
+            onclick="sendWithdrawal()">
+      💸 Send Withdrawal Request
+    </button>
+
+  </div>
+
+  <div class="card">
+    <div class="balanceLabel">WITHDRAWAL HISTORY</div>
+    <div id="withdrawHistory">
+      <p class="subtitle" style="margin-top:10px">
+        No withdrawal requests yet.
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= SEARCH PAGE ================= -->
+<section id="search" class="page">
+
+  <div class="sectionTitle">🔍 User Finder</div>
+  <div class="subtitle">Search users and view the global leaderboard.</div>
+
+  <div class="searchBox">
+
+    <input id="searchInput"
+           class="input"
+           style="margin:0"
+           placeholder="🔍 Search by User Name or ID (e.g. 786001)...">
+
+    <button class="smallBtn cyan" onclick="searchUser()">
+      Search
+    </button>
+
+  </div>
+
+  <div id="searchResult"></div>
+
+  <div class="card">
+    <div class="balanceLabel">🏆 TOP 10 LEADERBOARD</div>
+    <div id="leaderboard" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card myRank">
+    <div class="balanceLabel">YOUR RANK</div>
+    <div style="font-size:23px;font-weight:900;margin-top:6px"
+         id="myRank">
+      #1
+    </div>
+    <div class="subtitle" id="myRankInfo">
+      ATF LITE User • ID: 786001
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= PROFILE PAGE ================= -->
+<section id="profile" class="page">
+
+  <div class="card profile">
+
+    <div class="avatar" id="profileAvatar">👤</div>
+
+    <div class="profileName" id="profileName">
+      ATF LITE User
+    </div>
+
+    <div class="profileId" id="profileId">
+      User ID: 786001
+    </div>
+
+    <div id="profileVerifyBadge" class="unverified">
+      🔴 Unverified
+    </div>
+
+  </div>
+
+  <div class="card">
+    <div class="stats">
+
+      <div class="stat">
+        <div class="subtitle">ATF LITE</div>
+        <div class="statValue" id="profileMws">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="subtitle">USDT</div>
+        <div class="statValue" id="profileUsd">$0.00</div>
+      </div>
+
+    </div>
+
+    <div class="stats" style="margin-top:10px">
+
+      <div class="stat">
+        <div class="subtitle">Level</div>
+        <div class="statValue" id="profileLevel">1</div>
+      </div>
+
+      <div class="stat">
+        <div class="subtitle">Coins</div>
+        <div class="statValue" id="profileCoins">0</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+
+    <button class="btn cyan"
+            style="width:100%;margin-bottom:9px"
+            onclick="showPage('wallet')">
+      👛 Wallet / Withdraw
+    </button>
+
+    <button class="btn pink"
+            style="width:100%;margin-bottom:9px"
+            onclick="openCertificate()">
+      🏆 Certificate
+    </button>
+
+    <button class="btn orange"
+            style="width:100%;margin-bottom:9px"
+            onclick="openHistory()">
+      📜 History
+    </button>
+
+    <button class="btn red"
+            style="width:100%"
+            onclick="openSupport()">
+      🆘 Support
+    </button>
+
+  </div>
+
+</section>
+
+</div>
+
+<!-- ================= BOTTOM NAV ================= -->
+
+<nav class="nav">
+
+  <button class="active" data-page="mine" onclick="showPage('mine')">
+    ⛏️<br>Mine
+  </button>
+
+  <button data-page="tasks" onclick="showPage('tasks')">
+    ✅<br>Tasks
+  </button>
+
+  <button data-page="miners" onclick="showPage('miners')">
+    ⚡<br>Miners
+  </button>
+
+  <button data-page="friends" onclick="showPage('friends')">
+    👥<br>Friends
+  </button>
+
+  <button data-page="wallet" onclick="showPage('wallet')">
+    👛<br>Wallet
+  </button>
+
+  <button data-page="profile" onclick="showPage('profile')">
+    👤<br>Profile
+  </button>
+
+</nav>
+
+<div id="toast" class="toast"></div>
+<!-- ==================== PART 2/5 ==================== -->
+
+<!-- Certificate Modal -->
+<div id="certificateModal" class="modal">
+  <div class="modal-box certificate-box">
+    <button class="modal-close" type="button" onclick="closeModal('certificateModal')">×</button>
+
+    <div class="certificate">
+      <div class="certificate-top">
+        <div class="certificate-crown">♛</div>
+        <h2>ATF LITE</h2>
+        <p>MEMBERSHIP CERTIFICATE</p>
+      </div>
+
+      <div class="certificate-seal">✓</div>
+
+      <div class="certificate-content">
+        <small>This certificate is proudly presented to</small>
+        <h3 id="certName">ATF Member</h3>
+
+        <div class="cert-line"></div>
+
+        <div class="cert-info">
+          <div>
+            <span>Member ID</span>
+            <strong id="certAppId">786001</strong>
+          </div>
+          <div>
+            <span>Telegram ID</span>
+            <strong id="certTelegramId">Not available</strong>
+          </div>
+          <div>
+            <span>ATF LITE Balance</span>
+            <strong id="certBalance">0 ATF LITE</strong>
+          </div>
+          <div>
+            <span>Current Level</span>
+            <strong id="certLevel">Level 1</strong>
+          </div>
+        </div>
+
+        <div class="certificate-status" id="certStatus">
+          UNVERIFIED MEMBER
+        </div>
+
+        <p class="certificate-note">
+          Verified ATF LITE Member • Premium Edition
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- History Modal -->
+<div id="historyModal" class="modal">
+  <div class="modal-box">
+    <button class="modal-close" type="button" onclick="closeModal('historyModal')">×</button>
+
+    <h2>📜 History</h2>
+    <p class="modal-subtitle">Your recent account activity</p>
+
+    <div id="historyList" class="history-list">
+      <div class="empty-history">
+        No activity yet.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Support Modal -->
+<div id="supportModal" class="modal">
+  <div class="modal-box">
+    <button class="modal-close" type="button" onclick="closeModal('supportModal')">×</button>
+
+    <div class="support-icon">💬</div>
+    <h2>ATF LITE Support</h2>
+    <p class="modal-subtitle">
+      Need help with your account, tasks, wallet or withdrawal?
+    </p>
+
+    <button
+      class="primary-btn"
+      type="button"
+      onclick="openSupport()"
+    >
+      💬 Contact Support
+    </button>
+
+    <p class="small-note">
+      Support will open in Telegram.
+    </p>
+  </div>
+</div>
+
+<!-- Verification Modal -->
+<div id="verificationModal" class="modal">
+  <div class="modal-box verification-box">
+    <button class="modal-close" type="button" onclick="closeModal('verificationModal')">×</button>
+
+    <div class="verify-icon">🛡️</div>
+    <h2>Request Verification</h2>
+
+    <p class="modal-subtitle">
+      Complete the required social tasks and upload screenshots as proof.
+    </p>
+
+    <div class="verification-info">
+      <div class="verify-row">
+        <span>Telegram Task</span>
+        <b>Required</b>
+      </div>
+
+      <div class="verify-row">
+        <span>YouTube Task</span>
+        <b>Required</b>
+      </div>
+
+      <div class="verify-row">
+        <span>Main/Profile Screenshot</span>
+        <b>Required</b>
+      </div>
+    </div>
+
+    <label class="upload-label">
+      📸 Telegram Screenshot
+      <input
+        id="telegramProof"
+        type="file"
+        accept="image/*"
+      >
+    </label>
+
+    <label class="upload-label">
+      📸 YouTube Screenshot
+      <input
+        id="youtubeProof"
+        type="file"
+        accept="image/*"
+      >
+    </label>
+
+    <label class="upload-label">
+      📸 Main/Profile Screenshot
+      <input
+        id="profileProof"
+        type="file"
+        accept="image/*"
+      >
+    </label>
+
+    <div id="verificationMessage" class="form-message"></div>
+
+    <button
+      class="primary-btn"
+      type="button"
+      onclick="submitVerification()"
+    >
+      🛡️ Submit Verification Request
+    </button>
+
+    <p class="small-note">
+      Your request will remain pending until approved by the ATF LITE admin.
+    </p>
+  </div>
+</div>
+
+<!-- Wallet Amount Field will be inserted automatically by JavaScript -->
+
+<script>
+/* =========================================================
+   ATF LITE — PART 2/5
+   Core configuration + state + common functions
+   ========================================================= */
+
+const COINS_PER_ATF = 10000;
+const ATF_PER_USDT = 500;
+const MIN_WITHDRAW_ATF = 50;
+const MINING_DURATION = 7 * 60 * 60 * 1000;
+
+const SUPPORT_URL = "https://t.me/MWS_Helpline";
+
+/*
+  IMPORTANT:
+  Replace these two URLs with your real Telegram channel
+  and YouTube channel before publishing.
+*/
+const TASK_URLS = {
+  telegram: "https://t.me/REPLACE_WITH_YOUR_CHANNEL",
+  youtube: "https://youtube.com/@REPLACE_WITH_YOUR_CHANNEL"
+};
+
+/*
+  Replace this with your real Telegram bot username.
+  Example:
+  https://t.me/YourBot?start=786001
+*/
+const BOT_USERNAME = "REPLACE_WITH_YOUR_BOT";
+
+/* ---------- Telegram ---------- */
+
+let tg = null;
+let telegramUser = null;
+
+try {
+  if (window.Telegram && Telegram.WebApp) {
+    tg = Telegram.WebApp;
+
+    tg.ready();
+    tg.expand();
+
+    telegramUser = tg.initDataUnsafe &&
+      tg.initDataUnsafe.user
+      ? tg.initDataUnsafe.user
+      : null;
+  }
+} catch (error) {
+  console.log("Telegram WebApp initialization:", error);
+}
+
+/* ---------- Default State ---------- */
+
+const DEFAULT_STATE = {
+  coins: 0,
+  unclaimedCoins: 0,
+
+  miningActive: false,
+  miningStart: 0,
+  miningLastCalc: 0,
+
+  tasks: {
+    telegram: {
+      started: false,
+      claimed: false,
+      startedAt: 0
+    },
+
+    youtube: {
+      started: false,
+      claimed: false,
+      startedAt: 0
+    }
+  },
+
+  friends: [],
+  referralEarnings: 0,
+
+  withdrawalHistory: [],
+  activityHistory: [],
+
+  wallet: {
+    method: "",
+    address: ""
+  },
+
+  verified: false,
+  verificationPending: false,
+  verificationDate: 0
+};
+
+let state = loadState();
+
+/* ---------- Storage ---------- */
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem("atfLiteState");
+
+    if (!saved) {
+      return JSON.parse(JSON.stringify(DEFAULT_STATE));
     }
 
-    document.getElementById('uName').innerText = userName;
-    document.getElementById('uId').innerText = userId;
-    document.getElementById('certName').innerText = userName;
-    document.getElementById('certId').innerText = userId;
+    const parsed = JSON.parse(saved);
 
-    if (photoUrl) {
-      document.getElementById('uAvatar').innerHTML = `<img src="${photoUrl}" alt="User Avatar">`;
+    return mergeState(
+      JSON.parse(JSON.stringify(DEFAULT_STATE)),
+      parsed
+    );
+  } catch (error) {
+    console.log("State load error:", error);
+
+    return JSON.parse(JSON.stringify(DEFAULT_STATE));
+  }
+}
+
+function mergeState(base, saved) {
+  Object.keys(saved || {}).forEach(function(key) {
+    if (
+      saved[key] &&
+      typeof saved[key] === "object" &&
+      !Array.isArray(saved[key]) &&
+      base[key] &&
+      typeof base[key] === "object" &&
+      !Array.isArray(base[key])
+    ) {
+      base[key] = mergeState(base[key], saved[key]);
     } else {
-      document.getElementById('uAvatar').innerText = userName.charAt(0).toUpperCase();
+      base[key] = saved[key];
+    }
+  });
+
+  return base;
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(
+      "atfLiteState",
+      JSON.stringify(state)
+    );
+  } catch (error) {
+    console.log("State save error:", error);
+  }
+}
+
+/* ---------- App User ID ---------- */
+
+/*
+  Frontend/demo only.
+
+  Production:
+  The ID must be generated by a secure backend
+  so every user gets one unique sequential ID.
+*/
+
+function getAppUserId() {
+  let id = localStorage.getItem("atfLiteAppUserId");
+
+  if (id) {
+    return id;
+  }
+
+  let nextId = parseInt(
+    localStorage.getItem("atfLiteNextId") || "786001",
+    10
+  );
+
+  if (!Number.isFinite(nextId) || nextId < 786001) {
+    nextId = 786001;
+  }
+
+  id = String(nextId);
+
+  localStorage.setItem(
+    "atfLiteAppUserId",
+    id
+  );
+
+  localStorage.setItem(
+    "atfLiteNextId",
+    String(nextId + 1)
+  );
+
+  return id;
+}
+
+const APP_USER_ID = getAppUserId();
+
+/* ---------- User Information ---------- */
+
+function getUserName() {
+  if (telegramUser) {
+    const first = telegramUser.first_name || "";
+    const last = telegramUser.last_name || "";
+
+    const full = (first + " " + last).trim();
+
+    if (full) {
+      return full;
     }
 
-    // Update UI Balances
-    function updateBalanceUI() {
-      let atfLite = (totalCoins / 10000);
-      let usdVal = (atfLite / 500).toFixed(4);
-      
-      document.getElementById('totalCoinDisplay').innerText = Math.floor(totalCoins).toLocaleString() + " Coins";
-      document.getElementById('atfDisplay').innerText = atfLite.toFixed(2) + " ATF LITE (~ $" + usdVal + " USDT)";
-      
-      let claimBtn = document.getElementById('claimPointsBtn');
-      if (unclaimedCoins > 0 && isMiningActive) {
-        claimBtn.disabled = false;
-      } else {
-        claimBtn.disabled = true;
-      }
+    if (telegramUser.username) {
+      return "@" + telegramUser.username;
+    }
+  }
+
+  return localStorage.getItem("atfLiteUserName") || "ATF Member";
+}
+
+function getTelegramId() {
+  if (telegramUser && telegramUser.id) {
+    return String(telegramUser.id);
+  }
+
+  return "Not available";
+}
+
+function getUserInitials() {
+  const name = getUserName().trim();
+
+  if (!name) {
+    return "A";
+  }
+
+  const parts = name.split(/\s+/);
+
+  if (parts.length === 1) {
+    return parts[0].charAt(0).toUpperCase();
+  }
+
+  return (
+    parts[0].charAt(0) +
+    parts[parts.length - 1].charAt(0)
+  ).toUpperCase();
+}
+
+/* ---------- Currency ---------- */
+
+function coinsToATF(coins) {
+  return Number(coins || 0) / COINS_PER_ATF;
+}
+
+function atfToCoins(atf) {
+  return Math.round(
+    Number(atf || 0) * COINS_PER_ATF
+  );
+}
+
+function atfToUSDT(atf) {
+  return Number(atf || 0) / ATF_PER_USDT;
+}
+
+function formatNumber(number) {
+  return Number(number || 0).toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits: 0
+    }
+  );
+}
+
+function formatATF(atf) {
+  return Number(atf || 0).toFixed(3);
+}
+
+function formatUSDT(usdt) {
+  return Number(usdt || 0).toFixed(4);
+}
+
+/* ---------- Balance ---------- */
+
+function getTotalATF() {
+  return coinsToATF(state.coins);
+}
+
+function getWithdrawableATF() {
+  return getTotalATF();
+}
+
+/* ---------- Level System ---------- */
+
+function getLevelFromATF(atf) {
+  const value = Number(atf || 0);
+
+  if (value < 30) {
+    return 1;
+  }
+
+  const calculated =
+    Math.floor((value - 30) / 20) + 1;
+
+  return Math.min(
+    1000,
+    Math.max(1, calculated)
+  );
+}
+
+function getLevelRequirement(level) {
+  const safeLevel = Math.min(
+    1000,
+    Math.max(1, Number(level || 1))
+  );
+
+  return 30 + ((safeLevel - 1) * 20);
+}
+
+/*
+  Speed anchors:
+  Level 1 = 0.397
+  Level 2 = 0.429
+  Level 3 = 0.461
+  Level 20 = 1.000
+  Level 21 = 1.001
+  Level 100 = 1.080
+  Level 500 = 1.480
+  Level 1000 = 1.980
+*/
+
+function getMiningSpeed(level) {
+  const safeLevel = Math.min(
+    1000,
+    Math.max(1, Number(level || 1))
+  );
+
+  if (safeLevel === 1) {
+    return 0.397;
+  }
+
+  if (safeLevel === 2) {
+    return 0.429;
+  }
+
+  if (safeLevel === 3) {
+    return 0.461;
+  }
+
+  if (safeLevel <= 20) {
+    const speed =
+      0.461 +
+      ((safeLevel - 3) * (1.000 - 0.461) / 17);
+
+    return Number(speed.toFixed(3));
+  }
+
+  return Number(
+    (1.000 + ((safeLevel - 20) * 0.001)).toFixed(3)
+  );
+}
+
+function getCurrentLevel() {
+  return getLevelFromATF(getTotalATF());
+}
+
+function getCurrentMiningSpeed() {
+  return getMiningSpeed(getCurrentLevel());
+}
+
+/* ---------- Level Group Colors ---------- */
+
+function getLevelGroup(level) {
+  return Math.floor(
+    (Number(level || 1) - 1) / 5
+  );
+}
+
+function getLevelColor(level) {
+  const group = getLevelGroup(level);
+
+  /*
+    Every five levels use the same color family.
+    Each next five-level group changes hue.
+  */
+
+  const specialHues = [
+    210, 0, 140, 45, 270,
+    185, 25, 320, 100, 155
+  ];
+
+  let hue;
+
+  if (group < specialHues.length) {
+    hue = specialHues[group];
+  } else {
+    hue = (group * 137.508) % 360;
+  }
+
+  const saturation =
+    52 + ((group * 7) % 18);
+
+  const lightness =
+    12 + ((group * 3) % 7);
+
+  return {
+    background:
+      `hsl(${hue} ${saturation}% ${lightness}%)`,
+
+    border:
+      `hsl(${hue} ${Math.min(90, saturation + 20)}% 42%)`
+  };
+}
+
+/* ---------- Page Navigation ---------- */
+
+function showPage(pageName) {
+  const pages = document.querySelectorAll(".page");
+
+  pages.forEach(function(page) {
+    page.classList.remove("active");
+  });
+
+  const target =
+    document.getElementById(pageName);
+
+  if (target) {
+    target.classList.add("active");
+  }
+
+  const navButtons =
+    document.querySelectorAll(".nav-item");
+
+  navButtons.forEach(function(button) {
+    button.classList.remove("active");
+
+    if (
+      button.dataset.page === pageName
+    ) {
+      button.classList.add("active");
+    }
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+  renderAll();
+}
+
+/* ---------- Toast ---------- */
+
+let toastTimer = null;
+
+function showToast(message, type) {
+  const toast =
+    document.getElementById("toast");
+
+  if (!toast) {
+    return;
+  }
+
+  toast.textContent = message;
+
+  toast.className = "toast";
+
+  if (type) {
+    toast.classList.add(type);
+  }
+
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(function() {
+    toast.classList.remove("show");
+  }, 2500);
+}
+
+/* ---------- Modal ---------- */
+
+function openModal(id) {
+  const modal =
+    document.getElementById(id);
+
+  if (!modal) {
+    return;
+  }
+
+  modal.classList.add("show");
+
+  document.body.classList.add("modal-open");
+}
+
+function closeModal(id) {
+  const modal =
+    document.getElementById(id);
+
+  if (!modal) {
+    return;
+  }
+
+  modal.classList.remove("show");
+
+  const opened =
+    document.querySelectorAll(".modal.show");
+
+  if (opened.length === 0) {
+    document.body.classList.remove("modal-open");
+  }
+}
+
+/* ---------- Close Modal on Outside Click ---------- */
+
+document.addEventListener(
+  "click",
+  function(event) {
+    if (!event.target.classList.contains("modal")) {
+      return;
     }
 
-    // 7-Hour Lock Mining System
-    let miningInterval = null;
-    const DURATION_7_HOURS_MS = 7 * 60 * 60 * 1000;
+    event.target.classList.remove("show");
 
-    function initMiningState() {
-      if (isMiningActive) {
-        let now = Date.now();
-        let elapsedTime = now - miningStartTime;
+    const opened =
+      document.querySelectorAll(".modal.show");
 
-        if (elapsedTime >= DURATION_7_HOURS_MS) {
-          // Completed
-          finishMiningSession();
-        } else {
-          // Resume Active Session
-          resumeMiningLoop();
-        }
-      } else {
-        document.getElementById('startMiningBtn').style.display = "block";
-        document.getElementById('mineTimerText').innerText = "⛏️ Ready to Start Mining";
-      }
-      updateBalanceUI();
+    if (opened.length === 0) {
+      document.body.classList.remove("modal-open");
+    }
+  }
+);
+
+/* ---------- Referral Link ---------- */
+
+function getReferralLink() {
+  if (
+    !BOT_USERNAME ||
+    BOT_USERNAME.startsWith("REPLACE_")
+  ) {
+    return "Telegram bot username not configured";
+  }
+
+  return (
+    "https://t.me/" +
+    BOT_USERNAME +
+    "?start=" +
+    APP_USER_ID
+  );
+}
+
+function copyText(text) {
+  if (!text) {
+    return;
+  }
+
+  /*
+    Clipboard API may not work in every Telegram
+    WebView, so provide a fallback.
+  */
+
+  if (
+    navigator.clipboard &&
+    navigator.clipboard.writeText
+  ) {
+    navigator.clipboard.writeText(text)
+      .then(function() {
+        showToast(
+          "Referral link copied!",
+          "success"
+        );
+      })
+      .catch(function() {
+        fallbackCopy(text);
+      });
+
+    return;
+  }
+
+  fallbackCopy(text);
+}
+
+function fallbackCopy(text) {
+  try {
+    const input =
+      document.createElement("textarea");
+
+    input.value = text;
+    input.style.position = "fixed";
+    input.style.opacity = "0";
+
+    document.body.appendChild(input);
+
+    input.focus();
+    input.select();
+
+    document.execCommand("copy");
+
+    input.remove();
+
+    showToast(
+      "Referral link copied!",
+      "success"
+    );
+  } catch (error) {
+    showToast(
+      "Please copy the link manually.",
+      "error"
+    );
+  }
+}
+
+/* ---------- Telegram Share ---------- */
+
+function shareReferral() {
+  const link = getReferralLink();
+
+  if (
+    !link ||
+    link.includes("not configured")
+  ) {
+    showToast(
+      "Bot username is not configured yet.",
+      "error"
+    );
+
+    return;
+  }
+
+  const text =
+    "Join ATF LITE and start earning rewards!";
+
+  const shareURL =
+    "https://t.me/share/url?url=" +
+    encodeURIComponent(link) +
+    "&text=" +
+    encodeURIComponent(text);
+
+  openExternal(shareURL);
+}
+
+/* ---------- External Links ---------- */
+
+function openExternal(url) {
+  if (!url) {
+    return;
+  }
+
+  try {
+    if (tg && tg.openTelegramLink && url.includes("t.me/")) {
+      tg.openTelegramLink(url);
+      return;
     }
 
-    function start7HourMining() {
-      if (isMiningActive) return;
-
-      isMiningActive = true;
-      miningStartTime = Date.now();
-      unclaimedCoins = 0;
-
-      localStorage.setItem('atf_isMiningActive', 'true');
-      localStorage.setItem('atf_miningStartTime', miningStartTime.toString());
-      localStorage.setItem('atf_unclaimedCoins', '0');
-
-      resumeMiningLoop();
+    if (tg && tg.openLink) {
+      tg.openLink(url);
+      return;
     }
+  } catch (error) {
+    console.log("Telegram link error:", error);
+  }
 
-    function resumeMiningLoop() {
-      document.getElementById('startMiningBtn').style.display = "none";
-      
-      if (miningInterval) clearInterval(miningInterval);
+  window.open(url, "_blank");
+}
 
-      miningInterval = setInterval(() => {
-        let now = Date.now();
-        let elapsedTimeMs = now - miningStartTime;
+/* ---------- Support ---------- */
 
-        if (elapsedTimeMs >= DURATION_7_HOURS_MS) {
-          finishMiningSession();
-          return;
-        }
+function openSupport() {
+  openExternal(SUPPORT_URL);
+}
 
-        // Calculate live points based on time passed
-        let totalElapsedSeconds = elapsedTimeMs / 1000;
-        unclaimedCoins = totalElapsedSeconds * BASIC_SPEED;
+/* ---------- Activity History ---------- */
 
-        // Save progress
-        localStorage.setItem('atf_unclaimedCoins', unclaimedCoins.toString());
+function addActivity(
+  type,
+  title,
+  amount,
+  details
+) {
+  if (!Array.isArray(state.activityHistory)) {
+    state.activityHistory = [];
+  }
 
-        // Update Live Display
-        document.getElementById('liveMiningPoints').innerText = "+" + unclaimedCoins.toFixed(3);
-        
-        let remainingSeconds = Math.floor((DURATION_7_HOURS_MS - elapsedTimeMs) / 1000);
-        let h = Math.floor(remainingSeconds / 3600);
-        let m = Math.floor((remainingSeconds % 3600) / 60);
-        let s = remainingSeconds % 60;
-        
-        document.getElementById('mineTimerText').innerText = `⛏️ Mining Active: ${h}h ${m}m ${s}s remaining`;
-        updateBalanceUI();
-      }, 1000);
+  state.activityHistory.unshift({
+    id: Date.now() + "_" + Math.random(),
+    type: type || "activity",
+    title: title || "Activity",
+    amount: Number(amount || 0),
+    details: details || "",
+    time: Date.now()
+  });
+
+  /*
+    Keep local history small.
+  */
+
+  if (state.activityHistory.length > 100) {
+    state.activityHistory =
+      state.activityHistory.slice(0, 100);
+  }
+
+  saveState();
+}
+
+/* ---------- Withdrawal History ---------- */
+
+function addWithdrawalHistory(
+  amountATF,
+  method,
+  address
+) {
+  if (!Array.isArray(state.withdrawalHistory)) {
+    state.withdrawalHistory = [];
+  }
+
+  state.withdrawalHistory.unshift({
+    id:
+      "WD-" +
+      Date.now() +
+      "-" +
+      Math.floor(Math.random() * 1000),
+
+    amountATF:
+      Number(amountATF || 0),
+
+    amountUSDT:
+      atfToUSDT(amountATF),
+
+    method:
+      method || "",
+
+    address:
+      address || "",
+
+    status:
+      "Pending",
+
+    time:
+      Date.now()
+  });
+
+  if (state.withdrawalHistory.length > 50) {
+    state.withdrawalHistory =
+      state.withdrawalHistory.slice(0, 50);
+  }
+}
+
+/* ---------- Dynamic Withdrawal Amount ---------- */
+
+function ensureWithdrawalAmountField() {
+  const addressInput =
+    document.getElementById("walletAddress");
+
+  if (!addressInput) {
+    return;
+  }
+
+  if (
+    document.getElementById("withdrawAmount")
+  ) {
+    return;
+  }
+
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.className =
+    "form-group";
+
+  wrapper.innerHTML = `
+    <label for="withdrawAmount">
+      Withdrawal Amount (ATF LITE)
+    </label>
+
+    <input
+      id="withdrawAmount"
+      type="number"
+      min="${MIN_WITHDRAW_ATF}"
+      step="0.001"
+      placeholder="Minimum ${MIN_WITHDRAW_ATF} ATF LITE"
+      inputmode="decimal"
+    >
+
+    <div class="small-note">
+      Minimum withdrawal:
+      ${MIN_WITHDRAW_ATF} ATF LITE =
+      ${formatNumber(atfToCoins(MIN_WITHDRAW_ATF))} Coins
+    </div>
+  `;
+
+  addressInput.parentNode.insertBefore(
+    wrapper,
+    addressInput
+  );
+}
+
+/* ---------- Initial User Data ---------- */
+
+function initializeUserData() {
+  if (!localStorage.getItem("atfLiteUserName")) {
+    localStorage.setItem(
+      "atfLiteUserName",
+      getUserName()
+    );
+  }
+
+  ensureWithdrawalAmountField();
+}
+
+/* ---------- Mining Calculation ---------- */
+
+function updateMiningProgress() {
+  if (!state.miningActive) {
+    return;
+  }
+
+  const now = Date.now();
+
+  if (!state.miningStart) {
+    state.miningActive = false;
+    saveState();
+    return;
+  }
+
+  const miningEnd =
+    state.miningStart + MINING_DURATION;
+
+  let last =
+    Number(state.miningLastCalc || state.miningStart);
+
+  if (last < state.miningStart) {
+    last = state.miningStart;
+  }
+
+  const calculationEnd =
+    Math.min(now, miningEnd);
+
+  if (calculationEnd > last) {
+    const elapsedSeconds =
+      (calculationEnd - last) / 1000;
+
+    const speed =
+      getCurrentMiningSpeed();
+
+    const earned =
+      elapsedSeconds * speed;
+
+    state.unclaimedCoins += earned;
+
+    state.miningLastCalc =
+      calculationEnd;
+  }
+
+  if (now >= miningEnd) {
+    state.miningActive = false;
+  }
+
+  saveState();
+}
+
+/* ---------- Start Mining ---------- */
+
+function startMining() {
+  updateMiningProgress();
+
+  if (state.miningActive) {
+    showToast(
+      "Mining is already active.",
+      "error"
+    );
+
+    return;
+  }
+
+  state.miningActive = true;
+
+  state.miningStart =
+ Date.now();
+
+  state.miningLastCalc =
+    state.miningStart;
+
+  addActivity(
+    "mining",
+    "7-hour mining started",
+    0,
+    "Mining session started"
+  );
+
+  saveState();
+
+  renderAll();
+
+  showToast(
+    "Mining started for 7 hours!",
+    "success"
+  );
+}
+
+/* ---------- Claim Mining Points ---------- */
+
+function claimMiningPoints() {
+  updateMiningProgress();
+
+  const amount =
+    Number(state.unclaimedCoins || 0);
+
+  if (amount <= 0) {
+    showToast(
+      "No points available to claim yet.",
+      "error"
+    );
+
+    renderAll();
+    return;
+  }
+
+  state.coins += amount;
+
+  state.unclaimedCoins = 0;
+
+  addActivity(
+    "claim",
+    "Mining points claimed",
+    amount,
+    "Points added to your balance"
+  );
+
+  saveState();
+
+  renderAll();
+
+  showToast(
+    "+" + formatNumber(amount) + " Coins claimed!",
+    "success"
+  );
+  }
+ /* ---------- Time Formatting ---------- */
+
+function formatTime(ms) {
+  const safe = Math.max(0, Number(ms || 0));
+
+  const totalSeconds = Math.floor(safe / 1000);
+
+  const hours = Math.floor(totalSeconds / 3600);
+
+  const minutes = Math.floor(
+    (totalSeconds % 3600) / 60
+  );
+
+  const seconds = totalSeconds % 60;
+
+  return (
+    String(hours).padStart(2, "0") +
+    ":" +
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(seconds).padStart(2, "0")
+  );
+}
+
+
+/* ---------- Certificate ---------- */
+
+function openCertificate() {
+  updateMiningProgress();
+
+  const certName =
+    document.getElementById("certName");
+
+  const certAppId =
+    document.getElementById("certAppId");
+
+  const certTelegramId =
+    document.getElementById("certTelegramId");
+
+  const certBalance =
+    document.getElementById("certBalance");
+
+  const certLevel =
+    document.getElementById("certLevel");
+
+  const certStatus =
+    document.getElementById("certStatus");
+
+  if (certName) {
+    certName.textContent = getUserName();
+  }
+
+  if (certAppId) {
+    certAppId.textContent = APP_USER_ID;
+  }
+
+  if (certTelegramId) {
+    certTelegramId.textContent = getTelegramId();
+  }
+
+  if (certBalance) {
+    certBalance.textContent =
+      formatATF(getTotalATF()) +
+      " ATF LITE";
+  }
+
+  if (certLevel) {
+    certLevel.textContent =
+      "Level " + getCurrentLevel();
+  }
+
+  if (certStatus) {
+    if (state.verified) {
+      certStatus.textContent =
+        "✓ VERIFIED MEMBER";
+
+      certStatus.classList.add("verified");
+    } else {
+      certStatus.textContent =
+        state.verificationPending
+          ? "VERIFICATION PENDING"
+          : "UNVERIFIED MEMBER";
+
+      certStatus.classList.remove("verified");
     }
+  }
 
-    function claimMiningPoints() {
-      if (!isMiningActive || unclaimedCoins <= 0) return;
+  openModal("certificateModal");
+}
 
-      totalCoins += unclaimedCoins;
-      
-      // Reset unclaimed points but KEEP mining session running!
-      // Adjust start time to simulate reset point accumulation
-      let now = Date.now();
-      miningStartTime = now; 
-      unclaimedCoins = 0;
 
-      localStorage.setItem('atf_totalCoins', totalCoins.toString());
-      localStorage.setItem('atf_unclaimedCoins', '0');
-      localStorage.setItem('atf_miningStartTime', miningStartTime.toString());
+/* ---------- History ---------- */
 
-      document.getElementById('liveMiningPoints').innerText = "+0.000";
-      updateBalanceUI();
-    }
+function openHistory() {
+  renderHistory();
+  openModal("historyModal");
+}
 
-    function finishMiningSession() {
-      clearInterval(miningInterval);
-      isMiningActive = false;
-      localStorage.setItem('atf_isMiningActive', 'false');
+function renderHistory() {
+  const list =
+    document.getElementById("historyList");
 
-      // Add remaining unclaimed coins to total
-      totalCoins += unclaimedCoins;
-      unclaimedCoins = 0;
-      localStorage.setItem('atf_totalCoins', totalCoins.toString());
-      localStorage.setItem('atf_unclaimedCoins', '0');
+  if (!list) {
+    return;
+  }
 
-      document.getElementById('startMiningBtn').style.display = "block";
-      document.getElementById('startMiningBtn').innerText = "⛏️ Start New 7-Hour Session";
-      document.getElementById('mineTimerText').innerText = "✅ 7-Hour Mining Completed!";
-      document.getElementById('liveMiningPoints').innerText = "+0.000";
-      
-      updateBalanceUI();
-    }
+  const history =
+    Array.isArray(state.activityHistory)
+      ? state.activityHistory
+      : [];
 
-    // Tasks Functionality
-    function handleTask(taskId, url) {
-      window.open(url, '_blank');
-      const btn = document.getElementById('btnTask' + taskId);
-      
-      if (btn.innerText === "Go") {
-        btn.innerText = "Claim";
-        btn.classList.add('btn-claim');
-      } else if (btn.innerText === "Claim") {
-        let rewardCoins = (taskId === 1 ? 100000 : 150000);
-        totalCoins += rewardCoins;
-        localStorage.setItem('atf_totalCoins', totalCoins.toString());
-        updateBalanceUI();
-        btn.innerText = "Completed";
-        btn.disabled = true;
-        btn.style.opacity = "0.6";
-      }
-    }
+  if (history.length === 0) {
+    list.innerHTML = `
+      <div class="empty-history">
+        No activity yet.
+      </div>
+    `;
 
-    // Dynamic 500 Miners
-    const minerList = document.getElementById('minerList');
-    for (let i = 1; i <= 500; i++) {
-      let speed = (i * 0.5).toFixed(1);
-      let price = (i * 2);
+    return;
+  }
 
-      let item = document.createElement('div');
-      item.className = 'miner-card';
-      item.innerHTML = `
-        <div>
-          <h4>Level ${i} Miner</h4>
-          <p style="font-size:11px; color:var(--accent-sky);">Speed: ${speed}x | Price: $${price} USDT</p>
+  list.innerHTML =
+    history.slice(0, 50).map(function(item) {
+
+      const amount =
+        Number(item.amount || 0);
+
+      const amountText =
+        amount > 0
+          ? "+" + formatNumber(amount) + " Coins"
+          : "";
+
+      return `
+        <div class="history-item">
+
+          <div class="history-icon">
+            ${getHistoryIcon(item.type)}
+          </div>
+
+          <div class="history-main">
+
+            <strong>
+              ${escapeHTML(item.title)}
+            </strong>
+
+            <small>
+              ${escapeHTML(item.details || "")}
+            </small>
+
+            <small>
+              ${formatDate(item.time)}
+            </small>
+
+          </div>
+
+          <div class="history-amount">
+            ${amountText}
+          </div>
+
         </div>
-        <button class="btn-buy">${i === 1 ? 'ACTIVE' : 'BUY'}</button>
       `;
-      minerList.appendChild(item);
+
+    }).join("");
+}
+
+
+function getHistoryIcon(type) {
+
+  const icons = {
+    mining: "⛏️",
+    claim: "🪙",
+    task: "✅",
+    referral: "👥",
+    withdrawal: "💸",
+    verification: "🛡️"
+  };
+
+  return icons[type] || "📌";
+}
+
+
+function formatDate(timestamp) {
+
+  const date =
+    new Date(
+      Number(timestamp || Date.now())
+    );
+
+  return date.toLocaleString(
+    "en-IN",
+    {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }
+  );
+}
+
+
+/* ---------- HTML Safety ---------- */
+
+function escapeHTML(value) {
+
+  return String(
+    value == null ? "" : value
+  )
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;")
+  .replace(/'/g, "&#039;");
+}
+
+
+/* ---------- Verification ---------- */
+
+function openVerification() {
+
+  if (state.verified) {
+
+    showToast(
+      "Your account is already verified.",
+      "success"
+    );
+
+    return;
+  }
+
+  const message =
+    document.getElementById(
+      "verificationMessage"
+    );
+
+  if (message) {
+
+    if (state.verificationPending) {
+
+      message.textContent =
+        "Your verification request is already pending admin approval.";
+
+      message.className =
+        "form-message success";
+
+    } else {
+
+      message.textContent = "";
+
+      message.className =
+        "form-message";
+    }
+  }
+
+  openModal("verificationModal");
+}
+
+
+function submitVerification() {
+
+  if (state.verified) {
+
+    showToast(
+      "You are already verified.",
+      "success"
+    );
+
+    closeModal("verificationModal");
+
+    return;
+  }
+
+  if (state.verificationPending) {
+
+    showToast(
+      "Verification request is already pending.",
+      "error"
+    );
+
+    return;
+  }
+
+  const telegramProof =
+    document.getElementById("telegramProof");
+
+  const youtubeProof =
+    document.getElementById("youtubeProof");
+
+  const profileProof =
+    document.getElementById("profileProof");
+
+  const message =
+    document.getElementById(
+      "verificationMessage"
+    );
+
+  if (
+    !telegramProof ||
+    !youtubeProof ||
+    !profileProof
+  ) {
+    return;
+  }
+
+  if (
+    !telegramProof.files.length ||
+    !youtubeProof.files.length ||
+    !profileProof.files.length
+  ) {
+
+    if (message) {
+
+      message.textContent =
+        "Please upload all 3 required screenshots.";
+
+      message.className =
+        "form-message error";
     }
 
-    // Referral System
-    const myRefLink = `https://t.me/${BOT_USERNAME}?start=${userId}`;
-    document.getElementById('refLinkText').innerText = myRefLink;
+    return;
+  }
 
-    const shareText = encodeURIComponent(`Join ATF LITE Mining & Earn Rewards! Click here: ${myRefLink}`);
-    document.getElementById('telegramInviteBtn').href = `https://t.me/share/url?url=${myRefLink}&text=${shareText}`;
+  /*
+    Frontend demo only.
 
-    function copyRefLink() {
-      navigator.clipboard.writeText(myRefLink);
-      alert("Referral link copied!");
+    Real production verification requires
+    a secure backend/admin system.
+  */
+
+  state.verificationPending = true;
+
+  state.verificationDate =
+    Date.now();
+
+  addActivity(
+    "verification",
+    "Verification request submitted",
+    0,
+    "Waiting for admin approval"
+  );
+
+  saveState();
+
+  if (message) {
+
+    message.textContent =
+      "Request submitted successfully. Waiting for admin approval.";
+
+    message.className =
+      "form-message success";
+  }
+
+  renderAll();
+
+  showToast(
+    "Verification request submitted!",
+    "success"
+  );
+}
+
+
+/* ---------- Wallet Method ---------- */
+
+function getSelectedWalletMethod() {
+
+  const method =
+    document.querySelector(
+      'input[name="walletMethod"]:checked'
+    );
+
+  return method
+    ? method.value
+    : "";
+}
+
+
+/* ---------- Safe Number ---------- */
+
+function safeNumber(value, fallback) {
+
+  const number =
+    Number(value);
+
+  if (!Number.isFinite(number)) {
+
+    return Number(
+      fallback || 0
+    );
+  }
+
+  return number;
+}
+
+
+/* ---------- Wallet Amount Field ---------- */
+
+function ensureWithdrawalAmountField() {
+
+  const addressInput =
+    document.getElementById(
+      "walletAddress"
+    );
+
+  if (!addressInput) {
+    return;
+  }
+
+  if (
+    document.getElementById(
+      "withdrawAmount"
+    )
+  ) {
+    return;
+  }
+
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.className =
+    "form-group";
+
+  wrapper.innerHTML = `
+    <label for="withdrawAmount">
+      Withdrawal Amount (ATF LITE)
+    </label>
+
+    <input
+      id="withdrawAmount"
+      type="number"
+      min="${MIN_WITHDRAW_ATF}"
+      step="0.001"
+      placeholder="Minimum ${MIN_WITHDRAW_ATF} ATF LITE"
+      inputmode="decimal"
+    >
+
+    <div class="small-note">
+      Minimum withdrawal:
+      ${MIN_WITHDRAW_ATF} ATF LITE =
+      ${formatNumber(
+        atfToCoins(MIN_WITHDRAW_ATF)
+      )} Coins
+    </div>
+  `;
+
+  addressInput.parentNode.insertBefore(
+    wrapper,
+    addressInput
+  );
+}
+
+
+/* ---------- Initialize User ---------- */
+
+function initializeUserData() {
+
+  if (
+    !localStorage.getItem(
+      "atfLiteUserName"
+    )
+  ) {
+
+    localStorage.setItem(
+      "atfLiteUserName",
+      getUserName()
+    );
+  }
+
+  ensureWithdrawalAmountField();
+}
+
+
+/* ---------- Wallet Save ---------- */
+
+function saveWalletDetails() {
+
+  const method =
+    getSelectedWalletMethod();
+
+  const addressInput =
+    document.getElementById(
+      "walletAddress"
+    );
+
+  const address =
+    addressInput
+      ? addressInput.value.trim()
+      : "";
+
+  if (!method) {
+
+    showToast(
+      "Please select a payment method.",
+      "error"
+    );
+
+    return false;
+  }
+
+  if (!address) {
+
+    showToast(
+      "Please enter your wallet address.",
+      "error"
+    );
+
+    return false;
+  }
+
+  state.wallet.method =
+    method;
+
+  state.wallet.address =
+    address;
+
+  saveState();
+
+  showToast(
+    "Wallet details saved.",
+    "success"
+  );
+
+  return true;
+}
+
+
+/* ---------- Withdrawal Request ---------- */
+
+function sendWithdrawalRequest() {
+
+  updateMiningProgress();
+
+  const method =
+    getSelectedWalletMethod();
+
+  const addressInput =
+    document.getElementById(
+      "walletAddress"
+    );
+
+  const amountInput =
+    document.getElementById(
+      "withdrawAmount"
+    );
+
+  const address =
+    addressInput
+      ? addressInput.value.trim()
+      : "";
+
+  const amountATF =
+    amountInput
+      ? safeNumber(
+          amountInput.value,
+          0
+        )
+      : 0;
+
+  const balanceATF =
+    getWithdrawableATF();
+
+  if (!method) {
+
+    showToast(
+      "Please select a payment method.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (!address) {
+
+    showToast(
+      "Please enter your wallet address.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (
+    amountATF < MIN_WITHDRAW_ATF
+  ) {
+
+    showToast(
+      "Minimum withdrawal is " +
+      MIN_WITHDRAW_ATF +
+      " ATF LITE.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (
+    amountATF > balanceATF
+  ) {
+
+    showToast(
+      "Insufficient ATF LITE balance.",
+      "error"
+    );
+
+    return;
+  }
+
+  const amountCoins =
+    atfToCoins(amountATF);
+
+  if (amountCoins <= 0) {
+
+    showToast(
+      "Invalid withdrawal amount.",
+      "error"
+    );
+
+    return;
+  }
+
+  /*
+    Deduct balance locally for demo.
+
+    Real production withdrawal must be processed
+    by a secure backend/admin system.
+  */
+
+  state.coins -= amountCoins;
+
+  if (state.coins < 0) {
+    state.coins = 0;
+  }
+
+  state.wallet.method =
+    method;
+
+  state.wallet.address =
+    address;
+
+  addWithdrawalHistory(
+    amountATF,
+    method,
+    address
+  );
+
+  addActivity(
+    "withdrawal",
+    "Withdrawal request sent",
+    -amountCoins,
+    method + " • Pending"
+  );
+
+  saveState();
+
+  if (amountInput) {
+    amountInput.value = "";
+  }
+
+  renderAll();
+
+  showToast(
+    "Withdrawal request submitted!",
+    "success"
+  );
+}
+
+
+/* ---------- Open Support ---------- */
+
+function openSupportModal() {
+
+  openModal(
+    "supportModal"
+  );
+}
+
+
+/* ---------- Profile Information ---------- */
+
+function updateProfileIdentity() {
+
+  const name =
+    getUserName();
+
+  const appId =
+    APP_USER_ID;
+
+  const telegramId =
+    getTelegramId();
+
+  const initials =
+    getUserInitials();
+
+  const nameElements =
+    document.querySelectorAll(
+      "[data-user-name]"
+    );
+
+  nameElements.forEach(
+    function(element) {
+      element.textContent = name;
+    }
+  );
+
+  const idElements =
+    document.querySelectorAll(
+      "[data-user-id]"
+    );
+
+  idElements.forEach(
+    function(element) {
+      element.textContent = appId;
+    }
+  );
+
+  const telegramElements =
+    document.querySelectorAll(
+      "[data-telegram-id]"
+    );
+
+  telegramElements.forEach(
+    function(element) {
+      element.textContent =
+        telegramId;
+    }
+  );
+
+  const avatarElements =
+    document.querySelectorAll(
+      "[data-user-avatar]"
+    );
+
+  avatarElements.forEach(
+    function(element) {
+      element.textContent =
+        initials;
+    }
+  );
+}
+
+
+/* ---------- Verification Badge ---------- */
+
+function updateVerificationBadges() {
+
+  const badges =
+    document.querySelectorAll(
+      ".verification-badge"
+    );
+
+  badges.forEach(
+    function(badge) {
+
+      if (state.verified) {
+
+        badge.textContent =
+          "✓ Verified";
+
+        badge.classList.add(
+          "verified"
+        );
+
+        badge.classList.remove(
+          "unverified"
+        );
+
+      } else {
+
+        badge.textContent =
+          state.verificationPending
+            ? "⏳ Pending"
+            : "Unverified";
+
+        badge.classList.remove(
+          "verified"
+        );
+
+        badge.classList.add(
+          "unverified"
+        );
+      }
+    }
+  );
+}
+
+
+/* ---------- Current Balance Text ---------- */
+
+function updateBalanceTexts() {
+
+  const totalCoins =
+    state.coins;
+
+  const totalATF =
+    getTotalATF();
+
+  const totalUSDT =
+    atfToUSDT(totalATF);
+
+  const unclaimed =
+    state.unclaimedCoins;
+
+  document
+    .querySelectorAll(
+      "[data-total-coins]"
+    )
+    .forEach(function(element) {
+
+      element.textContent =
+        formatNumber(totalCoins) +
+        " Coins";
+    });
+
+  document
+    .querySelectorAll(
+      "[data-total-atf]"
+    )
+    .forEach(function(element) {
+
+      element.textContent =
+        formatATF(totalATF) +
+        " ATF LITE";
+    });
+
+  document
+    .querySelectorAll(
+      "[data-total-usdt]"
+    )
+    .forEach(function(element) {
+
+      element.textContent =
+        "$" +
+        formatUSDT(totalUSDT);
+    });
+
+  document
+    .querySelectorAll(
+      "[data-unclaimed-coins]"
+    )
+    .forEach(function(element) {
+
+      element.textContent =
+        formatNumber(unclaimed) +
+        " Coins";
+    });
+}
+
+
+/* ---------- Current Level Text ---------- */
+
+function updateLevelTexts() {
+
+  const level =
+    getCurrentLevel();
+
+  const speed =
+    getCurrentMiningSpeed();
+
+  const requirement =
+    getLevelRequirement(level);
+
+  document
+    .querySelectorAll(
+      "[data-current-level]"
+    )
+    .forEach(function(element) {
+
+      element.textContent =
+        "Level " + level;
+    });
+
+  document
+    .querySelectorAll(
+      "[data-mining-speed]"
+    )
+    .forEach(function(element) {
+
+      element.textContent =
+        speed.toFixed(3) +
+        " Coins/s";
+    });
+
+  document
+    .querySelectorAll(
+      "[data-level-requirement]"
+    )
+    .forEach(function(element) {
+
+      element.textContent =
+        formatATF(requirement) +
+        " ATF LITE";
+    });
+}
+
+
+/* ---------- Mining Status ---------- */
+
+function getMiningRemaining() {
+
+  if (!state.miningActive) {
+    return 0;
+  }
+
+  const end =
+    state.miningStart +
+    MINING_DURATION;
+
+  return Math.max(
+    0,
+    end - Date.now()
+  );
+}
+
+
+/* ---------- Mining Status Text ---------- */
+
+function getMiningStatusText() {
+
+  if (state.miningActive) {
+
+    return (
+      "Mining Active • " +
+      formatTime(
+        getMiningRemaining()
+      ) +
+      " remaining"
+    );
+  }
+
+  if (
+    state.miningStart &&
+    Date.now() >=
+      state.miningStart +
+      MINING_DURATION
+  ) {
+
+    return "Mining Complete";
+  }
+
+  return "Ready to Start Mining";
+}
+
+
+/* ---------- Part 2 Complete ---------- */
+  <!-- ==================== PART 3/5 ==================== -->
+
+/* ---------- Mining Remaining Time ---------- */
+
+function getMiningRemaining() {
+
+  if (!state.miningActive || !state.miningStart) {
+    return 0;
+  }
+
+  const endTime =
+    state.miningStart + MINING_DURATION;
+
+  return Math.max(
+    0,
+    endTime - Date.now()
+  );
+}
+
+
+/* ---------- Mining Status ---------- */
+
+function getMiningStatusText() {
+
+  if (state.miningActive) {
+
+    return (
+      "Mining Active • " +
+      formatTime(
+        getMiningRemaining()
+      ) +
+      " remaining"
+    );
+  }
+
+  if (
+    state.miningStart &&
+    Date.now() >=
+      state.miningStart +
+      MINING_DURATION
+  ) {
+
+    return "Mining Complete";
+  }
+
+  return "Ready to Start Mining";
+}
+
+
+/* ---------- Render Mine Page ---------- */
+
+function renderMinePage() {
+
+  updateMiningProgress();
+
+  const totalATF =
+    getTotalATF();
+
+  const currentLevel =
+    getCurrentLevel();
+
+  const speed =
+    getCurrentMiningSpeed();
+
+  const totalCoins =
+    Math.floor(state.coins || 0);
+
+  const unclaimed =
+    Math.floor(state.unclaimedCoins || 0);
+
+  const totalBalanceElement =
+    document.getElementById(
+      "totalClaimedBalance"
+    );
+
+  if (totalBalanceElement) {
+    totalBalanceElement.textContent =
+      formatNumber(totalCoins) +
+      " Coins";
+  }
+
+  const atfBalanceElement =
+    document.getElementById(
+      "mineAtfBalance"
+    );
+
+  if (atfBalanceElement) {
+    atfBalanceElement.textContent =
+      formatATF(totalATF) +
+      " ATF LITE";
+  }
+
+  const miningCircle =
+    document.getElementById(
+      "miningCircle"
+    );
+
+  if (miningCircle) {
+
+    miningCircle.textContent =
+      "+" +
+      formatNumber(unclaimed) +
+      " Coins";
+  }
+
+  const speedElement =
+    document.getElementById(
+      "miningSpeed"
+    );
+
+  if (speedElement) {
+
+    speedElement.textContent =
+      speed.toFixed(3) +
+      " Coins/s";
+  }
+
+  const levelElement =
+    document.getElementById(
+      "currentMiningLevel"
+    );
+
+  if (levelElement) {
+
+    levelElement.textContent =
+      "Level " +
+      currentLevel;
+  }
+
+  const statusElement =
+    document.getElementById(
+      "miningStatus"
+    );
+
+  if (statusElement) {
+
+    statusElement.textContent =
+      getMiningStatusText();
+  }
+
+  const timerElement =
+    document.getElementById(
+      "miningTimer"
+    );
+
+  if (timerElement) {
+
+    if (state.miningActive) {
+
+      timerElement.textContent =
+        formatTime(
+          getMiningRemaining()
+        );
+
+    } else if (
+      state.miningStart &&
+      Date.now() >=
+        state.miningStart +
+        MINING_DURATION
+    ) {
+
+      timerElement.textContent =
+        "00:00:00";
+
+    } else {
+
+      timerElement.textContent =
+        "07:00:00";
+    }
+  }
+
+  const startButton =
+    document.getElementById(
+      "startMiningBtn"
+    );
+
+  if (startButton) {
+
+    if (state.miningActive) {
+
+      startButton.style.display =
+        "none";
+
+    } else {
+
+      startButton.style.display =
+        "";
+    }
+  }
+
+  const claimButton =
+    document.getElementById(
+      "claimPointsBtn"
+    );
+
+  if (claimButton) {
+
+    claimButton.disabled =
+      unclaimed <= 0;
+
+    if (unclaimed > 0) {
+
+      claimButton.textContent =
+        "🪙 Claim " +
+        formatNumber(unclaimed) +
+        " Coins";
+
+    } else {
+
+      claimButton.textContent =
+        "🪙 Claim Points";
+    }
+  }
+}
+
+
+/* ---------- Render Tasks ---------- */
+
+function renderTasksPage() {
+
+  renderSingleTask(
+    "telegram",
+    "telegramTaskBtn",
+    100000,
+    "Telegram"
+  );
+
+  renderSingleTask(
+    "youtube",
+    "youtubeTaskBtn",
+    150000,
+    "YouTube"
+  );
+}
+
+
+function renderSingleTask(
+  taskKey,
+  buttonId,
+  reward,
+  taskName
+) {
+
+  const button =
+    document.getElementById(buttonId);
+
+  if (!button) {
+    return;
+  }
+
+  const task =
+    state.tasks[taskKey];
+
+  if (!task) {
+    return;
+  }
+
+  if (task.claimed) {
+
+    button.disabled = true;
+
+    button.className =
+      "task-btn completed";
+
+    button.textContent =
+      "✓ Completed";
+
+    return;
+  }
+
+  if (task.started) {
+
+    button.disabled = false;
+
+    button.className =
+      "task-btn claim";
+
+    button.textContent =
+      "🎁 Claim";
+
+    return;
+  }
+
+  button.disabled = false;
+
+  button.className =
+    "task-btn go";
+
+  button.textContent =
+    "Go";
+}
+
+
+/* ---------- Start Task ---------- */
+
+function startTask(taskKey, url) {
+
+  if (!state.tasks[taskKey]) {
+    return;
+  }
+
+  const task =
+    state.tasks[taskKey];
+
+  if (task.claimed) {
+
+    showToast(
+      "This task is already completed.",
+      "error"
+    );
+
+    return;
+  }
+
+  task.started = true;
+
+  task.startedAt =
+    Date.now();
+
+  saveState();
+
+  /*
+    Open the social task.
+  */
+
+  if (
+    url &&
+    !url.includes("REPLACE_WITH")
+  ) {
+
+    openExternal(url);
+
+  } else {
+
+    showToast(
+      "Task link is not configured yet.",
+      "error"
+    );
+  }
+
+  renderTasksPage();
+}
+
+
+/* ---------- Claim Task ---------- */
+
+function claimTask(
+  taskKey,
+  reward,
+  taskName
+) {
+
+  if (!state.tasks[taskKey]) {
+    return;
+  }
+
+  const task =
+    state.tasks[taskKey];
+
+  if (!task.started) {
+
+    showToast(
+      "Open the task first.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (task.claimed) {
+
+    showToast(
+      "This task has already been claimed.",
+      "error"
+    );
+
+    return;
+  }
+
+  /*
+    Frontend demo:
+    Real production version should verify the
+    Telegram/YouTube action through a backend.
+  */
+
+  state.coins +=
+    Number(reward || 0);
+
+  task.claimed = true;
+
+  addActivity(
+    "task",
+    taskName +
+      " task completed",
+    reward,
+    "Reward added to balance"
+  );
+
+  saveState();
+
+  renderAll();
+
+  showToast(
+    "+" +
+      formatNumber(reward) +
+      " Coins added!",
+    "success"
+  );
+}
+
+
+/* ---------- Telegram Task Button ---------- */
+
+function handleTelegramTask() {
+
+  const task =
+    state.tasks.telegram;
+
+  if (!task.started) {
+
+    startTask(
+      "telegram",
+      TASK_URLS.telegram
+    );
+
+    return;
+  }
+
+  claimTask(
+    "telegram",
+    100000,
+    "Telegram"
+  );
+}
+
+
+/* ---------- YouTube Task Button ---------- */
+
+function handleYouTubeTask() {
+
+  const task =
+    state.tasks.youtube;
+
+  if (!task.started) {
+
+    startTask(
+      "youtube",
+      TASK_URLS.youtube
+    );
+
+    return;
+  }
+
+  claimTask(
+    "youtube",
+    150000,
+    "YouTube"
+  );
+}
+
+
+/* ---------- Render Miners ---------- */
+
+function renderMinersPage() {
+
+  const currentLevel =
+    getCurrentLevel();
+
+  const currentSpeed =
+    getCurrentMiningSpeed();
+
+  const currentLevelElement =
+    document.getElementById(
+      "minerCurrentLevel"
+    );
+
+  if (currentLevelElement) {
+
+    currentLevelElement.textContent =
+      "Level " +
+      currentLevel;
+  }
+
+  const currentSpeedElement =
+    document.getElementById(
+      "minerCurrentSpeed"
+    );
+
+  if (currentSpeedElement) {
+
+    currentSpeedElement.textContent =
+      currentSpeed.toFixed(3) +
+      " Coins/s";
+  }
+
+  const grid =
+    document.getElementById(
+      "levelGrid"
+    );
+
+  if (!grid) {
+    return;
+  }
+
+  /*
+    Avoid rebuilding all 1000 cards
+    unnecessarily.
+  */
+
+  if (
+    grid.dataset.generated === "true"
+  ) {
+
+    updateLevelCards();
+
+    return;
+  }
+
+  const fragment =
+    document.createDocumentFragment();
+
+  for (
+    let level = 1;
+    level <= 1000;
+    level++
+  ) {
+
+    const card =
+      document.createElement("div");
+
+    const colors =
+      getLevelColor(level);
+
+    const requirement =
+      getLevelRequirement(level);
+
+    const speed =
+      getMiningSpeed(level);
+
+    const unlocked =
+      getTotalATF() >= requirement;
+
+    const active =
+      level === currentLevel;
+
+    card.className =
+      "level-card";
+
+    if (active) {
+
+      card.classList.add(
+        "active"
+      );
+
+    } else if (unlocked) {
+
+      card.classList.add(
+        "unlocked"
+      );
+
+    } else {
+
+      card.classList.add(
+        "locked"
+      );
     }
 
-    // 30-Day Withdrawal Countdown
-    let targetDate = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
-    setInterval(() => {
-      let now = new Date().getTime();
-      let diff = targetDate - now;
+    card.dataset.level =
+      String(level);
 
-      let d = Math.floor(diff / (1000 * 60 * 60 * 24));
-      let h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      let s = Math.floor((diff % (1000 * 60)) / 1000);
+    card.style.background =
+      colors.background;
 
-      document.getElementById('withdrawCountdown').innerText = `${d}d ${h}h ${m}m ${s}s`;
-    }, 1000);
+    card.style.borderColor =
+      colors.border;
 
-    // Tab Navigation
-    function switchTab(tabId, el) {
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    let status =
+      "Locked";
 
-      document.getElementById('tab-' + tabId).classList.add('active');
-      el.classList.add('active');
+    if (active) {
+      status = "Active";
+    } else if (unlocked) {
+      status = "Unlocked";
     }
 
-    // Initialize System on Load
-    initMiningState();
-  </script>
+    card.innerHTML = `
+      <div class="level-number">
+        Level ${level}
+      </div>
+
+      <div class="level-speed">
+        ${speed.toFixed(3)}
+        Coins/s
+      </div>
+
+      <div class="level-requirement">
+        ${formatATF(requirement)}
+        ATF LITE
+      </div>
+
+      <div class="level-status">
+        ${status}
+      </div>
+    `;
+
+    fragment.appendChild(card);
+  }
+
+  grid.innerHTML = "";
+
+  grid.appendChild(fragment);
+
+  grid.dataset.generated =
+    "true";
+}
+
+
+/* ---------- Update Level Cards ---------- */
+
+function updateLevelCards() {
+
+  const currentLevel =
+    getCurrentLevel();
+
+  const currentATF =
+    getTotalATF();
+
+  const cards =
+    document.querySelectorAll(
+      ".level-card"
+    );
+
+  cards.forEach(function(card) {
+
+    const level =
+      Number(card.dataset.level);
+
+    const requirement =
+      getLevelRequirement(level);
+
+    const unlocked =
+      currentATF >= requirement;
+
+    const active =
+      level === currentLevel;
+
+    card.classList.remove(
+      "active",
+      "unlocked",
+      "locked"
+    );
+
+    if (active) {
+
+      card.classList.add(
+        "active"
+      );
+
+    } else if (unlocked) {
+
+      card.classList.add(
+        "unlocked"
+      );
+
+    } else {
+
+      card.classList.add(
+        "locked"
+      );
+    }
+
+    const status =
+      card.querySelector(
+        ".level-status"
+      );
+
+    if (status) {
+
+      if (active) {
+
+        status.textContent =
+          "Active";
+
+      } else if (unlocked) {
+
+        status.textContent =
+          "Unlocked";
+
+      } else {
+
+        status.textContent =
+          "Locked";
+      }
+    }
+  });
+}
+
+
+/* ---------- Friends Page ---------- */
+
+function renderFriendsPage() {
+
+  const nameElement =
+    document.getElementById(
+      "friendsProfileName"
+    );
+
+  if (nameElement) {
+
+    nameElement.textContent =
+      getUserName();
+  }
+
+  const idElement =
+    document.getElementById(
+      "friendsProfileId"
+    );
+
+  if (idElement) {
+
+    idElement.textContent =
+      "ID: " +
+      APP_USER_ID;
+  }
+
+  const referralElement =
+    document.getElementById(
+      "referralLink"
+    );
+
+  if (referralElement) {
+
+    referralElement.value =
+      getReferralLink();
+  }
+
+  const friendsCountElement =
+    document.getElementById(
+      "totalFriends"
+    );
+
+  if (friendsCountElement) {
+
+    friendsCountElement.textContent =
+      String(
+        Array.isArray(state.friends)
+          ? state.friends.length
+          : 0
+      );
+  }
+
+  const earningsElement =
+    document.getElementById(
+      "refEarnings"
+    );
+
+  if (earningsElement) {
+
+    earningsElement.textContent =
+      formatNumber(
+        state.referralEarnings || 0
+      ) +
+      " Coins";
+  }
+
+  const networkElement =
+    document.getElementById(
+      "teamNetwork"
+    );
+
+  if (networkElement) {
+
+    renderTeamNetwork(
+      networkElement
+    );
+  }
+}
+
+
+/* ---------- Team Network ---------- */
+
+function renderTeamNetwork(container) {
+
+  const friends =
+    Array.isArray(state.friends)
+      ? state.friends
+      : [];
+
+  if (!friends.length) {
+
+    container.innerHTML = `
+      <div class="empty-history">
+        No friends joined yet.
+        Share your referral link to grow your team.
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML =
+    friends.map(function(friend) {
+
+      return `
+        <div class="network-item">
+
+          <div class="network-avatar">
+            ${escapeHTML(
+              friend.initials || "F"
+            )}
+          </div>
+
+          <div class="network-info">
+            <strong>
+              ${escapeHTML(
+                friend.name || "Friend"
+              )}
+            </strong>
+
+            <small>
+              ID: ${escapeHTML(
+                friend.id || ""
+              )}
+            </small>
+          </div>
+
+          <div class="network-reward">
+            +50,000
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+}
+
+
+/* ---------- Referral Reward ---------- */
+
+function addReferralReward(friendName, friendId) {
+
+  const REWARD =
+    50000;
+
+  if (!Array.isArray(state.friends)) {
+    state.friends = [];
+  }
+
+  const exists =
+    state.friends.some(function(friend) {
+      return String(friend.id) ===
+        String(friendId);
+    });
+
+  if (exists) {
+    return;
+  }
+
+  state.friends.push({
+    id: String(friendId),
+    name: friendName || "Friend",
+    initials:
+      (friendName || "F")
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(function(part) {
+          return part.charAt(0);
+        })
+        .join("")
+        .toUpperCase(),
+
+    joinedAt:
+      Date.now()
+  });
+
+  state.referralEarnings +=
+    REWARD;
+
+  state.coins +=
+    REWARD;
+
+  addActivity(
+    "referral",
+    "Referral reward",
+    REWARD,
+    "Successful friend referral"
+  );
+
+  saveState();
+
+  renderAll();
+
+  showToast(
+    "+50,000 Coins referral reward!",
+    "success"
+  );
+}
+
+
+/* ---------- Copy Referral Button ---------- */
+
+function copyReferralLink() {
+
+  const link =
+    getReferralLink();
+
+  if (
+    !link ||
+    link.includes("not configured")
+  ) {
+
+    showToast(
+      "Bot username is not configured yet.",
+      "error"
+    );
+
+    return;
+  }
+
+  copyText(link);
+}
+
+
+/* ---------- Wallet Page ---------- */
+
+function renderWalletPage() {
+
+  const totalATF =
+    getWithdrawableATF();
+
+  const totalUSDT =
+    atfToUSDT(totalATF);
+
+  const atfElement =
+    document.getElementById(
+      "walletAtfBalance"
+    );
+
+  if (atfElement) {
+
+    atfElement.textContent =
+      formatATF(totalATF) +
+      " ATF LITE";
+  }
+
+  const usdtElement =
+    document.getElementById(
+      "walletUsdtBalance"
+    );
+
+  if (usdtElement) {
+
+    usdtElement.textContent =
+      "$" +
+      formatUSDT(totalUSDT) +
+      " USDT";
+  }
+
+  const minimumElement =
+    document.getElementById(
+      "walletMinimum"
+    );
+
+  if (minimumElement) {
+
+    minimumElement.textContent =
+      MIN_WITHDRAW_ATF +
+      " ATF LITE";
+  }
+
+  ensureWithdrawalAmountField();
+
+  renderWithdrawalHistory();
+}
+
+
+/* ---------- Withdrawal History ---------- */
+
+function renderWithdrawalHistory() {
+
+  const container =
+    document.getElementById(
+      "withdrawalHistory"
+    );
+
+  if (!container) {
+    return;
+  }
+
+  const history =
+    Array.isArray(state.withdrawalHistory)
+      ? state.withdrawalHistory
+      : [];
+
+  if (!history.length) {
+
+    container.innerHTML = `
+      <div class="empty-history">
+        No withdrawal history yet.
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML =
+    history.map(function(item) {
+
+      return `
+        <div class="withdrawal-item">
+
+          <div>
+            <strong>
+              ${formatATF(
+                item.amountATF
+              )} ATF LITE
+            </strong>
+
+            <small>
+              $${formatUSDT(
+                item.amountUSDT
+              )} USDT
+            </small>
+
+            <small>
+              ${escapeHTML(
+                item.method
+              )}
+            </small>
+
+            <small>
+              ${formatDate(
+                item.time
+              )}
+            </small>
+          </div>
+
+          <span class="withdrawal-status">
+            ${escapeHTML(
+              item.status
+            )}
+          </span>
+
+        </div>
+      `;
+
+    }).join("");
+}
+
+
+/* ---------- Send Withdrawal Request ---------- */
+
+function sendWithdrawalRequest() {
+
+  updateMiningProgress();
+
+  const amountInput =
+    document.getElementById(
+      "withdrawAmount"
+    );
+
+  const addressInput =
+    document.getElementById(
+      "walletAddress"
+    );
+
+  const amount =
+    safeNumber(
+      amountInput
+        ? amountInput.value
+        : 0,
+      0
+    );
+
+  const address =
+    addressInput
+      ? addressInput.value.trim()
+      : "";
+
+  const method =
+    getSelectedWalletMethod();
+
+  const balance =
+    getWithdrawableATF();
+
+  if (!method) {
+
+    showToast(
+      "Please select a payment method.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (!amount || amount <= 0) {
+
+    showToast(
+      "Enter a withdrawal amount.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (amount < MIN_WITHDRAW_ATF) {
+
+    showToast(
+      "Minimum withdrawal is " +
+      MIN_WITHDRAW_ATF +
+      " ATF LITE.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (amount > balance) {
+
+    showToast(
+      "Insufficient ATF LITE balance.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (!address) {
+
+    showToast(
+      "Enter your wallet/payment address.",
+      "error"
+    );
+
+    return;
+  }
+
+  const coins =
+    atfToCoins(amount);
+
+  state.coins =
+    Math.max(
+      0,
+      state.coins - coins
+    );
+
+  state.wallet.method =
+    method;
+
+  state.wallet.address =
+    address;
+
+  addWithdrawalHistory(
+    amount,
+    method,
+    address
+  );
+
+  addActivity(
+    "withdrawal",
+    "Withdrawal request",
+    0,
+    amount.toFixed(3) +
+      " ATF LITE • Pending"
+  );
+
+  saveState();
+
+  if (amountInput) {
+    amountInput.value = "";
+  }
+
+  renderAll();
+
+  showToast(
+    "Withdrawal request submitted.",
+    "success"
+  );
+}
+
+
+/* ---------- Search ---------- */
+
+function performSearch() {
+
+  const input =
+    document.getElementById(
+      "searchInput"
+    );
+
+  const result =
+    document.getElementById(
+      "searchResult"
+    );
+
+  if (!input || !result) {
+    return;
+  }
+
+  const query =
+    input.value.trim().toLowerCase();
+
+  if (!query) {
+
+    result.innerHTML = `
+      <div class="empty-history">
+        Enter a User Name or User ID.
+      </div>
+    `;
+
+    return;
+  }
+
+  const currentName =
+    getUserName().toLowerCase();
+
+  const currentId =
+    String(APP_USER_ID).toLowerCase();
+
+  if (
+    query === currentId ||
+    currentName.includes(query) ||
+    query === currentName
+  ) {
+
+    result.innerHTML = `
+      <div class="search-user-card">
+
+        <div class="search-avatar">
+          ${escapeHTML(
+            getUserInitials()
+          )}
+        </div>
+
+        <div class="search-user-info">
+
+          <strong>
+            ${escapeHTML(
+              getUserName()
+            )}
+          </strong>
+
+          <span>
+            User ID: ${APP_USER_ID}
+          </span>
+
+          <span>
+            Level ${getCurrentLevel()}
+          </span>
+
+          <span>
+            ${formatNumber(
+              state.coins
+            )} Coins
+          </span>
+
+        </div>
+
+        <div class="search-user-status">
+          ${state.verified
+            ? "✓ Verified"
+            : "Unverified"}
+        </div>
+
+      </div>
+    `;
+
+    return;
+  }
+
+  result.innerHTML = `
+    <div class="empty-history">
+      No user found for:
+      <strong>${escapeHTML(query)}</strong>
+    </div>
+  `;
+}
+
+
+/* ---------- Profile Page ---------- */
+
+function renderProfilePage() {
+
+  const avatar =
+    document.getElementById(
+      "profileAvatar"
+    );
+
+  if (avatar) {
+
+    avatar.textContent =
+      getUserInitials();
+  }
+
+  const name =
+    document.getElementById(
+      "profileName"
+    );
+
+  if (name) {
+
+    name.textContent =
+      getUserName();
+  }
+
+  const id =
+    document.getElementById(
+      "profileUserId"
+    );
+
+  if (id) {
+
+    id.textContent =
+      "ID: " +
+      APP_USER_ID;
+  }
+
+  const verification =
+    document.getElementById(
+      "profileVerification"
+    );
+
+  if (verification) {
+
+    if (state.verified) {
+
+      verification.textContent =
+        "✓ Verified";
+
+      verification.className =
+        "verified-badge verified";
+
+    } else if (
+      state.verificationPending
+    ) {
+
+      verification.textContent =
+        "⏳ Pending";
+
+      verification.className =
+        "verified-badge pending";
+
+    } else {
+
+      verification.textContent =
+        "Unverified";
+
+      verification.className =
+        "verified-badge";
+    }
+  }
+
+  const profileATF =
+    document.getElementById(
+      "profileATF"
+    );
+
+  if (profileAT) {
+    profileATF.textContent =
+      formatATF(getTotalATF()) + " ATF LITE";
+  }
+
+  const profileUSDT =
+    document.getElementById(
+      "profileUSDT"
+    );
+
+  if (profileUSDT) {
+    profileUSDT.textContent =
+      "$" +
+            formatUSDT(atfToUSDT(getTotalATF()));
+  }
+
+  const profileLevel =
+    document.getElementById(
+      "profileLevel"
+    );
+
+  if (profileLevel) {
+    profileLevel.textContent =
+      "Level " + getCurrentLevel();
+  }
+
+  const profileCoins =
+    document.getElementById(
+      "profileCoins"
+    );
+
+  if (profileCoins) {
+    profileCoins.textContent =
+      formatNumber(state.coins) + " Coins";
+  }
+
+  const profileVerified =
+    document.getElementById(
+      "profileVerified"
+    );
+
+  if (profileVerified) {
+    profileVerified.textContent =
+      state.verified
+        ? "✓ Verified"
+        : state.verificationPending
+          ? "⏳ Pending"
+          : "Unverified";
+
+    profileVerified.className =
+      state.verified
+        ? "verified-badge verified"
+        : state.verificationPending
+          ? "verified-badge pending"
+          : "verified-badge";
+  }
+
+  const profileAvatar =
+    document.getElementById(
+      "profileAvatar"
+    );
+
+  if (profileAvatar) {
+    profileAvatar.textContent =
+      getUserInitials();
+  }
+
+  const profileName =
+    document.getElementById(
+      "profileName"
+    );
+
+  if (profileName) {
+    profileName.textContent =
+      getUserName();
+  }
+
+  const profileUserId =
+    document.getElementById(
+      "profileUserId"
+    );
+
+  if (profileUserId) {
+    profileUserId.textContent =
+      "ID: " + APP_USER_ID;
+  }
+}
+
+/* =========================================================
+   MINE PAGE RENDER
+   ========================================================= */
+
+function renderMinePage() {
+  updateMiningProgress();
+
+  const totalATF =
+    getTotalATF();
+
+  const totalUSDT =
+    atfToUSDT(totalATF);
+
+  const speed =
+    getCurrentMiningSpeed();
+
+  const level =
+    getCurrentLevel();
+
+  const totalCoins =
+    Number(state.coins || 0);
+
+  const unclaimed =
+    Number(state.unclaimedCoins || 0);
+
+  /* Total Claimed Balance */
+
+  const balanceCoins =
+    document.getElementById(
+      "balanceCoins"
+    );
+
+  if (balanceCoins) {
+    balanceCoins.textContent =
+      formatNumber(totalCoins) +
+      " Coins";
+  }
+
+  const balanceATF =
+    document.getElementById(
+      "balanceATF"
+    );
+
+  if (balanceATF) {
+    balanceATF.textContent =
+      formatATF(totalATF) +
+      " ATF LITE";
+  }
+
+  const balanceUSDT =
+    document.getElementById(
+      "balanceUSDT"
+    );
+
+  if (balanceUSDT) {
+    balanceUSDT.textContent =
+      "$" +
+      formatUSDT(totalUSDT);
+  }
+
+  /* Mining Speed */
+
+  const miningSpeed =
+    document.getElementById(
+      "miningSpeed"
+    );
+
+  if (miningSpeed) {
+    miningSpeed.textContent =
+      speed.toFixed(3) +
+      " Coins/s";
+  }
+
+  const mineLevel =
+    document.getElementById(
+      "mineLevel"
+    );
+
+  if (mineLevel) {
+    mineLevel.textContent =
+      "Level " + level;
+  }
+
+  /* Unclaimed */
+
+  const unclaimedCoins =
+    document.getElementById(
+      "unclaimedCoins"
+    );
+
+  if (unclaimedCoins) {
+    unclaimedCoins.textContent =
+      formatNumber(unclaimed) +
+      " Coins";
+  }
+
+  const unclaimedATF =
+    document.getElementById(
+      "unclaimedATF"
+    );
+
+  if (unclaimedATF) {
+    unclaimedATF.textContent =
+      formatATF(
+        coinsToATF(unclaimed)
+      ) +
+      " ATF LITE";
+  }
+
+  /* Mining Circle */
+
+  const miningCounter =
+    document.getElementById(
+      "miningCounter"
+    );
+
+  if (miningCounter) {
+    miningCounter.textContent =
+      formatNumber(unclaimed);
+  }
+
+  /* Start button */
+
+  const startMiningButton =
+    document.getElementById(
+      "startMiningButton"
+    );
+
+  if (startMiningButton) {
+    if (state.miningActive) {
+      startMiningButton.style.display =
+        "none";
+    } else {
+      startMiningButton.style.display =
+        "block";
+
+      startMiningButton.disabled =
+        false;
+    }
+  }
+
+  /* Mining status */
+
+  const miningStatus =
+    document.getElementById(
+      "miningStatus"
+    );
+
+  const miningTimer =
+    document.getElementById(
+      "miningTimer"
+    );
+
+  if (state.miningActive) {
+    const endTime =
+      state.miningStart +
+      MINING_DURATION;
+
+    const remaining =
+      Math.max(
+        0,
+        endTime - Date.now()
+      );
+
+    if (miningStatus) {
+      miningStatus.textContent =
+        "⛏️ Mining in progress";
+    }
+
+    if (miningTimer) {
+      miningTimer.textContent =
+        formatTime(remaining);
+    }
+  } else {
+    if (miningStatus) {
+      miningStatus.textContent =
+        "Ready to start mining";
+    }
+
+    if (miningTimer) {
+      miningTimer.textContent =
+        "07:00:00";
+    }
+  }
+
+  /* Claim button */
+
+  const claimButton =
+    document.getElementById(
+      "claimPointsButton"
+    );
+
+  if (claimButton) {
+    if (unclaimed > 0) {
+      claimButton.disabled = false;
+      claimButton.classList.remove(
+        "disabled"
+      );
+
+      claimButton.textContent =
+        "🪙 Claim " +
+        formatNumber(unclaimed) +
+        " Coins";
+    } else {
+      claimButton.disabled = true;
+      claimButton.classList.add(
+        "disabled"
+      );
+
+      claimButton.textContent =
+        "🪙 Claim Points";
+    }
+  }
+}
+
+/* =========================================================
+   TASK SYSTEM
+   ========================================================= */
+
+const TASK_REWARDS = {
+  telegram: 100000,
+  youtube: 150000
+};
+
+function openTask(type) {
+  if (
+    type !== "telegram" &&
+    type !== "youtube"
+  ) {
+    return;
+  }
+
+  const task =
+    state.tasks[type];
+
+  if (!task) {
+    return;
+  }
+
+  if (task.claimed) {
+    showToast(
+      "This task has already been completed.",
+      "error"
+    );
+
+    return;
+  }
+
+  task.started = true;
+  task.startedAt = Date.now();
+
+  saveState();
+
+  const url =
+    TASK_URLS[type];
+
+  if (
+    url &&
+    !url.includes("REPLACE_")
+  ) {
+    openExternal(url);
+  } else {
+    showToast(
+      "Task link is not configured yet.",
+      "error"
+    );
+  }
+
+  renderTasks();
+}
+
+/* ---------- Task Claim ---------- */
+
+function claimTask(type) {
+  if (
+    type !== "telegram" &&
+    type !== "youtube"
+  ) {
+    return;
+  }
+
+  const task =
+    state.tasks[type];
+
+  if (!task) {
+    return;
+  }
+
+  if (!task.started) {
+    showToast(
+      "Open the task first.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (task.claimed) {
+    showToast(
+      "Task already completed.",
+      "error"
+    );
+
+    return;
+  }
+
+  const reward =
+    TASK_REWARDS[type];
+
+  task.claimed = true;
+
+  state.coins += reward;
+
+  addActivity(
+    "task",
+    type === "telegram"
+      ? "Telegram task completed"
+      : "YouTube task completed",
+    reward,
+    "Task reward added"
+  );
+
+  saveState();
+
+  renderAll();
+
+  showToast(
+    "+" +
+      formatNumber(reward) +
+      " Coins earned!",
+    "success"
+  );
+}
+
+/* ---------- Task Rendering ---------- */
+
+function renderTasks() {
+  renderSingleTask(
+    "telegram",
+    "telegramTaskButton"
+  );
+
+  renderSingleTask(
+    "youtube",
+    "youtubeTaskButton"
+  );
+
+  const taskStatus =
+    document.getElementById(
+      "taskStatus"
+    );
+
+  if (taskStatus) {
+    const completed =
+      Number(
+        state.tasks.telegram.claimed
+      ) +
+      Number(
+        state.tasks.youtube.claimed
+      );
+
+    taskStatus.textContent =
+      completed +
+      " / 2 Tasks Completed";
+  }
+}
+
+function renderSingleTask(
+  type,
+  buttonId
+) {
+  const button =
+    document.getElementById(buttonId);
+
+  if (!button) {
+    return;
+  }
+
+  const task =
+    state.tasks[type];
+
+  if (task.claimed) {
+    button.disabled = true;
+
+    button.classList.remove(
+      "claim-task"
+    );
+
+    button.classList.add(
+      "completed-task"
+    );
+
+    button.textContent =
+      "✓ Completed";
+
+    return;
+  }
+
+  if (task.started) {
+    button.disabled = false;
+
+    button.classList.remove(
+      "completed-task"
+    );
+
+    button.classList.add(
+      "claim-task"
+    );
+
+    button.textContent =
+      "🎁 Claim";
+  } else {
+    button.disabled = false;
+
+    button.classList.remove(
+      "completed-task",
+      "claim-task"
+    );
+
+    button.textContent =
+      "Go →";
+  }
+}
+
+/* =========================================================
+   MINERS / LEVEL PAGE
+   ========================================================= */
+
+function renderMinersPage() {
+  const level =
+    getCurrentLevel();
+
+  const speed =
+    getCurrentMiningSpeed();
+
+  const totalATF =
+    getTotalATF();
+
+  const currentLevel =
+    document.getElementById(
+      "currentMinerLevel"
+    );
+
+  if (currentLevel) {
+    currentLevel.textContent =
+      "Level " + level;
+  }
+
+  const currentSpeed =
+    document.getElementById(
+      "currentMinerSpeed"
+    );
+
+  if (currentSpeed) {
+    currentSpeed.textContent =
+      speed.toFixed(3) +
+      " Coins/s";
+  }
+
+  const currentBalance =
+    document.getElementById(
+      "minerBalance"
+    );
+
+  if (currentBalance) {
+    currentBalance.textContent =
+      formatATF(totalATF) +
+      " ATF LITE";
+  }
+
+  renderLevelGrid();
+}
+
+/* ---------- Level Grid ---------- */
+
+function renderLevelGrid() {
+  const grid =
+    document.getElementById(
+      "levelGrid"
+    );
+
+  if (!grid) {
+    return;
+  }
+
+  const currentLevel =
+    getCurrentLevel();
+
+  const currentATF =
+    getTotalATF();
+
+  const fragment =
+    document.createDocumentFragment();
+
+  for (
+    let level = 1;
+    level <= 1000;
+    level++
+  ) {
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "level-card";
+
+    const colors =
+      getLevelColor(level);
+
+    card.style.background =
+      colors.background;
+
+    card.style.borderColor =
+      colors.border;
+
+    const requirement =
+      getLevelRequirement(level);
+
+    const speed =
+      getMiningSpeed(level);
+
+    let status =
+      "Locked";
+
+    let statusClass =
+      "locked";
+
+    if (level === currentLevel) {
+      status =
+        "Active";
+
+      statusClass =
+        "active";
+    } else if (
+      currentATF >= requirement
+    ) {
+      status =
+        "Unlocked";
+
+      statusClass =
+        "unlocked";
+    }
+
+    card.innerHTML = `
+      <div class="level-number">
+        Level ${level}
+      </div>
+
+      <div class="level-speed">
+        ${speed.toFixed(3)}
+        <small>Coins/s</small>
+      </div>
+
+      <div class="level-requirement">
+        ${formatATF(requirement)}
+        ATF LITE
+      </div>
+
+      <div class="level-status ${statusClass}">
+        ${status}
+      </div>
+    `;
+
+    fragment.appendChild(card);
+  }
+
+  grid.innerHTML = "";
+
+  grid.appendChild(fragment);
+}
+
+/* =========================================================
+   FRIEND / REFERRAL PAGE
+   ========================================================= */
+
+function renderFriendsPage() {
+  const name =
+    document.getElementById(
+      "friendsName"
+    );
+
+  if (name) {
+    name.textContent =
+      getUserName();
+  }
+
+  const userId =
+    document.getElementById(
+      "friendsUserId"
+    );
+
+  if (userId) {
+    userId.textContent =
+      "ID: " + APP_USER_ID;
+  }
+
+  const referralInput =
+    document.getElementById(
+      "referralLink"
+    );
+
+  if (referralInput) {
+    referralInput.value =
+      getReferralLink();
+  }
+
+  const friendsCount =
+    document.getElementById(
+      "friendsCount"
+    );
+
+  if (friendsCount) {
+    friendsCount.textContent =
+      String(
+        Array.isArray(state.friends)
+          ? state.friends.length
+          : 0
+      );
+  }
+
+  const referralEarnings =
+    document.getElementById(
+      "referralEarnings"
+    );
+
+  if (referralEarnings) {
+    referralEarnings.textContent =
+      formatNumber(
+        state.referralEarnings || 0
+      ) +
+      " Coins";
+  }
+
+  const teamNetwork =
+    document.getElementById(
+      "teamNetwork"
+    );
+
+  if (teamNetwork) {
+    renderTeamNetwork(teamNetwork);
+  }
+}
+
+function renderTeamNetwork(container) {
+  const friends =
+    Array.isArray(state.friends)
+      ? state.friends
+      : [];
+
+  if (friends.length === 0) {
+    container.innerHTML = `
+      <div class="empty-history">
+        No friends joined yet.
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML =
+    friends.map(function(friend) {
+      return `
+        <div class="team-member">
+          <div class="team-avatar">
+            ${escapeHTML(
+              friend.initials || "A"
+            )}
+          </div>
+
+          <div class="team-info">
+            <strong>
+              ${escapeHTML(
+                friend.name || "ATF Member"
+              )}
+            </strong>
+
+            <small>
+              ID: ${escapeHTML(
+                friend.id || ""
+              )}
+            </small>
+          </div>
+
+          <div class="team-reward">
+            +50,000
+          </div>
+        </div>
+      `;
+    }).join("");
+}
+
+/* =========================================================
+   WALLET PAGE
+   ========================================================= */
+
+function renderWalletPage() {
+  ensureWithdrawalAmountField();
+
+  const totalATF =
+    getWithdrawableATF();
+
+  const totalUSDT =
+    atfToUSDT(totalATF);
+
+  const walletATF =
+    document.getElementById(
+      "walletATF"
+    );
+
+  if (walletATF) {
+    walletATF.textContent =
+      formatATF(totalATF) +
+      " ATF LITE";
+  }
+
+  const walletUSDT =
+    document.getElementById(
+      "walletUSDT"
+    );
+
+  if (walletUSDT) {
+    walletUSDT.textContent =
+      "$" +
+      formatUSDT(totalUSDT);
+  }
+
+  const walletAddress =
+    document.getElementById(
+      "walletAddress"
+    );
+
+  if (
+    walletAddress &&
+    state.wallet &&
+    state.wallet.address
+  ) {
+    walletAddress.value =
+      state.wallet.address;
+  }
+
+  const method =
+    state.wallet &&
+    state.wallet.method
+      ? state.wallet.method
+      : "";
+
+  const radio =
+    document.querySelector(
+      `input[name="walletMethod"][value="${method}"]`
+    );
+
+  if (radio) {
+    radio.checked = true;
+  }
+
+  renderWithdrawalHistory();
+}
+
+/* ---------- Withdrawal ---------- */
+
+function sendWithdrawalRequest() {
+  updateMiningProgress();
+
+  const amountInput =
+    document.getElementById(
+      "withdrawAmount"
+    );
+
+  const addressInput =
+    document.getElementById(
+      "walletAddress"
+    );
+
+  const method =
+    getSelectedWalletMethod();
+
+  const amount =
+    amountInput
+      ? safeNumber(
+          amountInput.value,
+          0
+        )
+      : 0;
+
+  const address =
+    addressInput
+      ? addressInput.value.trim()
+      : "";
+
+  if (!method) {
+    showToast(
+      "Please select a payment method.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
+    showToast(
+      "Enter a valid withdrawal amount.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (
+    amount < MIN_WITHDRAW_ATF
+  ) {
+    showToast(
+      "Minimum withdrawal is " +
+        MIN_WITHDRAW_ATF +
+        " ATF LITE.",
+      "error"
+    );
+
+    return;
+  }
+
+  const available =
+    getWithdrawableATF();
+
+  if (amount > available) {
+    showToast(
+      "Insufficient ATF LITE balance.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (!address) {
+    showToast(
+      "Please enter your wallet/payment address.",
+      "error"
+    );
+
+    return;
+  }
+
+  /*
+    Frontend demo:
+    The balance is deducted and the request
+    is marked Pending.
+
+    Production must send this request to
+    a secure backend/admin system.
+  */
+
+  const coinsToDeduct =
+    atfToCoins(amount);
+
+  state.coins -= coinsToDeduct;
+
+  if (state.coins < 0) {
+    state.coins = 0;
+  }
+
+  state.wallet = {
+    method: method,
+    address: address
+  };
+
+  addWithdrawalHistory(
+    amount,
+    method,
+    address
+  );
+
+  addActivity(
+    "withdrawal",
+    "Withdrawal request",
+    -coinsToDeduct,
+    "Status: Pending"
+  );
+
+  saveState();
+
+  if (amountInput) {
+    amountInput.value = "";
+  }
+
+  renderAll();
+
+  showToast(
+    "Withdrawal request sent!",
+    "success"
+  );
+}
+
+/* ---------- Withdrawal History ---------- */
+
+function renderWithdrawalHistory() {
+  const container =
+    document.getElementById(
+      "withdrawalHistory"
+    );
+
+  if (!container) {
+    return;
+  }
+
+  const history =
+    Array.isArray(
+      state.withdrawalHistory
+    )
+      ? state.withdrawalHistory
+      : [];
+
+  if (history.length === 0) {
+    container.innerHTML = `
+      <div class="empty-history">
+        No withdrawal history.
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML =
+    history.map(function(item) {
+      return `
+        <div class="withdrawal-item">
+
+          <div>
+            <strong>
+              ${formatATF(item.amountATF)}
+              ATF LITE
+            </strong>
+
+            <small>
+              $${formatUSDT(item.amountUSDT)}
+            </small>
+
+            <small>
+              ${escapeHTML(
+                item.method || ""
+              )}
+            </small>
+
+            <small>
+              ${formatDate(item.time)}
+            </small>
+          </div>
+
+          <span class="withdrawal-status">
+            ${escapeHTML(
+              item.status || "Pending"
+            )}
+          </span>
+
+        </div>
+      `;
+    }).join("");
+}
+
+/* =========================================================
+   SEARCH PAGE
+   ========================================================= */
+
+function searchUser() {
+  const input =
+    document.getElementById(
+      "userSearchInput"
+    );
+
+  const result =
+    document.getElementById(
+      "searchResult"
+    );
+
+  if (!input || !result) {
+    return;
+  }
+
+  const query =
+    input.value.trim().toLowerCase();
+
+  if (!query) {
+    result.innerHTML = `
+      <div class="empty-history">
+        Enter a User Name or User ID.
+      </div>
+    `;
+
+    return;
+  }
+
+  const currentName =
+    getUserName().toLowerCase();
+
+  const currentId =
+    APP_USER_ID.toLowerCase();
+
+  if (
+    query === currentId ||
+    currentName.includes(query)
+  ) {
+    result.innerHTML = `
+      <div class="search-user-card">
+
+        <div class="search-avatar">
+          ${escapeHTML(
+            getUserInitials()
+          )}
+        </div>
+
+        <div class="search-user-info">
+          <strong>
+            ${escapeHTML(
+              getUserName()
+            )}
+          </strong>
+
+          <small>
+            User ID: ${escapeHTML(
+              APP_USER_ID
+            )}
+          </small>
+
+          <small>
+            Level ${getCurrentLevel()}
+          </small>
+
+          <small>
+            ${formatNumber(
+              state.coins
+            )} Coins
+          </small>
+        </div>
+
+        <div class="search-user-atf">
+          ${formatATF(
+            getTotalATF()
+          )}
+          <small>
+            ATF LITE
+          </small>
+        </div>
+
+      </div>
+    `;
+
+    return;
+  }
+
+  /*
+    Real user search requires backend data.
+  */
+
+  result.innerHTML = `
+    <div class="empty-history">
+      No user found.
+      <br>
+      <small>
+        Real user search will work after backend
+        database integration.
+      </small>
+    </div>
+  `;
+}
+
+/* ---------- Demo Leaderboard ---------- */
+
+function renderLeaderboard() {
+  const container =
+    document.getElementById(
+      "leaderboardList"
+    );
+
+  if (!container) {
+    return;
+  }
+
+  const users = [
+    {
+      rank: 1,
+      name: "ATF Champion",
+      speed: 1.980,
+      atf: 20010
+    },
+    {
+      rank: 2,
+      name: "ATF Miner",
+      speed: 1.480,
+      atf: 10010
+    },
+    {
+      rank: 3,
+      name: "ATF Master",
+      speed: 1.080,
+      atf: 4010
+    },
+    {
+      rank: 4,
+      name: "ATF Member",
+      speed: 1.000,
+      atf: 2010
+    },
+    {
+      rank: 5,
+      name: "ATF User",
+      speed: 0.900,
+      atf: 1500
+    },
+    {
+      rank: 6,
+      name: "ATF Miner 6",
+      speed: 0.800,
+      atf: 1000
+    },
+    {
+      rank: 7,
+      name: "ATF Miner 7",
+      speed: 0.700,
+      atf: 800
+    },
+    {
+      rank: 8,
+      name: "ATF Miner 8",
+      speed: 0.600,
+      atf: 600
+    },
+    {
+      rank: 9,
+      name: "ATF Miner 9",
+      speed: 0.500,
+      atf: 400
+    },
+    {
+      rank: 10,
+      name: "ATF Miner 10",
+      speed: 0.400,
+      atf: 300
+    }
+  ];
+
+  container.innerHTML =
+    users.map(function(user) {
+      const rankClass =
+        user.rank === 1
+          ? "gold"
+          : user.rank === 2
+            ? "silver"
+            : user.rank === 3
+              ? "bronze"
+              : "";
+
+      return `
+        <div class="leaderboard-row">
+
+          <div class="leaderboard-rank ${rankClass}">
+            ${user.rank}
+          </div>
+
+          <div class="leaderboard-user">
+            <strong>
+              ${escapeHTML(user.name)}
+            </strong>
+
+            <small>
+              ${user.speed.toFixed(3)} Coins/s
+            </small>
+          </div>
+
+          <div class="leaderboard-balance">
+            ${formatATF(user.atf)}
+            <small>ATF</small>
+          </div>
+
+        </div>
+      `;
+    }).join("");
+}
+
+function calculateMyRank() {
+  const myATF = getTotalATF();
+
+  const demoBalances = [
+    20010,
+    10010,
+    4010,
+    2010,
+    1500,
+    1000,
+    800,
+    600,
+    400,
+    300
+  ];
+
+  let rank = 1;
+
+  demoBalances.forEach(function(balance) {
+    if (myATF < balance) {
+      rank++;
+    }
+  });
+
+  return rank;
+}
+
+function renderMyRank() {
+  const element =
+    document.getElementById("myRank");
+
+  if (!element) {
+    return;
+  }
+
+  element.textContent =
+    "#" + calculateMyRank();
+}
+
+/* =========================================================
+   PROFILE PAGE
+   ========================================================= */
+
+function renderProfilePage() {
+  const name =
+    document.getElementById("profileName");
+
+  if (name) {
+    name.textContent = getUserName();
+  }
+
+  const id =
+    document.getElementById("profileUserId");
+
+  if (id) {
+    id.textContent =
+      "User ID: " + APP_USER_ID;
+  }
+
+  const avatar =
+    document.getElementById("profileAvatar");
+
+  if (avatar) {
+    avatar.textContent =
+      getUserInitials();
+  }
+
+  const verified =
+    document.getElementById("profileVerified");
+
+  if (verified) {
+    if (state.verified) {
+      verified.textContent = "✓ Verified";
+      verified.className =
+        "verified-badge verified";
+    } else if (state.verificationPending) {
+      verified.textContent =
+        "⏳ Verification Pending";
+      verified.className =
+        "verified-badge pending";
+    } else {
+      verified.textContent = "Unverified";
+      verified.className =
+        "verified-badge";
+    }
+  }
+
+  const profileATF =
+    document.getElementById("profileATF");
+
+  if (profileATF) {
+    profileATF.textContent =
+      formatATF(getTotalATF()) +
+      " ATF LITE";
+  }
+
+  const profileCoins =
+    document.getElementById("profileCoins");
+
+  if (profileCoins) {
+    profileCoins.textContent =
+      formatNumber(state.coins) +
+      " Coins";
+  }
+
+  const profileUSDT =
+    document.getElementById("profileUSDT");
+
+  if (profileUSDT) {
+    profileUSDT.textContent =
+      "$" +
+      formatUSDT(
+        atfToUSDT(getTotalATF())
+      );
+  }
+
+  const profileLevel =
+    document.getElementById("profileLevel");
+
+  if (profileLevel) {
+    profileLevel.textContent =
+      "Level " + getCurrentLevel();
+  }
+}
+
+/* =========================================================
+   RENDER ALL
+   ========================================================= */
+
+function renderAll() {
+  updateMiningProgress();
+
+  renderMinePage();
+  renderTasks();
+  renderMinersPage();
+  renderFriendsPage();
+  renderWalletPage();
+  renderProfilePage();
+  renderLeaderboard();
+  renderMyRank();
+}
+
+/* =========================================================
+   NAVIGATION BUTTON EVENTS
+   ========================================================= */
+
+function setupNavigation() {
+  const navItems =
+    document.querySelectorAll(".nav-item");
+
+  navItems.forEach(function(item) {
+    item.addEventListener(
+      "click",
+      function() {
+        const page =
+          item.dataset.page;
+
+        if (page) {
+          showPage(page);
+        }
+      }
+    );
+  });
+}
+
+/* =========================================================
+   TASK BUTTON EVENTS
+   ========================================================= */
+
+function setupTaskButtons() {
+  const telegramButton =
+    document.getElementById(
+      "telegramTaskButton"
+    );
+
+  if (telegramButton) {
+    telegramButton.addEventListener(
+      "click",
+      function() {
+        if (
+          state.tasks.telegram.started &&
+          !state.tasks.telegram.claimed
+        ) {
+          claimTask("telegram");
+        } else {
+          openTask("telegram");
+        }
+      }
+    );
+  }
+
+  const youtubeButton =
+    document.getElementById(
+      "youtubeTaskButton"
+    );
+
+  if (youtubeButton) {
+    youtubeButton.addEventListener(
+      "click",
+      function() {
+        if (
+          state.tasks.youtube.started &&
+          !state.tasks.youtube.claimed
+        ) {
+          claimTask("youtube");
+        } else {
+          openTask("youtube");
+        }
+      }
+    );
+  }
+}
+
+/* =========================================================
+   MINING BUTTON EVENTS
+   ========================================================= */
+
+function setupMiningButtons() {
+  const startButton =
+    document.getElementById(
+      "startMiningButton"
+    );
+
+  if (startButton) {
+    startButton.addEventListener(
+      "click",
+      startMining
+    );
+  }
+
+  const claimButton =
+    document.getElementById(
+      "claimPointsButton"
+    );
+
+  if (claimButton) {
+    claimButton.addEventListener(
+      "click",
+      claimMiningPoints
+    );
+  }
+}
+
+/* =========================================================
+   FRIEND BUTTON EVENTS
+   ========================================================= */
+
+function setupFriendButtons() {
+  const copyButton =
+    document.getElementById(
+      "copyReferralButton"
+    );
+
+  if (copyButton) {
+    copyButton.addEventListener(
+      "click",
+      function() {
+        copyText(getReferralLink());
+      }
+    );
+  }
+
+  const shareButton =
+    document.getElementById(
+      "shareReferralButton"
+    );
+
+  if (shareButton) {
+    shareButton.addEventListener(
+      "click",
+      shareReferral
+    );
+  }
+
+  const verifyButton =
+    document.getElementById(
+      "verificationButton"
+    );
+
+  if (verifyButton) {
+    verifyButton.addEventListener(
+      "click",
+      openVerification
+    );
+  }
+}
+
+/* =========================================================
+   WALLET BUTTON EVENTS
+   ========================================================= */
+
+function setupWalletButtons() {
+  const withdrawButton =
+    document.getElementById(
+      "withdrawButton"
+    );
+
+  if (withdrawButton) {
+    withdrawButton.addEventListener(
+      "click",
+      sendWithdrawalRequest
+    );
+  }
+
+  const walletAddress =
+    document.getElementById(
+      "walletAddress"
+    );
+
+  if (walletAddress) {
+    walletAddress.addEventListener(
+      "input",
+      function() {
+        state.wallet.address =
+          walletAddress.value;
+
+        saveState();
+      }
+    );
+  }
+
+  document
+    .querySelectorAll(
+      'input[name="walletMethod"]'
+    )
+    .forEach(function(radio) {
+      radio.addEventListener(
+        "change",
+        function() {
+          state.wallet.method =
+            radio.value;
+
+          saveState();
+        }
+      );
+    });
+}
+
+/* =========================================================
+   SEARCH EVENTS
+   ========================================================= */
+
+function setupSearch() {
+  const button =
+    document.getElementById(
+      "searchButton"
+    );
+
+  const input =
+    document.getElementById(
+      "userSearchInput"
+    );
+
+  if (button) {
+    button.addEventListener(
+      "click",
+      searchUser
+    );
+  }
+
+  if (input) {
+    input.addEventListener(
+      "keydown",
+      function(event) {
+        if (event.key === "Enter") {
+          searchUser();
+        }
+      }
+    );
+  }
+}
+
+/* =========================================================
+   PROFILE EVENTS
+   ========================================================= */
+
+function setupProfileButtons() {
+  const historyButton =
+    document.getElementById(
+      "profileHistoryButton"
+    );
+
+  if (historyButton) {
+    historyButton.addEventListener(
+      "click",
+      openHistory
+    );
+  }
+
+  const certificateButton =
+    document.getElementById(
+      "profileCertificateButton"
+    );
+
+  if (certificateButton) {
+    certificateButton.addEventListener(
+      "click",
+      openCertificate
+    );
+  }
+
+  const supportButton =
+    document.getElementById(
+      "profileSupportButton"
+    );
+
+  if (supportButton) {
+    supportButton.addEventListener(
+      "click",
+      function() {
+        openModal("supportModal");
+      }
+    );
+  }
+
+  const walletButton =
+    document.getElementById(
+      "profileWalletButton"
+    );
+
+  if (walletButton) {
+    walletButton.addEventListener(
+      "click",
+      function() {
+        showPage("wallet");
+      }
+    );
+  }
+
+  const profileWithdrawButton =
+    document.getElementById(
+      "profileWithdrawButton"
+    );
+
+  if (profileWithdrawButton) {
+    profileWithdrawButton.addEventListener(
+      "click",
+      function() {
+        showPage("wallet");
+      }
+    );
+  }
+}
+
+/* =========================================================
+   CERTIFICATE BUTTONS
+   ========================================================= */
+
+function setupCertificateButtons() {
+  document
+    .querySelectorAll(
+      "[data-open-certificate]"
+    )
+    .forEach(function(button) {
+      button.addEventListener(
+        "click",
+        openCertificate
+      );
+    });
+}
+
+/* =========================================================
+   SEARCH PAGE OPEN
+   ========================================================= */
+
+function openSearchPage() {
+  showPage("search");
+
+  setTimeout(function() {
+    const input =
+      document.getElementById(
+        "userSearchInput"
+      );
+
+    if (input) {
+      input.focus();
+    }
+  }, 100);
+}
+
+/* =========================================================
+   TELEGRAM BACK BUTTON
+   ========================================================= */
+
+function setupTelegramBackButton() {
+  try {
+    if (tg && tg.BackButton) {
+      tg.BackButton.onClick(
+        function() {
+          showPage("mine");
+        }
+      );
+    }
+  } catch (error) {
+    console.log(
+      "Telegram BackButton:",
+    function setupTelegramBackButton() {
+  try {
+    if (tg && tg.BackButton) {
+      tg.BackButton.onClick(
+        function() {
+          showPage("mine");
+        }
+      );
+    }
+  } catch (error) {
+    console.log(
+      "Telegram BackButton:",
+      error
+    );
+  }
+}
+/* =========================================================
+   PART 4 — CONTINUE FROM PART 3
+   ========================================================= */
+
+function setupTaskReturnHandling() {
+  document.addEventListener("visibilitychange", function() {
+    if (!document.hidden) {
+      calculateMiningProgress();
+      renderAll();
+      checkTaskStates();
+    }
+  });
+
+  window.addEventListener("focus", function() {
+    calculateMiningProgress();
+    renderAll();
+    checkTaskStates();
+  });
+}
+
+function checkTaskStates() {
+  const now = Date.now();
+
+  Object.keys(state.tasks).forEach(function(key) {
+    const task = state.tasks[key];
+
+    if (
+      task.started &&
+      !task.claimed &&
+      task.startedAt > 0 &&
+      now - task.startedAt >= 5000
+    ) {
+      const button = document.querySelector(
+        '[data-task="' + key + '"]'
+      );
+
+      if (button) {
+        button.textContent = "Claim";
+        button.classList.add("claim-ready");
+      }
+    }
+  });
+}
+
+function setupTaskClaimWatcher() {
+  setInterval(function() {
+    checkTaskStates();
+  }, 1000);
+}
+
+function setupMiningTicker() {
+  setInterval(function() {
+    calculateMiningProgress();
+    updateMiningDisplay();
+  }, 1000);
+}
+
+function updateMiningDisplay() {
+  const timer = document.getElementById("miningTimer");
+  const status = document.getElementById("miningStatus");
+  const startButton = document.getElementById("startMiningBtn");
+  const claimButton = document.getElementById("claimPointsBtn");
+
+  if (!timer && !status && !startButton && !claimButton) {
+    return;
+  }
+
+  if (!state.miningActive) {
+    if (timer) {
+      timer.textContent = "Ready to mine";
+    }
+
+    if (status) {
+      status.textContent = "Mining is not active";
+    }
+
+    if (startButton) {
+      startButton.disabled = false;
+      startButton.textContent = "Start Mining (7 Hours)";
+    }
+
+    if (claimButton) {
+      claimButton.disabled = state.unclaimedCoins <= 0;
+    }
+
+    return;
+  }
+
+  const now = Date.now();
+  const elapsed = now - state.miningStart;
+  const remaining = Math.max(
+    0,
+    MINING_DURATION - elapsed
+  );
+
+  const totalSeconds = Math.floor(remaining / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (timer) {
+    timer.textContent =
+      String(hours).padStart(2, "0") +
+      ":" +
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(seconds).padStart(2, "0");
+  }
+
+  if (status) {
+    if (remaining <= 0) {
+      status.textContent = "Mining session completed";
+    } else {
+      status.textContent = "Mining in progress";
+    }
+  }
+
+  if (startButton) {
+    startButton.disabled = true;
+    startButton.textContent =
+      remaining > 0
+        ? "Mining Active"
+        : "Session Completed";
+  }
+
+  if (claimButton) {
+    claimButton.disabled = state.unclaimedCoins <= 0;
+  }
+
+  const miningCircle = document.getElementById("miningCircle");
+
+  if (miningCircle) {
+    if (remaining > 0) {
+      miningCircle.classList.add("mining-active");
+    } else {
+      miningCircle.classList.remove("mining-active");
+    }
+  }
+}
+
+
+/* =========================================================
+   TASK BUTTON ACTIONS
+   ========================================================= */
+
+function handleTaskAction(taskName) {
+  if (!state.tasks[taskName]) {
+    return;
+  }
+
+  const task = state.tasks[taskName];
+
+  if (task.claimed) {
+    showToast("Task already completed.");
+    return;
+  }
+
+  if (!task.started) {
+    task.started = true;
+    task.startedAt = Date.now();
+
+    saveState();
+    renderAll();
+
+    const url = TASK_URLS[taskName];
+
+    if (url && !url.includes("REPLACE_WITH_YOUR")) {
+      try {
+        window.open(url, "_blank");
+      } catch (error) {
+        window.location.href = url;
+      }
+    } else {
+      showToast(
+        "Task started. Add your real task link in the code."
+      );
+    }
+
+    return;
+  }
+
+  if (Date.now() - task.startedAt < 5000) {
+    showToast("Please complete the task first.");
+    return;
+  }
+
+  let reward = 0;
+
+  if (taskName === "telegram") {
+    reward = 10 * COINS_PER_ATF;
+  }
+
+  if (taskName === "youtube") {
+    reward = 15 * COINS_PER_ATF;
+  }
+
+  state.coins += reward;
+  task.claimed = true;
+
+  addActivity(
+    "Task Completed",
+    "+" + formatCoins(reward) + " Coins"
+  );
+
+  saveState();
+  renderAll();
+
+  showToast(
+    "+" + formatCoins(reward) + " Coins added!"
+  );
+}
+
+
+/* =========================================================
+   REFERRAL HANDLING
+   ========================================================= */
+
+function createReferralLink() {
+  const username =
+    BOT_USERNAME &&
+    !BOT_USERNAME.includes("REPLACE_WITH_YOUR")
+      ? BOT_USERNAME
+      : "MWSRewardsBot";
+
+  return (
+    "https://t.me/" +
+    username +
+    "?start=ref_" +
+    APP_USER_ID
+  );
+}
+
+function copyReferralLink() {
+  const link = createReferralLink();
+
+  if (
+    navigator.clipboard &&
+    navigator.clipboard.writeText
+  ) {
+    navigator.clipboard
+      .writeText(link)
+      .then(function() {
+        showToast("Referral link copied!");
+      })
+      .catch(function() {
+        showToast(link);
+      });
+  } else {
+    showToast(link);
+  }
+}
+
+function shareReferralLink() {
+  const link = createReferralLink();
+
+  const text =
+    "Join ATF LITE and start earning Coins!\n\n" +
+    "Use my referral link:\n" +
+    link;
+
+  const shareUrl =
+    "https://t.me/share/url?url=" +
+    encodeURIComponent(link) +
+    "&text=" +
+    encodeURIComponent(text);
+
+  try {
+    if (tg && tg.openTelegramLink) {
+      tg.openTelegramLink(shareUrl);
+    } else {
+      window.open(shareUrl, "_blank");
+    }
+  } catch (error) {
+    window.open(shareUrl, "_blank");
+  }
+}
+
+function setupReferralButtons() {
+  const copyBtn =
+    document.getElementById("copyReferralBtn");
+
+  const shareBtn =
+    document.getElementById("shareReferralBtn");
+
+  if (copyBtn) {
+    copyBtn.addEventListener("click", function() {
+      copyReferralLink();
+    });
+  }
+
+  if (shareBtn) {
+    shareBtn.addEventListener("click", function() {
+      shareReferralLink();
+    });
+  }
+}
+
+
+/* =========================================================
+   WALLET HELPERS
+   ========================================================= */
+
+function saveWalletData() {
+  const method =
+    document.getElementById("walletMethod");
+
+  const address =
+    document.getElementById("walletAddress");
+
+  if (method) {
+    state.wallet.method = method.value;
+  }
+
+  if (address) {
+    state.wallet.address = address.value.trim();
+  }
+
+  saveState();
+}
+
+function loadWalletData() {
+  const method =
+    document.getElementById("walletMethod");
+
+  const address =
+    document.getElementById("walletAddress");
+
+  if (method) {
+    method.value = state.wallet.method || "";
+  }
+
+  if (address) {
+    address.value = state.wallet.address || "";
+  }
+}
+
+function validateWallet() {
+  const method =
+    document.getElementById("walletMethod");
+
+  const address =
+    document.getElementById("walletAddress");
+
+  if (!method || !address) {
+    return false;
+  }
+
+  const selectedMethod = method.value;
+  const walletAddress = address.value.trim();
+
+  if (!selectedMethod) {
+    showToast("Please select a wallet method.");
+    return false;
+  }
+
+  if (!walletAddress) {
+    showToast("Please enter your wallet address.");
+    return false;
+  }
+
+  if (walletAddress.length < 6) {
+    showToast("Please enter a valid wallet address.");
+    return false;
+  }
+
+  state.wallet.method = selectedMethod;
+  state.wallet.address = walletAddress;
+
+  saveState();
+
+  return true;
+}
+
+function setupWalletForm() {
+  const saveBtn =
+    document.getElementById("saveWalletBtn");
+
+  if (saveBtn) {
+    saveBtn.addEventListener("click", function() {
+      if (validateWallet()) {
+        showToast("Wallet details saved.");
+        renderAll();
+      }
+    });
+  }
+
+  loadWalletData();
+}
+
+
+/* =========================================================
+   WITHDRAWAL HELPERS
+   ========================================================= */
+
+function submitWithdrawal() {
+  const method =
+    document.getElementById("walletMethod");
+
+  const address =
+    document.getElementById("walletAddress");
+
+  const amountInput =
+    document.getElementById("withdrawAmount");
+
+  if (!method || !address || !amountInput) {
+    showToast("Withdrawal form is not ready.");
+    return;
+  }
+
+  const selectedMethod = method.value;
+  const walletAddress = address.value.trim();
+
+  const amount = Number(amountInput.value);
+
+  if (!selectedMethod) {
+    showToast("Please select a withdrawal method.");
+    return;
+  }
+
+  if (!walletAddress) {
+    showToast("Please enter your wallet address.");
+    return;
+  }
+
+  if (!Number.isFinite(amount)) {
+    showToast("Enter a valid amount.");
+    return;
+  }
+
+  if (amount < MIN_WITHDRAW_ATF) {
+    showToast(
+      "Minimum withdrawal is " +
+      MIN_WITHDRAW_ATF +
+      " ATF LITE."
+    );
+    return;
+  }
+
+  const availableATF =
+    coinsToATF(getTotalATF() * COINS_PER_ATF);
+
+  if (amount > availableATF) {
+    showToast("Insufficient ATF LITE balance.");
+    return;
+  }
+
+  const coinsRequired =
+    atfToCoins(amount);
+
+  if (coinsRequired > state.coins) {
+    showToast("Insufficient Coins.");
+    return;
+  }
+
+  state.coins -= coinsRequired;
+
+  state.withdrawalHistory.unshift({
+    id:
+      "WD-" +
+      Date.now().toString().slice(-8),
+
+    amount: amount,
+
+    usdt:
+      atfToUSDT(amount),
+
+    method: selectedMethod,
+
+    address: walletAddress,
+
+    status: "Pending",
+
+    createdAt: Date.now()
+  });
+
+  addActivity(
+    "Withdrawal Request",
+    amount.toFixed(2) + " ATF LITE"
+  );
+
+  saveState();
+  renderAll();
+
+  showToast(
+    "Withdrawal request submitted."
+  );
+}
+
+
+/* =========================================================
+   ACTIVITY HISTORY
+   ========================================================= */
+
+function addActivity(title, details) {
+  state.activityHistory.unshift({
+    title: title,
+    details: details,
+    createdAt: Date.now()
+  });
+
+  if (state.activityHistory.length > 50) {
+    state.activityHistory =
+      state.activityHistory.slice(0, 50);
+  }
+}
+
+function formatDate(timestamp) {
+  if (!timestamp) {
+    return "-";
+  }
+
+  const date = new Date(timestamp);
+
+  return date.toLocaleString();
+}
+
+function renderActivityHistory() {
+  const container =
+    document.getElementById("activityHistory");
+
+  if (!container) {
+    return;
+  }
+
+  if (!state.activityHistory.length) {
+    container.innerHTML =
+      '<div class="empty-state">No activity yet.</div>';
+
+    return;
+  }
+
+  container.innerHTML =
+    state.activityHistory
+      .map(function(item) {
+        return (
+          '<div class="history-item">' +
+            '<div>' +
+              '<strong>' +
+                escapeHTML(item.title) +
+              '</strong>' +
+              '<div class="muted">' +
+                escapeHTML(item.details) +
+              '</div>' +
+            '</div>' +
+            '<div class="history-date">' +
+              escapeHTML(
+                formatDate(item.createdAt)
+              ) +
+            '</div>' +
+          '</div>'
+        );
+      })
+      .join("");
+}
+
+
+/* =========================================================
+   WITHDRAWAL HISTORY
+   ========================================================= */
+
+function renderWithdrawalHistory() {
+  const container =
+    document.getElementById("withdrawalHistory");
+
+  if (!container) {
+    return;
+  }
+
+  if (!state.withdrawalHistory.length) {
+    container.innerHTML =
+      '<div class="empty-state">No withdrawals yet.</div>';
+
+    return;
+  }
+
+  container.innerHTML =
+    state.withdrawalHistory
+      .map(function(item) {
+        return (
+          '<div class="history-item">' +
+            '<div>' +
+              '<strong>' +
+                escapeHTML(
+                  item.amount.toFixed(2) +
+                  " ATF LITE"
+                ) +
+              '</strong>' +
+              '<div class="muted">' +
+                escapeHTML(item.method) +
+              '</div>' +
+              '<div class="muted">' +
+                escapeHTML(
+                  item.usdt.toFixed(4) +
+                  " USDT"
+                ) +
+              '</div>' +
+            '</div>' +
+            '<div>' +
+              '<span class="status-badge">' +
+                escapeHTML(item.status) +
+              '</span>' +
+              '<div class="history-date">' +
+                escapeHTML(
+                  formatDate(item.createdAt)
+                ) +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        );
+      })
+      .join("");
+}
+
+
+/* =========================================================
+   SIMPLE HTML ESCAPE
+   ========================================================= */
+
+function escapeHTML(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
+   VERIFICATION UI
+   ========================================================= */
+
+function updateVerificationStatus() {
+  const status =
+    document.getElementById("verificationStatus");
+
+  const badge =
+    document.getElementById("verifiedBadge");
+
+  if (status) {
+    if (state.verified) {
+      status.textContent =
+        "Verified";
+    } else if (state.verificationPending) {
+      status.textContent =
+        "Pending Review";
+    } else {
+      status.textContent =
+        "Not Verified";
+    }
+  }
+
+  if (badge) {
+    badge.style.display =
+      state.verified
+        ? "inline-flex"
+        : "none";
+  }
+}
+
+function updateProfileVerifiedBadge() {
+  const badges =
+    document.querySelectorAll(
+      ".verified-badge"
+    );
+
+  badges.forEach(function(badge) {
+    badge.style.display =
+      state.verified
+        ? "inline-flex"
+        : "none";
+  });
+}
+
+
+/* =========================================================
+   CERTIFICATE REFRESH
+   ========================================================= */
+
+function refreshCertificate() {
+  const name =
+    document.getElementById("certificateName");
+
+  const appId =
+    document.getElementById("certificateAppId");
+
+  const telegramId =
+    document.getElementById("certificateTelegramId");
+
+  const balance =
+    document.getElementById("certificateBalance");
+
+  const level =
+    document.getElementById("certificateLevel");
+
+  const verified =
+    document.getElementById("certificateVerified");
+
+  if (name) {
+    name.textContent =
+      getUserName();
+  }
+
+  if (appId) {
+    appId.textContent =
+      APP_USER_ID;
+  }
+
+  if (telegramId) {
+    telegramId.textContent =
+      getTelegramId();
+  }
+
+  if (balance) {
+    balance.textContent =
+      formatATF(getTotalATF()) +
+      " ATF LITE";
+  }
+
+  if (level) {
+    level.textContent =
+      "Level " +
+      getCurrentLevel();
+  }
+
+  if (verified) {
+    verified.textContent =
+      state.verified
+        ? "Verified"
+        : "Not Verified";
+  }
+}
+
+
+/* =========================================================
+   GLOBAL KEYBOARD / MODAL CONTROL
+   ========================================================= */
+
+function setupGlobalEvents() {
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+      closeAllModals();
+    }
+  });
+
+  document.addEventListener("click", function(event) {
+    const target = event.target;
+
+    if (
+      target &&
+      target.classList &&
+      target.classList.contains("modal-backdrop")
+    ) {
+      closeAllModals();
+    }
+  });
+}
+
+
+/* =========================================================
+   DEEP LINK REFERRAL CHECK
+   ========================================================= */
+
+function checkReferralDeepLink() {
+  try {
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const startParam =
+      params.get("start");
+
+    if (!startParam) {
+      return;
+    }
+
+    if (
+      startParam.indexOf("ref_") !== 0
+    ) {
+      return;
+    }
+
+    const referrerId =
+      startParam.substring(4);
+
+    if (!referrerId) {
+      return;
+    }
+
+    if (referrerId === APP_USER_ID) {
+      return;
+    }
+
+    const alreadyProcessed =
+      localStorage.getItem(
+        "atfReferralProcessed"
+      );
+
+    if (alreadyProcessed) {
+      return;
+    }
+
+    localStorage.setItem(
+      "atfReferralProcessed",
+      referrerId
+    );
+
+    showToast(
+      "Referral link detected."
+    );
+  } catch (error) {
+    console.warn(
+      "Referral check failed:",
+      error
+    );
+  }
+}
+
+
+/* =========================================================
+   FINAL INITIALIZATION — PART 4
+   ========================================================= */
+
+function initializeApp() {
+  try {
+    loadState();
+
+    calculateMiningProgress();
+
+    setupNavigation();
+    setupTaskButtons();
+    setupMiningButtons();
+    setupFriendButtons();
+    setupWalletButtons();
+    setupWalletForm();
+    setupSearch();
+    setupProfileButtons();
+    setupCertificateButtons();
+    setupReferralButtons();
+
+    setupTaskReturnHandling();
+    setupTaskClaimWatcher();
+    setupMiningTicker();
+
+    setupGlobalEvents();
+
+    setupTelegramBackButton();
+
+    checkReferralDeepLink();
+
+    renderAll();
+    updateMiningDisplay();
+    updateVerificationStatus();
+    updateProfileVerifiedBadge();
+    refreshCertificate();
+
+    checkTaskStates();
+
+    console.log(
+      "ATF LITE initialized successfully."
+    );
+  } catch (error) {
+    console.error(
+      "ATF LITE initialization error:",
+      error
+    );
+
+    showToast(
+      "Something went wrong. Please reopen the app."
+    );
+  }
+}
+/* =========================================================
+   PART 5 — FINAL PART
+   ========================================================= */
+
+/* =========================================================
+   EXTRA SAFETY CHECKS
+   ========================================================= */
+
+function ensureStateIntegrity() {
+  if (!state || typeof state !== "object") {
+    state = {
+      coins: 0,
+      unclaimedCoins: 0,
+      miningActive: false,
+      miningStart: 0,
+      miningLastCalc: 0,
+      tasks: {
+        telegram: {
+          started: false,
+          claimed: false,
+          startedAt: 0
+        },
+        youtube: {
+          started: false,
+          claimed: false,
+          startedAt: 0
+        }
+      },
+      friends: [],
+      referralEarnings: 0,
+      withdrawalHistory: [],
+      activityHistory: [],
+      wallet: {
+        method: "",
+        address: ""
+      },
+      verified: false,
+      verificationPending: false,
+      verificationDate: 0
+    };
+
+    saveState();
+  }
+
+  if (!state.tasks) {
+    state.tasks = {};
+  }
+
+  if (!state.tasks.telegram) {
+    state.tasks.telegram = {
+      started: false,
+      claimed: false,
+      startedAt: 0
+    };
+  }
+
+  if (!state.tasks.youtube) {
+    state.tasks.youtube = {
+      started: false,
+      claimed: false,
+      startedAt: 0
+    };
+  }
+
+  if (!Array.isArray(state.friends)) {
+    state.friends = [];
+  }
+
+  if (!Array.isArray(state.withdrawalHistory)) {
+    state.withdrawalHistory = [];
+  }
+
+  if (!Array.isArray(state.activityHistory)) {
+    state.activityHistory = [];
+  }
+
+  if (!state.wallet) {
+    state.wallet = {
+      method: "",
+      address: ""
+    };
+  }
+
+  if (!Number.isFinite(state.coins)) {
+    state.coins = 0;
+  }
+
+  if (!Number.isFinite(state.unclaimedCoins)) {
+    state.unclaimedCoins = 0;
+  }
+
+  if (!Number.isFinite(state.miningStart)) {
+    state.miningStart = 0;
+  }
+
+  if (!Number.isFinite(state.miningLastCalc)) {
+    state.miningLastCalc = 0;
+  }
+
+  saveState();
+}
+
+
+/* =========================================================
+   FINAL BALANCE DISPLAY REFRESH
+   ========================================================= */
+
+function refreshBalanceDisplays() {
+  const totalCoins =
+    getTotalCoins();
+
+  const totalATF =
+    coinsToATF(totalCoins);
+
+  const totalUSDT =
+    atfToUSDT(totalATF);
+
+  const coinElements =
+    document.querySelectorAll(
+      "[data-balance-coins]"
+    );
+
+  coinElements.forEach(function(element) {
+    element.textContent =
+      formatCoins(totalCoins);
+  });
+
+  const atfElements =
+    document.querySelectorAll(
+      "[data-balance-atf]"
+    );
+
+  atfElements.forEach(function(element) {
+    element.textContent =
+      formatATF(totalATF);
+  });
+
+  const usdtElements =
+    document.querySelectorAll(
+      "[data-balance-usdt]"
+    );
+
+  usdtElements.forEach(function(element) {
+    element.textContent =
+      "$" +
+      formatUSDT(totalUSDT);
+  });
+}
+
+
+/* =========================================================
+   FINAL RENDER OVERRIDE
+   ========================================================= */
+
+const originalRenderAll =
+  renderAll;
+
+renderAll = function() {
+  try {
+    originalRenderAll();
+
+    refreshBalanceDisplays();
+    updateMiningDisplay();
+    updateVerificationStatus();
+    updateProfileVerifiedBadge();
+    refreshCertificate();
+    renderActivityHistory();
+    renderWithdrawalHistory();
+  } catch (error) {
+    console.error(
+      "Render error:",
+      error
+    );
+  }
+};
+
+
+/* =========================================================
+   START MINING EXTRA VALIDATION
+   ========================================================= */
+
+function validateMiningState() {
+  if (!state) {
+    return false;
+  }
+
+  if (!state.miningActive) {
+    return true;
+  }
+
+  if (!state.miningStart) {
+    state.miningActive = false;
+    state.miningStart = 0;
+    state.miningLastCalc = 0;
+
+    saveState();
+
+    return false;
+  }
+
+  return true;
+}
+
+
+/* =========================================================
+   RESTORE MINING AFTER APP REOPEN
+   ========================================================= */
+
+function restoreMiningSession() {
+  if (!validateMiningState()) {
+    return;
+  }
+
+  calculateMiningProgress();
+
+  if (
+    state.miningActive &&
+    Date.now() - state.miningStart >=
+      MINING_DURATION
+  ) {
+    state.miningActive = false;
+
+    addActivity(
+      "Mining Completed",
+      "7-hour mining session completed"
+    );
+
+    saveState();
+  }
+}
+
+
+/* =========================================================
+   PERIODIC AUTO SAVE
+   ========================================================= */
+
+function setupAutoSave() {
+  setInterval(function() {
+    try {
+      calculateMiningProgress();
+      saveState();
+    } catch (error) {
+      console.warn(
+        "Auto-save failed:",
+        error
+      );
+    }
+  }, 10000);
+}
+
+
+/* =========================================================
+   APP START
+   ========================================================= */
+
+ensureStateIntegrity();
+
+restoreMiningSession();
+
+initializeApp();
+
+setupAutoSave();
+
+
+/* =========================================================
+   TELEGRAM MAIN BUTTON SUPPORT
+   ========================================================= */
+
+try {
+  if (tg && tg.MainButton) {
+    tg.MainButton.hide();
+
+    tg.MainButton.onClick(function() {
+      const activePage =
+        document.querySelector(
+          ".page.active"
+        );
+
+      if (!activePage) {
+        return;
+      }
+
+      if (
+        activePage.id === "page-mine"
+      ) {
+        const claimButton =
+          document.getElementById(
+            "claimPointsBtn"
+          );
+
+        if (
+          claimButton &&
+          !claimButton.disabled
+        ) {
+          claimButton.click();
+        }
+      }
+    });
+  }
+} catch (error) {
+  console.warn(
+    "Telegram MainButton setup failed:",
+    error
+  );
+}
+
+
+/* =========================================================
+   FINAL ERROR HANDLER
+   ========================================================= */
+
+window.addEventListener(
+  "error",
+  function(event) {
+    console.error(
+      "ATF LITE error:",
+      event.error || event.message
+    );
+  }
+);
+
+
+/* =========================================================
+   FINAL UNHANDLED PROMISE HANDLER
+   ========================================================= */
+
+window.addEventListener(
+  "unhandledrejection",
+  function(event) {
+    console.error(
+      "ATF LITE promise error:",
+      event.reason
+    );
+  }
+);
+
+
+/* =========================================================
+   SAVE BEFORE PAGE CLOSE
+   ========================================================= */
+
+window.addEventListener(
+  "beforeunload",
+  function() {
+    try {
+      calculateMiningProgress();
+      saveState();
+    } catch (error) {
+      console.warn(
+        "Final save failed:",
+        error
+      );
+    }
+  }
+);
+
+</script>
+
 </body>
 </html>
