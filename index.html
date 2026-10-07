@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ATF LITE WebApp</title>
-  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
@@ -20,479 +18,86 @@
       --border-color: rgba(212, 175, 55, 0.2);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
     /* Header Bar */
-    .user-header {
-      padding: 12px 16px;
-      background: rgba(18, 22, 31, 0.9);
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 10;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--gold-gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #000;
-      font-weight: bold;
-    }
-
-    .user-details h4 {
-      font-size: 14px;
-    }
-
-    .user-details p {
-      font-size: 11px;
-      color: var(--text-sub);
-    }
-
-    .status-badge {
-      background: rgba(0, 255, 136, 0.1);
-      color: var(--accent-green);
-      border: 1px solid var(--accent-green);
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 12px;
-    }
+    .user-header { padding: 12px 16px; background: rgba(18, 22, 31, 0.9); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--gold-gradient); display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; overflow: hidden; border: 2px solid var(--gold-primary); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .user-details h4 { font-size: 14px; color: var(--text-main); }
+    .user-details p { font-size: 11px; color: var(--text-sub); }
+    .status-badge { background: rgba(0, 255, 136, 0.1); color: var(--accent-green); border: 1px solid var(--accent-green); font-size: 11px; padding: 2px 8px; border-radius: 12px; }
 
     /* Content Area */
-    .content-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      padding-bottom: 80px;
-      position: relative;
-    }
+    .content-container { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 80px; position: relative; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    .tab-content {
-      display: none;
-    }
+    /* TAB 1: MINE */
+    #tab-mine { position: relative; background: radial-gradient(circle at center, #2e081d 0%, #15030d 60%, #0a0c10 100%); min-height: 100%; }
+    #tab-mine::before { content: "🍃"; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 260px; opacity: 0.08; pointer-events: none; z-index: 0; }
+    .mine-ui { position: relative; z-index: 1; }
+    .balance-card { background: rgba(25, 10, 20, 0.85); border: 1px solid rgba(255, 50, 100, 0.4); border-radius: 16px; padding: 18px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 25px rgba(255, 0, 85, 0.2); }
+    .balance-title { font-size: 12px; color: #ff6699; text-transform: uppercase; letter-spacing: 1px; }
+    .balance-amount { font-size: 26px; font-weight: bold; color: #ffffff; margin: 6px 0; }
+    .conversion-info { font-size: 11px; color: var(--text-sub); }
 
-    .tab-content.active {
-      display: block;
-    }
+    /* Large Coin Button */
+    .coin-display { position: relative; width: 250px; height: 250px; margin: 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 0 50px rgba(255, 0, 100, 0.5); }
+    .coin-button { width: 230px; height: 230px; border-radius: 50%; background: radial-gradient(circle, #ff3366 0%, #cc0044 70%, #880022 100%); border: 6px solid #ff6699; box-shadow: 0 0 30px rgba(255, 51, 102, 0.8); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.1s, box-shadow 0.2s; }
+    .coin-button:active { transform: scale(0.95); }
+    .coin-button.boosted { box-shadow: 0 0 60px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 51, 102, 1); border-color: #ffffff; }
+    .coin-text { font-size: 32px; font-weight: 900; color: #ffffff; text-shadow: 0 2px 5px rgba(0,0,0,0.5); letter-spacing: 2px; }
 
-    /* =======================================
-       TAB 1: MINE STYLING (NEW PINK-RED GLOW THEME)
-       ======================================= */
-    #tab-mine {
-      position: relative;
-      background: radial-gradient(circle at center, #2e081d 0%, #15030d 60%, #0a0c10 100%);
-      min-height: 100%;
-    }
+    .claim-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #ff0055 0%, #ff5588 100%); border: 1px solid #ff88aa; border-radius: 12px; color: #ffffff; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4); }
+    .timer-display { margin-top: 10px; font-size: 13px; color: #00ff88; text-align: center; font-weight: bold; }
 
-    /* Watermark Leaf Background */
-    #tab-mine::before {
-      content: "🍃";
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 260px;
-      opacity: 0.08;
-      pointer-events: none;
-      z-index: 0;
-    }
+    /* TAB 2: TASKS */
+    #tab-tasks { background: #0f172a; min-height: 100%; border-radius: 12px; padding: 10px; }
+    .task-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .btn-go { background: #eab308; color: #000; border: none; padding: 8px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .btn-claim { background: #22c55e !important; color: #fff !important; }
+    .task-timer { font-size: 11px; color: #38bdf8; font-weight: bold; }
 
-    .mine-ui {
-      position: relative;
-      z-index: 1;
-    }
+    /* TAB 3: MINERS */
+    #tab-miners { background: #180e29; min-height: 100%; border-radius: 12px; padding: 10px; }
+    .miner-scroll-list { max-height: 65vh; overflow-y: auto; }
+    .miner-card { background: #261642; border: 1px solid #4c2885; border-radius: 12px; padding: 12px 16px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+    .btn-buy { background: var(--gold-gradient); color: #000; border: none; padding: 6px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-    .balance-card {
-      background: rgba(25, 10, 20, 0.85);
-      border: 1px solid rgba(255, 50, 100, 0.4);
-      border-radius: 16px;
-      padding: 18px;
-      text-align: center;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 25px rgba(255, 0, 85, 0.2);
-    }
-
-    .balance-title {
-      font-size: 12px;
-      color: #ff6699;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .balance-amount {
-      font-size: 26px;
-      font-weight: bold;
-      color: #ffffff;
-      margin: 6px 0;
-    }
-
-    .conversion-info {
-      font-size: 11px;
-      color: var(--text-sub);
-    }
-
-    /* Pink & Red Glow Coin Display */
-    .coin-display {
-      position: relative;
-      width: 220px;
-      height: 220px;
-      margin: 30px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      box-shadow: 0 0 50px rgba(255, 0, 100, 0.5);
-    }
-
-    /* Pink-Red Gradient Button */
-    .coin-button {
-      width: 190px;
-      height: 190px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #ff3366 0%, #cc0044 70%, #880022 100%);
-      border: 6px solid #ff6699;
-      box-shadow: 0 0 30px rgba(255, 51, 102, 0.8);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.1s;
-    }
-
-    .coin-button:active {
-      transform: scale(0.95);
-    }
-
-    .coin-text {
-      font-size: 28px;
-      font-weight: 900;
-      color: #ffffff;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-      letter-spacing: 2px;
-    }
-
-    .claim-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #ff0055 0%, #ff5588 100%);
-      border: 1px solid #ff88aa;
-      border-radius: 12px;
-      color: #ffffff;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4);
-    }
-
-    .timer-display {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #00ff88;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    /* =======================================
-       TAB 2: TASKS STYLING
-       ======================================= */
-    #tab-tasks {
-      background: #0f172a;
-      min-height: 100%;
-      border-radius: 12px;
-      padding: 10px;
-    }
-
-    .task-card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .btn-go {
-      background: #eab308;
-      color: #000;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .btn-claim {
-      background: #22c55e !important;
-      color: #fff !important;
-    }
-
-    .task-timer {
-      font-size: 11px;
-      color: #38bdf8;
-      font-weight: bold;
-    }
-
-    /* =======================================
-       TAB 3: MINERS STYLING
-       ======================================= */
-    #tab-miners {
-      background: #180e29;
-      min-height: 100%;
-      border-radius: 12px;
-      padding: 10px;
-    }
-
-    .miner-scroll-list {
-      max-height: 65vh;
-      overflow-y: auto;
-    }
-
-    .miner-card {
-      background: #261642;
-      border: 1px solid #4c2885;
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .btn-buy {
-      background: var(--gold-gradient);
-      color: #000;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    /* =======================================
-       TAB 4: FRIENDS STYLING
-       ======================================= */
-    #tab-friends {
-      background: #052e16;
-      min-height: 100%;
-      border-radius: 12px;
-      padding: 10px;
-    }
-
-    .ref-box {
-      background: #14532d;
-      border: 1px solid #22c55e;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 16px;
-    }
-
-    .ref-btn-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .btn-ref {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 12px;
-    }
-
+    /* TAB 4: FRIENDS */
+    #tab-friends { background: #052e16; min-height: 100%; border-radius: 12px; padding: 10px; }
+    .ref-box { background: #14532d; border: 1px solid #22c55e; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+    .ref-btn-group { display: flex; gap: 10px; margin-top: 10px; }
+    .btn-ref { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; font-size: 12px; }
     .btn-copy { background: #eab308; color: #000; }
     .btn-invite { background: #22c55e; color: #fff; }
+    .pyramid-tree { background: #064e3b; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #10b981; }
+    .p-level { display: flex; justify-content: center; gap: 12px; margin: 8px 0; }
+    .p-node { width: 28px; height: 28px; border-radius: 50%; background: #facc15; color: #000; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 0 10px rgba(250, 204, 21, 0.5); }
 
-    /* Pyramid Network Graph */
-    .pyramid-tree {
-      background: #064e3b;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      border: 1px solid #10b981;
-    }
-
-    .p-level {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 8px 0;
-    }
-
-    .p-node {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: #facc15;
-      color: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
-    }
-
-    /* =======================================
-       TAB 5: PROFILE STYLING & SEARCH
-       ======================================= */
-    #tab-profile {
-      background: #1e1022;
-      min-height: 100%;
-      border-radius: 12px;
-      padding: 10px;
-    }
-
-    .notice-box {
-      background: linear-gradient(135deg, #ff0055 0%, #7928ca 100%);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 16px;
-      color: #fff;
-    }
-
-    .notice-title {
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .countdown-box {
-      background: rgba(0,0,0,0.4);
-      padding: 8px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: bold;
-      color: #00ff88;
-      text-align: center;
-      margin-top: 8px;
-    }
-
-    .verify-box {
-      background: #2a1b36;
-      border: 1px dashed #d8b4fe;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 16px;
-    }
-
-    .btn-helpline {
-      background: #38bdf8;
-      color: #000;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: bold;
-      text-decoration: none;
-      display: inline-block;
-      margin-top: 8px;
-      font-size: 12px;
-    }
-
-    /* Dynamic User Search Section */
-    .search-box {
-      margin-top: 16px;
-      background: #2b1331;
-      border-radius: 12px;
-      padding: 14px;
-      border: 1px solid #e879f9;
-    }
-
-    .search-input-group {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .search-input-group input {
-      flex: 1;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #e879f9;
-      background: #120716;
-      color: #fff;
-    }
-
-    .search-btn {
-      background: #e879f9;
-      color: #000;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .search-result-card {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 10px;
-      display: none;
-    }
-
+    /* TAB 5: PROFILE */
+    #tab-profile { background: #1e1022; min-height: 100%; border-radius: 12px; padding: 10px; }
+    .notice-box { background: linear-gradient(135deg, #ff0055 0%, #7928ca 100%); border-radius: 12px; padding: 14px; margin-bottom: 16px; color: #fff; }
+    .notice-title { font-size: 13px; font-weight: bold; margin-bottom: 6px; }
+    .countdown-box { background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px; font-size: 14px; font-weight: bold; color: #00ff88; text-align: center; margin-top: 8px; }
+    .verify-box { background: #2a1b36; border: 1px dashed #d8b4fe; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+    .btn-helpline { background: #38bdf8; color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 8px; font-size: 12px; }
+    .search-box { margin-top: 16px; background: #2b1331; border-radius: 12px; padding: 14px; border: 1px solid #e879f9; }
+    .search-input-group { display: flex; gap: 8px; margin-top: 8px; }
+    .search-input-group input { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #e879f9; background: #120716; color: #fff; }
+    .search-btn { background: #e879f9; color: #000; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .search-result-card { margin-top: 12px; padding: 12px; border-radius: 10px; display: none; }
     .res-pink { background: rgba(244, 114, 182, 0.2); border: 1px solid #f472b6; color: #f472b6; }
     .res-red { background: rgba(248, 113, 113, 0.2); border: 1px solid #f87171; color: #f87171; }
     .res-green { background: rgba(74, 222, 128, 0.2); border: 1px solid #4ade80; color: #4ade80; }
     .res-sky { background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; }
 
-    /* Bottom Navigation Bar */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 65px;
-      background: #0d1117;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 10;
-    }
-
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: var(--text-sub);
-      text-decoration: none;
-      font-size: 11px;
-      cursor: pointer;
-      gap: 4px;
-    }
-
+    /* Bottom Nav */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: #0d1117; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 10; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 11px; cursor: pointer; gap: 4px; }
     .nav-item i { font-size: 18px; }
     .nav-item.active { color: var(--gold-primary); }
   </style>
@@ -502,7 +107,7 @@
   <!-- Header Bar -->
   <div class="user-header">
     <div class="user-info">
-      <div class="avatar"><i class="fa-solid fa-user"></i></div>
+      <div class="avatar" id="uAvatar"><i class="fa-solid fa-user"></i></div>
       <div class="user-details">
         <h4 id="uName">Loading...</h4>
         <p>ID: <span id="uId">786001</span></p>
@@ -511,9 +116,7 @@
     <span class="status-badge" id="uStatus">Unverified</span>
   </div>
 
-  <!-- Content Container -->
   <div class="content-container">
-
     <!-- TAB 1: MINE -->
     <div id="tab-mine" class="tab-content active">
       <div class="mine-ui">
@@ -538,8 +141,6 @@
     <div id="tab-tasks" class="tab-content">
       <h3>Social Tasks</h3>
       <p style="font-size:12px; color:#94a3b8; margin-bottom:12px;">Earn ATF LITE by completing tasks!</p>
-
-      <!-- Task 1: Telegram -->
       <div class="task-card">
         <div>
           <h4>Join Telegram Channel</h4>
@@ -548,8 +149,6 @@
         </div>
         <button class="btn-go" id="btnTask1" onclick="handleTask(1, 'https://t.me/ATF_LITE')">Go</button>
       </div>
-
-      <!-- Task 2: YouTube -->
       <div class="task-card">
         <div>
           <h4>Subscribe YouTube</h4>
@@ -564,17 +163,13 @@
     <div id="tab-miners" class="tab-content">
       <h3>Miner Speed Shop</h3>
       <p style="font-size:12px; color:#a78bfa; margin-bottom:10px;">Level 1 to 500 Speed Boosters</p>
-      
-      <div class="miner-scroll-list" id="minerList">
-        <!-- Dynamically Generated 500 Miners -->
-      </div>
+      <div class="miner-scroll-list" id="minerList"></div>
     </div>
 
     <!-- TAB 4: FRIENDS -->
     <div id="tab-friends" class="tab-content">
       <h3>Invite Friends</h3>
       <p style="font-size:12px; color:#86efac; margin-bottom:12px;">Build your network tree & earn ATF LITE!</p>
-
       <div class="ref-box">
         <h4 style="font-size:12px;">Your Unique Invite Link:</h4>
         <p id="refLinkText" style="font-size:11px; color:#facc15; word-break:break-all; margin-top:4px;">Generating...</p>
@@ -583,8 +178,6 @@
           <a class="btn-ref btn-invite" id="telegramInviteBtn" target="_blank">Invite Friend</a>
         </div>
       </div>
-
-      <!-- Pyramid Network Tree Visual -->
       <div class="pyramid-tree">
         <h4>Team Network Structure</h4>
         <div class="p-level"><div class="p-node"><i class="fa-solid fa-user"></i></div></div>
@@ -607,111 +200,99 @@
     <div id="tab-profile" class="tab-content">
       <h3>Profile & Account</h3>
       <br>
-
-      <!-- 30-Day Countdown Announcement -->
       <div class="notice-box">
         <div class="notice-title">In Sha Allah</div>
         <p style="font-size:11px;">Withdraw option will be available after 30 days. Work with full attention and invite your friends!</p>
         <div class="countdown-box" id="withdrawCountdown">30d 00h 00m 00s</div>
       </div>
-
-      <!-- Verification System -->
       <div class="verify-box">
         <h4 style="font-size:13px; color:#f472b6;">Account Verification</h4>
         <p style="font-size:11px; color:#cbd5e1; margin-top:4px;">To get verified, send screenshots of your completed tasks and your main profile to our helpline support.</p>
         <a href="https://t.me/ATF_Helpline" target="_blank" class="btn-helpline"><i class="fa-brands fa-telegram"></i> Contact @ATF_Helpline</a>
       </div>
-
-      <!-- Search User ID Section -->
       <div class="search-box">
         <h4 style="font-size:13px; color:#e879f9;">Search User Info</h4>
         <div class="search-input-group">
           <input type="text" id="searchInput" placeholder="Enter User ID (e.g. 786001)">
           <button class="search-btn" onclick="searchUser()">Search</button>
         </div>
-
         <div class="search-result-card res-pink" id="resPink"><strong>Name & ID:</strong> <span id="resName"></span></div>
         <div class="search-result-card res-red" id="resRed"><strong>Upline Info:</strong> <span id="resUpline"></span></div>
         <div class="search-result-card res-green" id="resGreen"><strong>Balances:</strong> <span id="resBalance"></span></div>
         <div class="search-result-card res-sky" id="resSky"><strong>Miner Level:</strong> <span id="resLevel"></span></div>
       </div>
     </div>
-
   </div>
 
-  <!-- Bottom Navigation Bar -->
   <div class="bottom-nav">
-    <div class="nav-item active" onclick="switchTab('mine', this)">
-      <i class="fa-solid fa-hand-pointer"></i>
-      <span>Mine</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('tasks', this)">
-      <i class="fa-solid fa-list-check"></i>
-      <span>Tasks</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('miners', this)">
-      <i class="fa-solid fa-bolt"></i>
-      <span>Miners</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('friends', this)">
-      <i class="fa-solid fa-user-group"></i>
-      <span>Friends</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('profile', this)">
-      <i class="fa-solid fa-circle-user"></i>
-      <span>Profile</span>
-    </div>
+    <div class="nav-item active" onclick="switchTab('mine', this)"><i class="fa-solid fa-hand-pointer"></i><span>Mine</span></div>
+    <div class="nav-item" onclick="switchTab('tasks', this)"><i class="fa-solid fa-list-check"></i><span>Tasks</span></div>
+    <div class="nav-item" onclick="switchTab('miners', this)"><i class="fa-solid fa-bolt"></i><span>Miners</span></div>
+    <div class="nav-item" onclick="switchTab('friends', this)"><i class="fa-solid fa-user-group"></i><span>Friends</span></div>
+    <div class="nav-item" onclick="switchTab('profile', this)"><i class="fa-solid fa-circle-user"></i><span>Profile</span></div>
   </div>
-
-  <script>
-    // System Values
+    <script>
+    // System Variables
     let tapCoins = 0;
     let atfLite = 0;
-    const BOT_USERNAME = "ATF_LITE_bot"; // Your telegram bot username
+    const BOT_USERNAME = "ATF_LITE_bot"; 
 
-    // Telegram SDK Initialization
+    // Telegram SDK Setup
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     let userId = "786001";
     let userName = "User_786001";
+    let photoUrl = "";
 
     if (tg) {
       tg.expand();
       if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const u = tg.initDataUnsafe.user;
         userId = u.id;
-        userName = u.username ? "@" + u.username : u.first_name;
+        userName = u.username ? "@" + u.username : (u.first_name + (u.last_name ? " " + u.last_name : ""));
+        if (u.photo_url) photoUrl = u.photo_url;
       }
     }
 
     document.getElementById('uName').innerText = userName;
     document.getElementById('uId').innerText = userId;
 
-    // Tap Mining Logic
+    if (photoUrl) {
+      document.getElementById('uAvatar').innerHTML = `<img src="${photoUrl}" alt="User Avatar">`;
+    } else {
+      document.getElementById('uAvatar').innerText = userName.charAt(0).toUpperCase();
+    }
+
+    // Tap Coin Logic & Speed Glow Effect
     const tapBtn = document.getElementById('tapBtn');
+    let boostTimer = null;
+
     tapBtn.addEventListener('click', () => {
       tapCoins += 10;
       updateBalances();
+
+      tapBtn.classList.add('boosted');
+      if (boostTimer) clearTimeout(boostTimer);
+      boostTimer = setTimeout(() => {
+        tapBtn.classList.remove('boosted');
+      }, 5000);
     });
 
     function updateBalances() {
-      // 10,000 Tap Coins = 1 ATF LITE
       atfLite = (tapCoins / 10000);
-      // 500 ATF LITE = 1 USD
       let usdVal = (atfLite / 500).toFixed(4);
-
       document.getElementById('coinDisplay').innerText = tapCoins.toLocaleString() + " Tap Coins";
       document.getElementById('atfDisplay').innerText = atfLite.toFixed(2) + " ATF LITE (~ $" + usdVal + " USD)";
     }
 
-    // 7-Hour Mining Timer Logic
+    // 7-Hour Mining Logic
     let miningActive = false;
     function startMiningTimer() {
-      if(miningActive) {
+      if (miningActive) {
         alert("Mining is already running!");
         return;
       }
       miningActive = true;
-      let duration = 7 * 60 * 60; // 7 Hours in seconds
+      let duration = 7 * 60 * 60;
       const display = document.getElementById('mineTimerText');
 
       let timer = setInterval(() => {
@@ -725,30 +306,31 @@
           clearInterval(timer);
           miningActive = false;
           display.innerText = "Mining Finished! Claim Now.";
-          tapCoins += 5000; // Mining reward
+          tapCoins += 5000;
           updateBalances();
         }
-      }, 
-                              // Tasks & 3-Hour Countdown Logic
+      }, 1000);
+    }
+
+    // Tasks Logic & 3-Hour Timer
     function handleTask(taskId, url) {
       window.open(url, '_blank');
       const btn = document.getElementById('btnTask' + taskId);
       
-      if(btn.innerText === "Go") {
+      if (btn.innerText === "Go") {
         btn.innerText = "Claim";
         btn.classList.add('btn-claim');
-      } else if(btn.innerText === "Claim") {
+      } else if (btn.innerText === "Claim") {
         atfLite += (taskId === 1 ? 10 : 15);
         tapCoins += (taskId === 1 ? 10 : 15) * 10000;
         updateBalances();
         btn.style.display = "none";
-        
         startTaskTimer(taskId);
       }
     }
 
     function startTaskTimer(taskId) {
-      let time = 3 * 60 * 60; // 3 Hours
+      let time = 3 * 60 * 60;
       const timerSpan = document.getElementById('timer' + taskId);
 
       let t = setInterval(() => {
@@ -757,7 +339,7 @@
         let s = time % 60;
         timerSpan.innerText = ` Available again in: ${h}h ${m}m ${s}s`;
 
-        if(--time < 0) {
+        if (--time < 0) {
           clearInterval(t);
           timerSpan.innerText = "";
           const btn = document.getElementById('btnTask' + taskId);
@@ -770,9 +352,9 @@
 
     // Dynamic 500 Miners Generation
     const minerList = document.getElementById('minerList');
-    for(let i = 1; i <= 500; i++) {
+    for (let i = 1; i <= 500; i++) {
       let speed = (i * 0.5).toFixed(1);
-      let price = (i * 2); // $ Price increases by level
+      let price = (i * 2);
 
       let item = document.createElement('div');
       item.className = 'miner-card';
@@ -786,7 +368,7 @@
       minerList.appendChild(item);
     }
 
-    // Dynamic Referral Links
+    // Dynamic Referrals
     const myRefLink = `https://t.me/${BOT_USERNAME}?start=${userId}`;
     document.getElementById('refLinkText').innerText = myRefLink;
 
@@ -798,7 +380,7 @@
       alert("Referral link copied!");
     }
 
-    // 30-Day Withdrawal Countdown
+    // 30-Day Withdrawal Timer
     let targetDate = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
     setInterval(() => {
       let now = new Date().getTime();
@@ -812,10 +394,10 @@
       document.getElementById('withdrawCountdown').innerText = `${d}d ${h}h ${m}m ${s}s`;
     }, 1000);
 
-    // Profile Search System Function
+    // Profile Search System
     function searchUser() {
       let query = document.getElementById('searchInput').value.trim();
-      if(!query) {
+      if (!query) {
         alert("Please enter a User ID!");
         return;
       }
