@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ATF Premium Mining WebApp</title>
+  <title>My Premium Mining App</title>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- FontAwesome Icons -->
@@ -82,7 +82,7 @@
       border-radius: 12px;
     }
 
-    /* Tab Container */
+    /* Content Area */
     .content-container {
       flex: 1;
       overflow-y: auto;
@@ -98,7 +98,7 @@
       display: block;
     }
 
-    /* Mine Tab Styling */
+    /* Cards & Buttons */
     .balance-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -113,7 +113,6 @@
       font-size: 12px;
       color: var(--text-sub);
       text-transform: uppercase;
-      letter-spacing: 1px;
     }
 
     .balance-amount {
@@ -125,17 +124,17 @@
 
     .coin-display {
       position: relative;
-      width: 200px;
-      height: 200px;
-      margin: 30px auto;
+      width: 180px;
+      height: 180px;
+      margin: 20px auto;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .coin-button {
-      width: 170px;
-      height: 170px;
+      width: 160px;
+      height: 160px;
       border-radius: 50%;
       background: radial-gradient(circle, #ffe066 0%, #b8860b 100%);
       border: 6px solid #ffd700;
@@ -144,8 +143,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
-      font-weight: 900;
+      font-size: 24px;
+      font-weight: bold;
       color: #111;
       transition: transform 0.1s;
     }
@@ -164,10 +163,8 @@
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
-      text-transform: uppercase;
     }
 
-    /* Common Card Item */
     .card-item {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -189,7 +186,7 @@
       cursor: pointer;
     }
 
-    /* Tree Network Graph (Friends Tab) */
+    /* Custom Network Graph (Friends Tab) */
     .network-tree {
       margin-top: 20px;
       padding: 16px;
@@ -214,19 +211,19 @@
     }
 
     .node {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       background: var(--gold-primary);
       color: #000;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
+      font-size: 11px;
       box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
     }
 
-    /* Bottom Navigation */
+    /* Navigation Bar */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -271,92 +268,89 @@
         <p>ID: <span id="uId">00000000</span></p>
       </div>
     </div>
-    <span class="status-badge">● READY</span>
+    <span class="status-badge">● ACTIVE</span>
   </div>
 
-  <!-- Main Content Areas -->
   <div class="content-container">
 
     <!-- 1. MINE TAB -->
     <div id="tab-mine" class="tab-content active">
       <div class="balance-card">
-        <div class="balance-title">Pool Balance</div>
-        <div class="balance-amount" id="balanceDisplay">5,143.26 ATF</div>
-        <p style="font-size: 12px; color: var(--accent-green);">+$0.1858 Earned Today</p>
+        <div class="balance-title" id="coinNameTitle">MAIN BALANCE</div>
+        <div class="balance-amount" id="balanceDisplay">0.00 COIN</div>
       </div>
 
       <div class="coin-display">
-        <button class="coin-button" id="tapBtn">ATF</button>
+        <button class="coin-button" id="coinSymbol">MINE</button>
       </div>
 
-      <button class="claim-btn">Claim Rewards</button>
+      <button class="claim-btn">CLAIM REWARDS</button>
     </div>
 
     <!-- 2. TASKS TAB -->
     <div id="tab-tasks" class="tab-content">
-      <h3 style="margin-bottom: 16px;">Earn Rewards</h3>
+      <h3>Complete Tasks</h3>
+      <br>
       <div class="card-item">
         <div>
-          <h4>YouTube Like & Comment</h4>
-          <p style="font-size: 12px; color: var(--text-sub);">+1 ATF</p>
+          <h4>Join Channel</h4>
+          <p style="font-size: 12px; color: var(--text-sub);">+100 Coins</p>
         </div>
-        <button class="btn-action">Go</button>
+        <button class="btn-action">Join</button>
       </div>
       <div class="card-item">
         <div>
-          <h4>X (Twitter) Retweet</h4>
-          <p style="font-size: 12px; color: var(--text-sub);">+1 ATF</p>
+          <h4>Follow Social Media</h4>
+          <p style="font-size: 12px; color: var(--text-sub);">+50 Coins</p>
         </div>
-        <button class="btn-action">Go</button>
+        <button class="btn-action">Follow</button>
       </div>
     </div>
 
-    <!-- 3. MINERS STORE TAB -->
+    <!-- 3. MINERS TAB -->
     <div id="tab-miners" class="tab-content">
-      <h3 style="margin-bottom: 16px;">Miner Store</h3>
+      <h3>Mining Speed Boosters</h3>
+      <br>
       <div class="card-item">
         <div>
-          <h4>Level 157 Miner</h4>
-          <p style="font-size: 12px; color: var(--text-sub);">Speed: 3.30 TH/s</p>
+          <h4>Level 1 Miner</h4>
+          <p style="font-size: 12px; color: var(--text-sub);">Speed: 1x</p>
         </div>
         <button class="btn-action" style="background: var(--accent-green);">ACTIVE</button>
       </div>
       <div class="card-item">
         <div>
-          <h4>Level 158 Miner</h4>
-          <p style="font-size: 12px; color: var(--text-sub);">Speed: 3.36 TH/s</p>
+          <h4>Level 2 Miner</h4>
+          <p style="font-size: 12px; color: var(--text-sub);">Speed: 2x</p>
         </div>
-        <button class="btn-action">Unlock</button>
+        <button class="btn-action">Upgrade</button>
       </div>
     </div>
 
     <!-- 4. FRIENDS TAB -->
     <div id="tab-friends" class="tab-content">
       <h3>Invite Friends</h3>
-      <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 16px;">Invite to boost your mining speed!</p>
+      <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 16px;">Share your unique link to earn bonus coins!</p>
       
       <div class="card-item">
         <div style="overflow: hidden; text-overflow: ellipsis; max-width: 70%;">
           <h4 style="font-size: 12px;">Your Unique Invite Link</h4>
-          <p id="refLink" style="font-size: 11px; color: var(--gold-primary);">https://t.me/Bot?start=000</p>
+          <p id="refLink" style="font-size: 11px; color: var(--gold-primary);">Generating link...</p>
         </div>
         <button class="btn-action" onclick="copyRefLink()">Copy</button>
       </div>
 
-      <!-- Network Tree Graph Visual -->
+      <!-- Network Tree Graph -->
       <div class="network-tree">
-        <h4>Referral Network</h4>
+        <h4>Your Team Structure</h4>
         <div class="tree-icon-container">
-          <!-- Level 1 (Root User) -->
           <div class="tree-level"><div class="node"><i class="fa-solid fa-user"></i></div></div>
-          <p style="font-size: 10px; color: var(--text-sub);">↓ Direct Invites</p>
-          <!-- Level 2 -->
+          <p style="font-size: 10px; color: var(--text-sub);">↓ Your Referral Network</p>
           <div class="tree-level">
             <div class="node"><i class="fa-solid fa-user"></i></div>
             <div class="node"><i class="fa-solid fa-user"></i></div>
           </div>
-          <p style="font-size: 10px; color: var(--text-sub);">↓ Sub-Network</p>
-          <!-- Level 3 -->
+          <p style="font-size: 10px; color: var(--text-sub);">↓ Sub-Team</p>
           <div class="tree-level">
             <div class="node"><i class="fa-solid fa-user"></i></div>
             <div class="node"><i class="fa-solid fa-user"></i></div>
@@ -369,18 +363,19 @@
 
     <!-- 5. PROFILE TAB -->
     <div id="tab-profile" class="tab-content">
-      <h3 style="margin-bottom: 16px;">User Profile</h3>
+      <h3>Account Settings</h3>
+      <br>
       <div class="card-item">
         <div>
           <h4>Account Verification</h4>
-          <p style="font-size: 12px; color: var(--text-sub);">Unverified</p>
+          <p style="font-size: 12px; color: var(--text-sub);">Status: Unverified</p>
         </div>
         <button class="btn-action">Verify</button>
       </div>
       <div class="card-item">
         <div>
-          <h4>Withdraw Balance</h4>
-          <p style="font-size: 12px; color: var(--accent-green);">5,143 ATF</p>
+          <h4>Withdraw Coins</h4>
+          <p style="font-size: 12px; color: var(--accent-green);">Available for Payout</p>
         </div>
         <button class="btn-action">Withdraw</button>
       </div>
@@ -391,7 +386,7 @@
   <!-- Navigation Bar -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('mine', this)">
-      <i class="fa-solid fa-pickaxe"></i>
+      <i class="fa-solid fa-hand-pointer"></i>
       <span>Mine</span>
     </div>
     <div class="nav-item" onclick="switchTab('tasks', this)">
@@ -413,30 +408,35 @@
   </div>
 
   <script>
-    // Initialize Telegram WebApp
+    // ===============================================
+    // এখানে আপনার বটের নিজস্ব কনফিগারেশন বসাবেন:
+    // ===============================================
+    const MY_BOT_USERNAME = "YourBotUsername_bot"; // আপনার টেলিগ্রাম বটের ইউজারনেম বসান
+    const MY_COIN_NAME = "COIN";                   // আপনার টোকেন বা কয়েনের নাম বসান
+    // ===============================================
+
+    // কয়েনের নাম সেট করা
+    document.getElementById('coinSymbol').innerText = MY_COIN_NAME;
+
+    // Telegram SDK Integration
     const tg = window.Telegram ? window.Telegram.WebApp : null;
-    let userId = "8649595817"; // Default Fallback ID
+    let userId = "00000000";
 
     if (tg) {
-      tg.expand(); // Expand WebApp to full height
-      
+      tg.expand();
       if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const user = tg.initDataUnsafe.user;
         userId = user.id;
-        document.getElementById('uName').innerText = user.first_name + (user.last_name ? " " + user.last_name : "");
+        document.getElementById('uName').innerText = user.username ? "@" + user.username : (user.first_name + (user.last_name ? " " + user.last_name : ""));
         document.getElementById('uId').innerText = user.id;
-        if(user.username) {
-          document.getElementById('uName').innerText = "@" + user.username;
-        }
       }
     }
 
-    // Set Unique Referral Link based on Bot Username & Dynamic User ID
-    const botUsername = "ATF_AIRDROP_bot"; // আপনার টেলিগ্রাম বটের ইউজারনেম দিন
-    const dynamicRefLink = `https://t.me/${botUsername}?start=${userId}`;
+    // ইউনিক ডাইনামিক রেফারেল লিংক তৈরি (ইউজারভেদে আলাদা হবে)
+    const dynamicRefLink = `https://t.me/${MY_BOT_USERNAME}?start=${userId}`;
     document.getElementById('refLink').innerText = dynamicRefLink;
 
-    // Tab Navigation Logic
+    // ট্যাবস পরিবর্তন করার লজিক
     function switchTab(tabId, element) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -445,12 +445,12 @@
       element.classList.add('active');
     }
 
-    // Copy Referral Link Function
+    // রেফারেল লিংক কপি করার ফাংশন
     function copyRefLink() {
       navigator.clipboard.writeText(dynamicRefLink);
-      alert('Referral link copied to clipboard!');
+      alert('আপনার রেফারেল লিংকটি কপি করা হয়েছে!');
     }
   </script>
 </body>
   </html>
-        
+      
