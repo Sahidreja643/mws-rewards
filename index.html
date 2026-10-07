@@ -8,27 +8,28 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --bg-dark: #0a0c10;
-      --card-bg: #12161f;
-      --gold-primary: #ffd700;
-      --gold-gradient: linear-gradient(135deg, #ffe066 0%, #d4af37 100%);
-      --accent-green: #00ff88;
-      --text-main: #ffffff;
-      --text-sub: #8a94a6;
-      --border-color: rgba(212, 175, 55, 0.2);
+      --bg-dark: #070d19;
+      --card-bg: #0f172a;
+      --accent-green: #10b981;
+      --accent-sky: #38bdf8;
+      --accent-blue: #2563eb;
+      --text-white: #f8fafc;
+      --text-sub: #94a3b8;
+      --border-color: rgba(56, 189, 248, 0.2);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    body { background-color: var(--bg-dark); color: var(--text-white); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
     /* Header Bar */
-    .user-header { padding: 12px 16px; background: rgba(18, 22, 31, 0.9); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+    .user-header { padding: 12px 16px; background: #0b1329; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; z-index: 10; }
     .user-info { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--gold-gradient); display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; overflow: hidden; border: 2px solid var(--gold-primary); }
+    .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--accent-sky); display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; overflow: hidden; border: 2px solid var(--accent-green); }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .user-details h4 { font-size: 14px; color: var(--text-main); }
+    .user-details h4 { font-size: 14px; color: var(--text-white); }
     .user-details p { font-size: 11px; color: var(--text-sub); }
-    .status-badge { background: rgba(0, 255, 136, 0.1); color: var(--accent-green); border: 1px solid var(--accent-green); font-size: 11px; padding: 2px 8px; border-radius: 12px; }
+    .status-badge { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
+    .status-badge.verified { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border-color: var(--accent-green); }
 
     /* Content Area */
     .content-container { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 80px; position: relative; }
@@ -36,70 +37,69 @@
     .tab-content.active { display: block; }
 
     /* TAB 1: MINE */
-    #tab-mine { position: relative; background: radial-gradient(circle at center, #2e081d 0%, #15030d 60%, #0a0c10 100%); min-height: 100%; }
-    #tab-mine::before { content: "🍃"; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 260px; opacity: 0.08; pointer-events: none; z-index: 0; }
-    .mine-ui { position: relative; z-index: 1; }
-    .balance-card { background: rgba(25, 10, 20, 0.85); border: 1px solid rgba(255, 50, 100, 0.4); border-radius: 16px; padding: 18px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 25px rgba(255, 0, 85, 0.2); }
-    .balance-title { font-size: 12px; color: #ff6699; text-transform: uppercase; letter-spacing: 1px; }
-    .balance-amount { font-size: 26px; font-weight: bold; color: #ffffff; margin: 6px 0; }
-    .conversion-info { font-size: 11px; color: var(--text-sub); }
+    #tab-mine { background: radial-gradient(circle at center, #0b1e36 0%, #070d19 100%); min-height: 100%; text-align: center; }
+    .balance-card { background: rgba(15, 23, 42, 0.85); border: 1px solid var(--accent-sky); border-radius: 20px; padding: 16px; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(56, 189, 248, 0.15); }
+    .balance-title { font-size: 11px; color: var(--accent-sky); text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+    .balance-amount { font-size: 24px; font-weight: bold; color: var(--accent-green); margin: 4px 0; }
+    .conversion-info { font-size: 12px; color: var(--text-sub); }
 
-    /* Large Coin Button */
-    .coin-display { position: relative; width: 250px; height: 250px; margin: 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 0 50px rgba(255, 0, 100, 0.5); }
-    .coin-button { width: 230px; height: 230px; border-radius: 50%; background: radial-gradient(circle, #ff3366 0%, #cc0044 70%, #880022 100%); border: 6px solid #ff6699; box-shadow: 0 0 30px rgba(255, 51, 102, 0.8); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.1s, box-shadow 0.2s; }
-    .coin-button:active { transform: scale(0.95); }
-    .coin-button.boosted { box-shadow: 0 0 60px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 51, 102, 1); border-color: #ffffff; }
-    .coin-text { font-size: 32px; font-weight: 900; color: #ffffff; text-shadow: 0 2px 5px rgba(0,0,0,0.5); letter-spacing: 2px; }
+    /* Round Coin Sphere */
+    .coin-display-wrap { width: 200px; height: 200px; margin: 15px auto; border-radius: 50%; background: radial-gradient(circle, #1e3a8a 0%, #0f172a 70%); border: 4px solid var(--accent-sky); display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(56, 189, 248, 0.3); }
+    .coin-live-points { font-size: 26px; font-weight: 900; color: #ffffff; text-shadow: 0 0 10px var(--accent-sky); }
+    .coin-speed-rate { font-size: 12px; color: var(--accent-green); font-weight: bold; margin-top: 4px; }
 
-    .claim-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #ff0055 0%, #ff5588 100%); border: 1px solid #ff88aa; border-radius: 12px; color: #ffffff; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4); }
-    .timer-display { margin-top: 10px; font-size: 13px; color: #00ff88; text-align: center; font-weight: bold; }
+    /* Action Buttons */
+    .btn-action-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+    .btn-mine-start { width: 100%; padding: 14px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); border: none; border-radius: 30px; color: #fff; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+    .btn-mine-claim { width: 100%; padding: 14px; background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); border: none; border-radius: 30px; color: #000; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3); }
+    .btn-mine-claim:disabled { opacity: 0.5; cursor: not-allowed; }
+    .timer-info-text { font-size: 13px; color: var(--accent-sky); font-weight: bold; margin-top: 8px; }
 
     /* TAB 2: TASKS */
-    #tab-tasks { background: #0f172a; min-height: 100%; border-radius: 12px; padding: 10px; }
-    .task-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-    .btn-go { background: #eab308; color: #000; border: none; padding: 8px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .btn-claim { background: #22c55e !important; color: #fff !important; }
-    .task-timer { font-size: 11px; color: #38bdf8; font-weight: bold; }
+    #tab-tasks { background: #0b1329; border-radius: 16px; padding: 14px; }
+    .task-card { background: #1e293b; border: 1px solid var(--border-color); border-radius: 14px; padding: 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .btn-go { background: var(--accent-sky); color: #000; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+    .btn-claim { background: var(--accent-green) !important; color: #fff !important; }
 
     /* TAB 3: MINERS */
-    #tab-miners { background: #180e29; min-height: 100%; border-radius: 12px; padding: 10px; }
-    .miner-scroll-list { max-height: 65vh; overflow-y: auto; }
-    .miner-card { background: #261642; border: 1px solid #4c2885; border-radius: 12px; padding: 12px 16px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
-    .btn-buy { background: var(--gold-gradient); color: #000; border: none; padding: 6px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    #tab-miners { background: #0b1329; border-radius: 16px; padding: 14px; }
+    .miner-scroll-list { max-height: 60vh; overflow-y: auto; margin-top: 10px; }
+    .miner-card { background: #1e293b; border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 16px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+    .btn-buy { background: var(--accent-green); color: #000; border: none; padding: 6px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; }
 
     /* TAB 4: FRIENDS */
-    #tab-friends { background: #052e16; min-height: 100%; border-radius: 12px; padding: 10px; }
-    .ref-box { background: #14532d; border: 1px solid #22c55e; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+    #tab-friends { background: #0b1329; border-radius: 16px; padding: 14px; }
+    .ref-box { background: #1e293b; border: 1px solid var(--accent-green); border-radius: 14px; padding: 14px; margin-bottom: 16px; }
     .ref-btn-group { display: flex; gap: 10px; margin-top: 10px; }
-    .btn-ref { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; font-size: 12px; }
-    .btn-copy { background: #eab308; color: #000; }
-    .btn-invite { background: #22c55e; color: #fff; }
-    .pyramid-tree { background: #064e3b; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #10b981; }
-    .p-level { display: flex; justify-content: center; gap: 12px; margin: 8px 0; }
-    .p-node { width: 28px; height: 28px; border-radius: 50%; background: #facc15; color: #000; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 0 10px rgba(250, 204, 21, 0.5); }
+    .btn-ref { flex: 1; padding: 10px; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; font-size: 12px; }
+    .btn-copy { background: var(--accent-sky); color: #000; }
+    .btn-invite { background: var(--accent-green); color: #fff; }
+    .pyramid-tree { background: #0f172a; border-radius: 14px; padding: 20px 10px; text-align: center; border: 1px solid var(--border-color); }
+    .p-level { display: flex; justify-content: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+    .p-node { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-sky); color: #000; display: flex; align-items: center; justify-content: center; font-size: 13px; box-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
 
     /* TAB 5: PROFILE */
-    #tab-profile { background: #1e1022; min-height: 100%; border-radius: 12px; padding: 10px; }
-    .notice-box { background: linear-gradient(135deg, #ff0055 0%, #7928ca 100%); border-radius: 12px; padding: 14px; margin-bottom: 16px; color: #fff; }
-    .notice-title { font-size: 13px; font-weight: bold; margin-bottom: 6px; }
-    .countdown-box { background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px; font-size: 14px; font-weight: bold; color: #00ff88; text-align: center; margin-top: 8px; }
-    .verify-box { background: #2a1b36; border: 1px dashed #d8b4fe; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
-    .btn-helpline { background: #38bdf8; color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 8px; font-size: 12px; }
-    .search-box { margin-top: 16px; background: #2b1331; border-radius: 12px; padding: 14px; border: 1px solid #e879f9; }
-    .search-input-group { display: flex; gap: 8px; margin-top: 8px; }
-    .search-input-group input { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #e879f9; background: #120716; color: #fff; }
-    .search-btn { background: #e879f9; color: #000; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .search-result-card { margin-top: 12px; padding: 12px; border-radius: 10px; display: none; }
-    .res-pink { background: rgba(244, 114, 182, 0.2); border: 1px solid #f472b6; color: #f472b6; }
-    .res-red { background: rgba(248, 113, 113, 0.2); border: 1px solid #f87171; color: #f87171; }
-    .res-green { background: rgba(74, 222, 128, 0.2); border: 1px solid #4ade80; color: #4ade80; }
-    .res-sky { background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; }
+    #tab-profile { background: #0b1329; border-radius: 16px; padding: 14px; }
+    .warning-box { background: rgba(239, 68, 68, 0.15); border: 2px solid #ef4444; border-radius: 14px; padding: 14px; margin-bottom: 14px; color: #fca5a5; }
+    .warning-title { font-size: 14px; font-weight: bold; color: #ef4444; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+    
+    .notice-box { background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%); border-radius: 14px; padding: 14px; margin-bottom: 14px; color: #fff; text-align: center; }
+    .countdown-box { background: rgba(0,0,0,0.4); padding: 8px; border-radius: 20px; font-size: 14px; font-weight: bold; color: var(--accent-green); margin-top: 8px; border: 1px solid var(--accent-green); }
+
+    .helpline-box { background: #1e293b; border: 1px solid var(--accent-sky); border-radius: 14px; padding: 14px; margin-bottom: 14px; text-align: center; }
+    .btn-helpline { background: var(--accent-sky); color: #000; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 8px; font-size: 13px; width: 100%; }
+
+    /* Certificate Card */
+    .certificate-card { background: #0f172a; border: 2px solid var(--accent-green); border-radius: 14px; padding: 16px; margin-bottom: 14px; text-align: center; position: relative; box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+    .cert-header { font-size: 11px; text-transform: uppercase; color: var(--accent-sky); letter-spacing: 1px; }
+    .cert-title { font-size: 16px; font-weight: bold; color: var(--accent-green); margin: 6px 0; }
+    .cert-details { font-size: 12px; color: var(--text-sub); text-align: left; margin-top: 10px; line-height: 1.6; }
 
     /* Bottom Nav */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: #0d1117; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 10; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: #0b1329; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 10; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 11px; cursor: pointer; gap: 4px; }
     .nav-item i { font-size: 18px; }
-    .nav-item.active { color: var(--gold-primary); }
+    .nav-item.active { color: var(--accent-green); }
   </style>
 </head>
 <body>
@@ -119,41 +119,41 @@
   <div class="content-container">
     <!-- TAB 1: MINE -->
     <div id="tab-mine" class="tab-content active">
-      <div class="mine-ui">
-        <div class="balance-card">
-          <div class="balance-title">ATF LITE BALANCE</div>
-          <div class="balance-amount" id="coinDisplay">0 Tap Coins</div>
-          <p class="conversion-info" id="atfDisplay">0.00 ATF LITE (~ $0.00 USD)</p>
-        </div>
-
-        <div class="coin-display">
-          <button class="coin-button" id="tapBtn">
-            <span class="coin-text">ATF LT</span>
-          </button>
-        </div>
-
-        <button class="claim-btn" onclick="startMiningTimer()">START / CLAIM MINING</button>
-        <div class="timer-display" id="mineTimerText">7 Hours Mining Ready</div>
+      <div class="balance-card">
+        <div class="balance-title">Total Claimed Balance</div>
+        <div class="balance-amount" id="totalCoinDisplay">0 Coins</div>
+        <p class="conversion-info" id="atfDisplay">0.00 ATF LITE (~ $0.00 USDT)</p>
       </div>
+
+      <div class="coin-display-wrap">
+        <div style="font-size: 11px; color: var(--text-sub);">CURRENT MINING</div>
+        <div class="coin-live-points" id="liveMiningPoints">+0.000</div>
+        <div class="coin-speed-rate" id="speedRateText">⚡ 0.397 Coins/s</div>
+      </div>
+
+      <div class="btn-action-group">
+        <button class="btn-mine-start" id="startMiningBtn" onclick="start7HourMining()">⛏️ Start Mining (7 Hours)</button>
+        <button class="btn-mine-claim" id="claimPointsBtn" onclick="claimMiningPoints()" disabled>💰 Claim Points</button>
+      </div>
+
+      <div class="timer-info-text" id="mineTimerText">Ready to start mining</div>
     </div>
 
     <!-- TAB 2: TASKS -->
     <div id="tab-tasks" class="tab-content">
-      <h3>Social Tasks</h3>
-      <p style="font-size:12px; color:#94a3b8; margin-bottom:12px;">Earn ATF LITE by completing tasks!</p>
+      <h3 style="color: var(--accent-sky);">Social Tasks</h3>
+      <p style="font-size:12px; color:var(--text-sub); margin-bottom:12px;">Complete tasks to earn ATF LITE!</p>
       <div class="task-card">
         <div>
           <h4>Join Telegram Channel</h4>
-          <p style="font-size:11px; color:#94a3b8;">Reward: +10 ATF LITE</p>
-          <span class="task-timer" id="timer1"></span>
+          <p style="font-size:11px; color:var(--text-sub);">Reward: +10 ATF LITE (100,000 Coins)</p>
         </div>
         <button class="btn-go" id="btnTask1" onclick="handleTask(1, 'https://t.me/ATF_LITE')">Go</button>
       </div>
       <div class="task-card">
         <div>
           <h4>Subscribe YouTube</h4>
-          <p style="font-size:11px; color:#94a3b8;">Reward: +15 ATF LITE</p>
-          <span class="task-timer" id="timer2"></span>
+          <p style="font-size:11px; color:var(--text-sub);">Reward: +15 ATF LITE (150,000 Coins)</p>
         </div>
         <button class="btn-go" id="btnTask2" onclick="handleTask(2, 'https://www.youtube.com/@ATF_LT_Eran')">Go</button>
       </div>
@@ -161,83 +161,111 @@
 
     <!-- TAB 3: MINERS -->
     <div id="tab-miners" class="tab-content">
-      <h3>Miner Speed Shop</h3>
-      <p style="font-size:12px; color:#a78bfa; margin-bottom:10px;">Level 1 to 500 Speed Boosters</p>
+      <h3 style="color: var(--accent-sky);">Miner Speed Boosters</h3>
+      <p style="font-size:12px; color:var(--text-sub);">Upgrade speed from Level 1 to 500</p>
       <div class="miner-scroll-list" id="minerList"></div>
     </div>
 
     <!-- TAB 4: FRIENDS -->
     <div id="tab-friends" class="tab-content">
-      <h3>Invite Friends</h3>
-      <p style="font-size:12px; color:#86efac; margin-bottom:12px;">Build your network tree & earn ATF LITE!</p>
+      <h3 style="color: var(--accent-sky);">Invite & Earn</h3>
+      <p style="font-size:12px; color:var(--text-sub); margin-bottom:12px;">Build your network tree & gain higher rewards!</p>
       <div class="ref-box">
-        <h4 style="font-size:12px;">Your Unique Invite Link:</h4>
-        <p id="refLinkText" style="font-size:11px; color:#facc15; word-break:break-all; margin-top:4px;">Generating...</p>
+        <h4 style="font-size:12px; color:var(--accent-sky);">Your Invite Link:</h4>
+        <p id="refLinkText" style="font-size:11px; color:var(--accent-green); word-break:break-all; margin-top:4px;">Generating...</p>
         <div class="ref-btn-group">
           <button class="btn-ref btn-copy" onclick="copyRefLink()">Copy Link</button>
-          <a class="btn-ref btn-invite" id="telegramInviteBtn" target="_blank">Invite Friend</a>
+          <a class="btn-ref btn-invite" id="telegramInviteBtn" target="_blank">Invite Friends</a>
         </div>
       </div>
+      
+      <!-- Expanded Pyramid Tree -->
       <div class="pyramid-tree">
-        <h4>Team Network Structure</h4>
+        <h4 style="color:var(--accent-green);">Team Network Structure</h4>
+        <p style="font-size:10px; color:var(--text-sub); margin-top:4px;">You (Level 1)</p>
         <div class="p-level"><div class="p-node"><i class="fa-solid fa-user"></i></div></div>
-        <p style="font-size:10px; color:#86efac;">↓ Direct Ref</p>
+        <p style="font-size:10px; color:var(--accent-sky);">↓ Direct Referral Tier 1</p>
         <div class="p-level">
           <div class="p-node"><i class="fa-solid fa-user"></i></div>
           <div class="p-node"><i class="fa-solid fa-user"></i></div>
         </div>
-        <p style="font-size:10px; color:#86efac;">↓ Sub-Team</p>
+        <p style="font-size:10px; color:var(--accent-sky);">↓ Sub-Team Tier 2</p>
         <div class="p-level">
-          <div class="p-node"><i class="fa-solid fa-user"></i></div>
-          <div class="p-node"><i class="fa-solid fa-user"></i></div>
-          <div class="p-node"><i class="fa-solid fa-user"></i></div>
-          <div class="p-node"><i class="fa-solid fa-user"></i></div>
+          <div class="p-node"><div style="font-size:9px;">U1</div></div>
+          <div class="p-node"><div style="font-size:9px;">U2</div></div>
+          <div class="p-node"><div style="font-size:9px;">U3</div></div>
+          <div class="p-node"><div style="font-size:9px;">U4</div></div>
+        </div>
+        <p style="font-size:10px; color:var(--accent-sky);">↓ Deep Network Tier 3</p>
+        <div class="p-level">
+          <div class="p-node"><i class="fa-solid fa-users"></i></div>
+          <div class="p-node"><i class="fa-solid fa-users"></i></div>
+          <div class="p-node"><i class="fa-solid fa-users"></i></div>
+          <div class="p-node"><i class="fa-solid fa-users"></i></div>
+          <div class="p-node"><i class="fa-solid fa-users"></i></div>
+          <div class="p-node"><i class="fa-solid fa-users"></i></div>
         </div>
       </div>
     </div>
 
     <!-- TAB 5: PROFILE -->
     <div id="tab-profile" class="tab-content">
-      <h3>Profile & Account</h3>
-      <br>
+      <!-- Strict Verification Warning -->
+      <div class="warning-box">
+        <div class="warning-title"><i class="fa-solid fa-triangle-exclamation"></i> গুরুত্বপূর্ণ সতর্কতা:</div>
+        <p style="font-size:11px; line-height:1.4;">অ্যাকাউন্ট ভেরিফিকেশন (Account Verification) সম্পন্ন না করলে আপনি কোনো প্রকার Withdrawal পাবেন না। আপনার মাইনিং ও টাস্ক সম্পূর্ণ করার তথ্য হেল্পলাইনে পাঠান।</p>
+      </div>
+
+      <!-- Withdrawal Delay Notice -->
       <div class="notice-box">
-        <div class="notice-title">In Sha Allah</div>
-        <p style="font-size:11px;">Withdraw option will be available after 30 days. Work with full attention and invite your friends!</p>
+        <h4 style="font-size:14px;">In Sha Allah</h4>
+        <p style="font-size:11px; margin-top:4px;">Withdraw option will be available after 30 days. Work with full attention and invite your friends!</p>
         <div class="countdown-box" id="withdrawCountdown">30d 00h 00m 00s</div>
       </div>
-      <div class="verify-box">
-        <h4 style="font-size:13px; color:#f472b6;">Account Verification</h4>
-        <p style="font-size:11px; color:#cbd5e1; margin-top:4px;">To get verified, send screenshots of your completed tasks and your main profile to our helpline support.</p>
+
+      <!-- Direct Support Contact -->
+      <div class="helpline-box">
+        <h4 style="font-size:13px; color:var(--accent-sky);">Helpline & Support</h4>
+        <p style="font-size:11px; color:var(--text-sub); margin-top:4px;">ভেরিফিকেশন বা যেকোনো সাহায্যের জন্য সরাসরি হেল্পলাইনে মেসেজ দিন:</p>
         <a href="https://t.me/ATF_Helpline" target="_blank" class="btn-helpline"><i class="fa-brands fa-telegram"></i> Contact @ATF_Helpline</a>
       </div>
-      <div class="search-box">
-        <h4 style="font-size:13px; color:#e879f9;">Search User Info</h4>
-        <div class="search-input-group">
-          <input type="text" id="searchInput" placeholder="Enter User ID (e.g. 786001)">
-          <button class="search-btn" onclick="searchUser()">Search</button>
+
+      <!-- Miner Certificate -->
+      <div class="certificate-card">
+        <div class="cert-header">Official Membership</div>
+        <div class="cert-title">ATF LITE MINER CERTIFICATE</div>
+        <div class="cert-details">
+          <p><strong>Miner Name:</strong> <span id="certName">Loading...</span></p>
+          <p><strong>Miner ID:</strong> <span id="certId">786001</span></p>
+          <p><strong>Account Status:</strong> <span style="color:#ef4444;">Unverified</span></p>
+          <p><strong>Registered Rate:</strong> 0.397 Coins/s</p>
         </div>
-        <div class="search-result-card res-pink" id="resPink"><strong>Name & ID:</strong> <span id="resName"></span></div>
-        <div class="search-result-card res-red" id="resRed"><strong>Upline Info:</strong> <span id="resUpline"></span></div>
-        <div class="search-result-card res-green" id="resGreen"><strong>Balances:</strong> <span id="resBalance"></span></div>
-        <div class="search-result-card res-sky" id="resSky"><strong>Miner Level:</strong> <span id="resLevel"></span></div>
       </div>
     </div>
   </div>
 
+  <!-- Bottom Navigation -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('mine', this)"><i class="fa-solid fa-hand-pointer"></i><span>Mine</span></div>
     <div class="nav-item" onclick="switchTab('tasks', this)"><i class="fa-solid fa-list-check"></i><span>Tasks</span></div>
     <div class="nav-item" onclick="switchTab('miners', this)"><i class="fa-solid fa-bolt"></i><span>Miners</span></div>
     <div class="nav-item" onclick="switchTab('friends', this)"><i class="fa-solid fa-user-group"></i><span>Friends</span></div>
     <div class="nav-item" onclick="switchTab('profile', this)"><i class="fa-solid fa-circle-user"></i><span>Profile</span></div>
-  </div>
-    <script>
-    // System Variables
-    let tapCoins = 0;
-    let atfLite = 0;
+      </div>
+          <script>
+    // Constants & Conversion Rates
+    // 10,000 Coins = 1 ATF LITE
+    // 500 ATF LITE = $1.00 USDT
     const BOT_USERNAME = "ATF_LITE_bot"; 
+    const BASIC_SPEED = 0.396825; // Coins per second (10,000 / 25200 seconds)
 
-    // Telegram SDK Setup
+    // User State & Storage Setup
+    let totalCoins = parseFloat(localStorage.getItem('atf_totalCoins')) || 0;
+    let unclaimedCoins = parseFloat(localStorage.getItem('atf_unclaimedCoins')) || 0;
+    let miningStartTime = parseInt(localStorage.getItem('atf_miningStartTime')) || 0;
+    let isMiningActive = localStorage.getItem('atf_isMiningActive') === 'true';
+
+    // Telegram User Integration
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     let userId = "786001";
     let userName = "User_786001";
@@ -255,6 +283,8 @@
 
     document.getElementById('uName').innerText = userName;
     document.getElementById('uId').innerText = userId;
+    document.getElementById('certName').innerText = userName;
+    document.getElementById('certId').innerText = userId;
 
     if (photoUrl) {
       document.getElementById('uAvatar').innerHTML = `<img src="${photoUrl}" alt="User Avatar">`;
@@ -262,57 +292,132 @@
       document.getElementById('uAvatar').innerText = userName.charAt(0).toUpperCase();
     }
 
-    // Tap Coin Logic & Speed Glow Effect
-    const tapBtn = document.getElementById('tapBtn');
-    let boostTimer = null;
-
-    tapBtn.addEventListener('click', () => {
-      tapCoins += 10;
-      updateBalances();
-
-      tapBtn.classList.add('boosted');
-      if (boostTimer) clearTimeout(boostTimer);
-      boostTimer = setTimeout(() => {
-        tapBtn.classList.remove('boosted');
-      }, 5000);
-    });
-
-    function updateBalances() {
-      atfLite = (tapCoins / 10000);
+    // Update UI Balances
+    function updateBalanceUI() {
+      let atfLite = (totalCoins / 10000);
       let usdVal = (atfLite / 500).toFixed(4);
-      document.getElementById('coinDisplay').innerText = tapCoins.toLocaleString() + " Tap Coins";
-      document.getElementById('atfDisplay').innerText = atfLite.toFixed(2) + " ATF LITE (~ $" + usdVal + " USD)";
+      
+      document.getElementById('totalCoinDisplay').innerText = Math.floor(totalCoins).toLocaleString() + " Coins";
+      document.getElementById('atfDisplay').innerText = atfLite.toFixed(2) + " ATF LITE (~ $" + usdVal + " USDT)";
+      
+      let claimBtn = document.getElementById('claimPointsBtn');
+      if (unclaimedCoins > 0 && isMiningActive) {
+        claimBtn.disabled = false;
+      } else {
+        claimBtn.disabled = true;
+      }
     }
 
-    // 7-Hour Mining Logic
-    let miningActive = false;
-    function startMiningTimer() {
-      if (miningActive) {
-        alert("Mining is already running!");
-        return;
-      }
-      miningActive = true;
-      let duration = 7 * 60 * 60;
-      const display = document.getElementById('mineTimerText');
+    // 7-Hour Lock Mining System
+    let miningInterval = null;
+    const DURATION_7_HOURS_MS = 7 * 60 * 60 * 1000;
 
-      let timer = setInterval(() => {
-        let hrs = Math.floor(duration / 3600);
-        let mins = Math.floor((duration % 3600) / 60);
-        let secs = duration % 60;
+    function initMiningState() {
+      if (isMiningActive) {
+        let now = Date.now();
+        let elapsedTime = now - miningStartTime;
 
-        display.innerText = `Mining Active: ${hrs}h ${mins}m ${secs}s`;
-
-        if (--duration < 0) {
-          clearInterval(timer);
-          miningActive = false;
-          display.innerText = "Mining Finished! Claim Now.";
-          tapCoins += 5000;
-          updateBalances();
+        if (elapsedTime >= DURATION_7_HOURS_MS) {
+          // Completed
+          finishMiningSession();
+        } else {
+          // Resume Active Session
+          resumeMiningLoop();
         }
+      } else {
+        document.getElementById('startMiningBtn').style.display = "block";
+        document.getElementById('mineTimerText').innerText = "⛏️ Ready to Start Mining";
+      }
+      updateBalanceUI();
+    }
+
+    function start7HourMining() {
+      if (isMiningActive) return;
+
+      isMiningActive = true;
+      miningStartTime = Date.now();
+      unclaimedCoins = 0;
+
+      localStorage.setItem('atf_isMiningActive', 'true');
+      localStorage.setItem('atf_miningStartTime', miningStartTime.toString());
+      localStorage.setItem('atf_unclaimedCoins', '0');
+
+      resumeMiningLoop();
+    }
+
+    function resumeMiningLoop() {
+      document.getElementById('startMiningBtn').style.display = "none";
+      
+      if (miningInterval) clearInterval(miningInterval);
+
+      miningInterval = setInterval(() => {
+        let now = Date.now();
+        let elapsedTimeMs = now - miningStartTime;
+
+        if (elapsedTimeMs >= DURATION_7_HOURS_MS) {
+          finishMiningSession();
+          return;
+        }
+
+        // Calculate live points based on time passed
+        let totalElapsedSeconds = elapsedTimeMs / 1000;
+        unclaimedCoins = totalElapsedSeconds * BASIC_SPEED;
+
+        // Save progress
+        localStorage.setItem('atf_unclaimedCoins', unclaimedCoins.toString());
+
+        // Update Live Display
+        document.getElementById('liveMiningPoints').innerText = "+" + unclaimedCoins.toFixed(3);
+        
+        let remainingSeconds = Math.floor((DURATION_7_HOURS_MS - elapsedTimeMs) / 1000);
+        let h = Math.floor(remainingSeconds / 3600);
+        let m = Math.floor((remainingSeconds % 3600) / 60);
+        let s = remainingSeconds % 60;
+        
+        document.getElementById('mineTimerText').innerText = `⛏️ Mining Active: ${h}h ${m}m ${s}s remaining`;
+        updateBalanceUI();
       }, 1000);
     }
 
-    // Tasks Logic & 3-Hour Timer
+    function claimMiningPoints() {
+      if (!isMiningActive || unclaimedCoins <= 0) return;
+
+      totalCoins += unclaimedCoins;
+      
+      // Reset unclaimed points but KEEP mining session running!
+      // Adjust start time to simulate reset point accumulation
+      let now = Date.now();
+      miningStartTime = now; 
+      unclaimedCoins = 0;
+
+      localStorage.setItem('atf_totalCoins', totalCoins.toString());
+      localStorage.setItem('atf_unclaimedCoins', '0');
+      localStorage.setItem('atf_miningStartTime', miningStartTime.toString());
+
+      document.getElementById('liveMiningPoints').innerText = "+0.000";
+      updateBalanceUI();
+    }
+
+    function finishMiningSession() {
+      clearInterval(miningInterval);
+      isMiningActive = false;
+      localStorage.setItem('atf_isMiningActive', 'false');
+
+      // Add remaining unclaimed coins to total
+      totalCoins += unclaimedCoins;
+      unclaimedCoins = 0;
+      localStorage.setItem('atf_totalCoins', totalCoins.toString());
+      localStorage.setItem('atf_unclaimedCoins', '0');
+
+      document.getElementById('startMiningBtn').style.display = "block";
+      document.getElementById('startMiningBtn').innerText = "⛏️ Start New 7-Hour Session";
+      document.getElementById('mineTimerText').innerText = "✅ 7-Hour Mining Completed!";
+      document.getElementById('liveMiningPoints').innerText = "+0.000";
+      
+      updateBalanceUI();
+    }
+
+    // Tasks Functionality
     function handleTask(taskId, url) {
       window.open(url, '_blank');
       const btn = document.getElementById('btnTask' + taskId);
@@ -321,36 +426,17 @@
         btn.innerText = "Claim";
         btn.classList.add('btn-claim');
       } else if (btn.innerText === "Claim") {
-        atfLite += (taskId === 1 ? 10 : 15);
-        tapCoins += (taskId === 1 ? 10 : 15) * 10000;
-        updateBalances();
-        btn.style.display = "none";
-        startTaskTimer(taskId);
+        let rewardCoins = (taskId === 1 ? 100000 : 150000);
+        totalCoins += rewardCoins;
+        localStorage.setItem('atf_totalCoins', totalCoins.toString());
+        updateBalanceUI();
+        btn.innerText = "Completed";
+        btn.disabled = true;
+        btn.style.opacity = "0.6";
       }
     }
 
-    function startTaskTimer(taskId) {
-      let time = 3 * 60 * 60;
-      const timerSpan = document.getElementById('timer' + taskId);
-
-      let t = setInterval(() => {
-        let h = Math.floor(time / 3600);
-        let m = Math.floor((time % 3600) / 60);
-        let s = time % 60;
-        timerSpan.innerText = ` Available again in: ${h}h ${m}m ${s}s`;
-
-        if (--time < 0) {
-          clearInterval(t);
-          timerSpan.innerText = "";
-          const btn = document.getElementById('btnTask' + taskId);
-          btn.innerText = "Go";
-          btn.classList.remove('btn-claim');
-          btn.style.display = "inline-block";
-        }
-      }, 1000);
-    }
-
-    // Dynamic 500 Miners Generation
+    // Dynamic 500 Miners
     const minerList = document.getElementById('minerList');
     for (let i = 1; i <= 500; i++) {
       let speed = (i * 0.5).toFixed(1);
@@ -361,14 +447,14 @@
       item.innerHTML = `
         <div>
           <h4>Level ${i} Miner</h4>
-          <p style="font-size:11px; color:#a78bfa;">Speed: ${speed}x | Price: $${price} USD</p>
+          <p style="font-size:11px; color:var(--accent-sky);">Speed: ${speed}x | Price: $${price} USDT</p>
         </div>
         <button class="btn-buy">${i === 1 ? 'ACTIVE' : 'BUY'}</button>
       `;
       minerList.appendChild(item);
     }
 
-    // Dynamic Referrals
+    // Referral System
     const myRefLink = `https://t.me/${BOT_USERNAME}?start=${userId}`;
     document.getElementById('refLinkText').innerText = myRefLink;
 
@@ -380,7 +466,7 @@
       alert("Referral link copied!");
     }
 
-    // 30-Day Withdrawal Timer
+    // 30-Day Withdrawal Countdown
     let targetDate = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
     setInterval(() => {
       let now = new Date().getTime();
@@ -394,26 +480,7 @@
       document.getElementById('withdrawCountdown').innerText = `${d}d ${h}h ${m}m ${s}s`;
     }, 1000);
 
-    // Profile Search System
-    function searchUser() {
-      let query = document.getElementById('searchInput').value.trim();
-      if (!query) {
-        alert("Please enter a User ID!");
-        return;
-      }
-
-      document.getElementById('resName').innerText = userName + " (ID: " + query + ")";
-      document.getElementById('resUpline').innerText = "Admin_Upline (ID: 786000)";
-      document.getElementById('resBalance').innerText = `${tapCoins} Tap Coins | ${atfLite.toFixed(2)} ATF LITE`;
-      document.getElementById('resLevel').innerText = "Level 1 Active";
-
-      document.getElementById('resPink').style.display = "block";
-      document.getElementById('resRed').style.display = "block";
-      document.getElementById('resGreen').style.display = "block";
-      document.getElementById('resSky').style.display = "block";
-    }
-
-    // Navigation Switcher
+    // Tab Navigation
     function switchTab(tabId, el) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -421,6 +488,9 @@
       document.getElementById('tab-' + tabId).classList.add('active');
       el.classList.add('active');
     }
+
+    // Initialize System on Load
+    initMiningState();
   </script>
 </body>
 </html>
