@@ -6105,4 +6105,1131 @@ if(document.readyState==="loading"){
 
 })();
       </script>
-      
+      <script>
+(function(){
+
+  function atfLiteCheckRequiredPages(){
+
+    const requiredPages=[
+      "miningPage",
+      "tasksPage",
+      "leaderboardPage",
+      "friendsPage",
+      "walletPage",
+      "activityPage",
+      "verificationPage"
+    ];
+
+    const missingPages=requiredPages.filter(function(id){
+      return !document.getElementById(id);
+    });
+
+    window.atfLiteMissingPages=missingPages;
+
+  }
+
+  window.atfLiteCheckRequiredPages=
+    atfLiteCheckRequiredPages;
+
+  if(document.readyState==="loading"){
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      atfLiteCheckRequiredPages,
+      {once:true}
+    );
+
+  }else{
+
+    atfLiteCheckRequiredPages();
+
+  }
+
+})();
+      </script>
+<script>
+(function(){
+
+  function atfLiteCheckCoreFunctions(){
+
+    const requiredFunctions=[
+      "saveState",
+      "showToast",
+      "showAppPage",
+      "refreshAllATFLitePages",
+      "atfMiningRender",
+      "renderATFTasks",
+      "renderATFLeaderboard",
+      "renderReferralPage",
+      "renderWalletPage",
+      "renderActivityPage",
+      "renderVerificationPage"
+    ];
+
+    const missingFunctions=requiredFunctions.filter(
+      function(name){
+        return typeof window[name]!=="function";
+      }
+    );
+
+    window.atfLiteMissingFunctions=missingFunctions;
+
+  }
+
+  window.atfLiteCheckCoreFunctions=
+    atfLiteCheckCoreFunctions;
+
+})();
+      </script>
+<script>
+(function(){
+
+  function atfLiteCheckAppStatus(){
+
+    if(typeof window.atfLiteCheckRequiredPages==="function"){
+      window.atfLiteCheckRequiredPages();
+    }
+
+    if(typeof window.atfLiteCheckCoreFunctions==="function"){
+      window.atfLiteCheckCoreFunctions();
+    }
+
+    return {
+      missingPages:window.atfLiteMissingPages||[],
+      missingFunctions:window.atfLiteMissingFunctions||[]
+    };
+
+  }
+
+  window.atfLiteCheckAppStatus=atfLiteCheckAppStatus;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteClearTemporaryLocks(){
+
+    document.querySelectorAll("button").forEach(
+      function(button){
+
+        if(button.disabled && button.dataset.atfTemporaryLock==="true"){
+          button.disabled=false;
+          delete button.dataset.atfTemporaryLock;
+        }
+
+      }
+    );
+
+  }
+
+  window.atfLiteClearTemporaryLocks=
+    atfLiteClearTemporaryLocks;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteFinalHealthCheck(){
+
+    if(typeof window.atfLiteCheckAppStatus!=="function"){
+      return;
+    }
+
+    const status=window.atfLiteCheckAppStatus();
+
+    if(
+      status.missingPages.length===0 &&
+      status.missingFunctions.length===0
+    ){
+      document.documentElement.dataset.atfLiteReady="true";
+    }else{
+      document.documentElement.dataset.atfLiteReady="false";
+    }
+
+  }
+
+  window.atfLiteFinalHealthCheck=atfLiteFinalHealthCheck;
+
+  if(document.readyState==="loading"){
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      atfLiteFinalHealthCheck,
+      {once:true}
+    );
+
+  }else{
+
+    atfLiteFinalHealthCheck();
+
+  }
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteSafeNumber(value){
+    const number=Number(value);
+    return Number.isFinite(number) ? number : 0;
+  }
+
+  window.atfLiteSafeNumber=atfLiteSafeNumber;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteFormatCoins(value){
+    const coins=window.atfLiteSafeNumber
+      ? window.atfLiteSafeNumber(value)
+      : 0;
+
+    return Math.floor(coins).toLocaleString("en-US");
+  }
+
+  window.atfLiteFormatCoins=atfLiteFormatCoins;
+
+})();
+  </script>
+<script>
+(function(){
+
+  function atfLiteFormatATF(coins){
+    const safeCoins=window.atfLiteSafeNumber
+      ? window.atfLiteSafeNumber(coins)
+      : 0;
+
+    return (safeCoins/10000).toFixed(2);
+  }
+
+  window.atfLiteFormatATF=atfLiteFormatATF;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteFormatUSDT(atfAmount){
+    const amount=window.atfLiteSafeNumber
+      ? window.atfLiteSafeNumber(atfAmount)
+      : 0;
+
+    return (amount*0.002).toFixed(2);
+  }
+
+  window.atfLiteFormatUSDT=atfLiteFormatUSDT;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRefreshFormattedBalances(){
+
+    if(typeof state==="undefined" || !state){
+      return;
+    }
+
+    const coins=Number(state.coins)||0;
+    const atf=coins/10000;
+
+    document.querySelectorAll("[data-format-coins]")
+      .forEach(function(element){
+        element.textContent=window.atfLiteFormatCoins(coins);
+      });
+
+    document.querySelectorAll("[data-format-atf]")
+      .forEach(function(element){
+        element.textContent=window.atfLiteFormatATF(coins);
+      });
+
+    document.querySelectorAll("[data-format-usdt]")
+      .forEach(function(element){
+        element.textContent=window.atfLiteFormatUSDT(atf);
+      });
+
+  }
+
+  window.atfLiteRefreshFormattedBalances=
+    atfLiteRefreshFormattedBalances;
+
+})();
+  </script>
+<script>
+(function(){
+
+  function atfLiteGetWalletBalance(){
+
+    if(typeof state==="undefined" || !state){
+      return {
+        coins:0,
+        atf:0,
+        usdt:0
+      };
+    }
+
+    const coins=Math.max(0,Number(state.coins)||0);
+    const atf=coins/10000;
+
+    return {
+      coins:coins,
+      atf:atf,
+      usdt:atf*0.002
+    };
+
+  }
+
+  window.atfLiteGetWalletBalance=atfLiteGetWalletBalance;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRenderWalletBalance(){
+
+    if(typeof window.atfLiteGetWalletBalance!=="function"){
+      return;
+    }
+
+    const balance=window.atfLiteGetWalletBalance();
+
+    document.querySelectorAll("[data-wallet-coins]")
+      .forEach(function(element){
+        element.textContent=balance.coins.toLocaleString("en-US");
+      });
+
+    document.querySelectorAll("[data-wallet-atf]")
+      .forEach(function(element){
+        element.textContent=balance.atf.toFixed(2);
+      });
+
+    document.querySelectorAll("[data-wallet-usdt]")
+      .forEach(function(element){
+        element.textContent="$"+balance.usdt.toFixed(2);
+      });
+
+  }
+
+  window.atfLiteRenderWalletBalance=atfLiteRenderWalletBalance;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteValidateWithdrawal(amount){
+
+    const value=Number(amount);
+
+    if(!Number.isFinite(value) || value<=0){
+      return {
+        valid:false,
+        message:"Enter a valid withdrawal amount."
+      };
+    }
+
+    if(value<50){
+      return {
+        valid:false,
+        message:"Minimum withdrawal is 50 ATF LITE."
+      };
+    }
+
+    const balance=window.atfLiteGetWalletBalance
+      ? window.atfLiteGetWalletBalance()
+      : {atf:0};
+
+    if(value>balance.atf){
+      return {
+        valid:false,
+        message:"Insufficient available balance."
+      };
+    }
+
+    return {
+      valid:true,
+      message:"Amount validated."
+    };
+
+  }
+
+  window.atfLiteValidateWithdrawal=atfLiteValidateWithdrawal;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteUpdateWithdrawalEstimate(amount){
+
+    const value=Math.max(0,Number(amount)||0);
+    const estimate=(value*0.002).toFixed(2);
+
+    document.querySelectorAll("[data-withdrawal-estimate]")
+      .forEach(function(element){
+        element.textContent="$"+estimate+" USDT";
+      });
+
+  }
+
+  window.atfLiteUpdateWithdrawalEstimate=
+    atfLiteUpdateWithdrawalEstimate;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRefreshWalletWidgets(){
+
+    try{
+      if(typeof window.atfLiteRenderWalletBalance==="function"){
+        window.atfLiteRenderWalletBalance();
+      }
+
+      if(typeof window.atfLiteRefreshFormattedBalances==="function"){
+        window.atfLiteRefreshFormattedBalances();
+      }
+    }catch(error){}
+
+  }
+
+  window.atfLiteRefreshWalletWidgets=atfLiteRefreshWalletWidgets;
+
+  window.addEventListener("focus",atfLiteRefreshWalletWidgets);
+
+  document.addEventListener("visibilitychange",function(){
+    if(!document.hidden){
+      atfLiteRefreshWalletWidgets();
+    }
+  });
+
+})();
+    </script>
+<script>
+(function(){
+
+  function atfLiteValidateWalletAddress(method,address){
+
+    const value=String(address||"").trim();
+
+    if(!method){
+      return {
+        valid:false,
+        message:"Select a payment method."
+      };
+    }
+
+    if(!value){
+      return {
+        valid:false,
+        message:"Enter your wallet address."
+      };
+    }
+
+    if(value.length<10 || value.length>150){
+      return {
+        valid:false,
+        message:"Check your wallet address."
+      };
+    }
+
+    return {
+      valid:true,
+      message:"Address format accepted for review."
+    };
+
+  }
+
+  window.atfLiteValidateWalletAddress=
+    atfLiteValidateWalletAddress;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteGetPaymentMethodLabel(method){
+
+    const methods={
+      ton:"TON Wallet",
+      usdt_trc20:"USDT TRC20",
+      usdt_bep20:"USDT BEP20",
+      binance_pay:"Binance Pay"
+    };
+
+    return methods[String(method||"").toLowerCase()]||"Unknown method";
+
+  }
+
+  window.atfLiteGetPaymentMethodLabel=
+    atfLiteGetPaymentMethodLabel;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteGetWithdrawalMinimum(){
+
+    return {
+      atf:50,
+      coins:500000,
+      usdt:0.10
+    };
+
+  }
+
+  window.atfLiteGetWithdrawalMinimum=
+    atfLiteGetWithdrawalMinimum;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteGetWithdrawalEligibility(){
+
+    const minimum=window.atfLiteGetWithdrawalMinimum();
+    const balance=window.atfLiteGetWalletBalance
+      ? window.atfLiteGetWalletBalance()
+      : {atf:0};
+
+    return {
+      eligible:balance.atf>=minimum.atf,
+      balanceATF:balance.atf,
+      minimumATF:minimum.atf,
+      remainingATF:Math.max(0,minimum.atf-balance.atf)
+    };
+
+  }
+
+  window.atfLiteGetWithdrawalEligibility=
+    atfLiteGetWithdrawalEligibility;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRenderWithdrawalEligibility(){
+
+    const result=window.atfLiteGetWithdrawalEligibility();
+
+    document.querySelectorAll("[data-withdrawal-eligibility]")
+      .forEach(function(element){
+
+        element.textContent=result.eligible
+          ? "Minimum balance reached"
+          : result.remainingATF.toFixed(2)+" ATF LITE more needed";
+
+      });
+
+    document.querySelectorAll("[data-withdrawal-submit]")
+      .forEach(function(button){
+
+        button.disabled=!result.eligible;
+
+      });
+
+  }
+
+  window.atfLiteRenderWithdrawalEligibility=
+    atfLiteRenderWithdrawalEligibility;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteGetWithdrawalHistory(){
+
+    try{
+      const saved=localStorage.getItem("atfLiteWithdrawalHistoryV1");
+      const parsed=saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    }catch(error){
+      return [];
+    }
+
+  }
+
+  window.atfLiteGetWithdrawalHistory=
+    atfLiteGetWithdrawalHistory;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteSaveWithdrawalRequest(request){
+
+    if(!request || !request.success){
+      return {
+        success:false,
+        message:"Invalid withdrawal request."
+      };
+    }
+
+    const history=window.atfLiteGetWithdrawalHistory();
+
+    history.unshift({
+      id:"ATF-"+Date.now(),
+      amountATF:request.amountATF,
+      amountUSDT:request.amountUSDT,
+      method:request.method,
+      address:request.address,
+      status:"Pending",
+      createdAt:request.createdAt
+    });
+
+    try{
+      localStorage.setItem(
+        "atfLiteWithdrawalHistoryV1",
+        JSON.stringify(history)
+      );
+    }catch(error){
+      return {
+        success:false,
+        message:"Could not save the request on this device."
+      };
+    }
+
+    return {
+      success:true,
+      message:"Request saved for demo display."
+    };
+
+  }
+
+  window.atfLiteSaveWithdrawalRequest=
+    atfLiteSaveWithdrawalRequest;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRenderWithdrawalHistory(){
+
+    const container=document.getElementById(
+      "withdrawalHistoryList"
+    );
+
+    if(!container){
+      return;
+    }
+
+    const history=window.atfLiteGetWithdrawalHistory();
+
+    if(history.length===0){
+      container.textContent="No withdrawal requests yet.";
+      return;
+    }
+
+    container.replaceChildren();
+
+    history.forEach(function(item){
+
+      const row=document.createElement("div");
+      row.className="withdrawal-history-item";
+
+      const title=document.createElement("div");
+      title.textContent=
+        Number(item.amountATF||0).toFixed(2)+" ATF LITE";
+
+      const detail=document.createElement("div");
+      detail.textContent=
+        "$"+Number(item.amountUSDT||0).toFixed(2)+
+        " USDT · "+String(item.status||"Pending");
+
+      row.append(title,detail);
+      container.appendChild(row);
+
+    });
+
+  }
+
+  window.atfLiteRenderWithdrawalHistory=
+    atfLiteRenderWithdrawalHistory;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRefreshWithdrawalPage(){
+
+    try{
+
+      if(typeof window.atfLiteRenderWalletBalance==="function"){
+        window.atfLiteRenderWalletBalance();
+      }
+
+      if(typeof window.atfLiteRenderWithdrawalEligibility==="function"){
+        window.atfLiteRenderWithdrawalEligibility();
+      }
+
+      if(typeof window.atfLiteRenderWithdrawalHistory==="function"){
+        window.atfLiteRenderWithdrawalHistory();
+      }
+
+    }catch(error){}
+
+  }
+
+  window.atfLiteRefreshWithdrawalPage=
+    atfLiteRefreshWithdrawalPage;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteFormatDate(timestamp){
+
+    const date=new Date(Number(timestamp)||Date.now());
+
+    return date.toLocaleString("en-IN",{
+      day:"2-digit",
+      month:"short",
+      year:"numeric",
+      hour:"2-digit",
+      minute:"2-digit"
+    });
+
+  }
+  <script>
+(function(){
+
+  function atfLiteGetWithdrawalById(requestId){
+
+    const history=window.atfLiteGetWithdrawalHistory
+      ? window.atfLiteGetWithdrawalHistory()
+      : [];
+
+    return history.find(function(item){
+      return item.id===requestId;
+    })||null;
+
+  }
+
+  window.atfLiteGetWithdrawalById=
+    atfLiteGetWithdrawalById;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteGetWithdrawalSummary(){
+
+    const history=window.atfLiteGetWithdrawalHistory
+      ? window.atfLiteGetWithdrawalHistory()
+      : [];
+
+    return {
+      totalRequests:history.length,
+      pending:history.filter(function(item){
+        return item.status==="Pending";
+      }).length,
+      approved:history.filter(function(item){
+        return item.status==="Approved";
+      }).length,
+      rejected:history.filter(function(item){
+        return item.status==="Rejected";
+      }).length
+    };
+
+  }
+
+  window.atfLiteGetWithdrawalSummary=
+    atfLiteGetWithdrawalSummary;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRenderWithdrawalSummary(){
+
+    const summary=window.atfLiteGetWithdrawalSummary();
+
+    const values={
+      total:summary.totalRequests,
+      pending:summary.pending,
+      approved:summary.approved,
+      rejected:summary.rejected
+    };
+
+    Object.keys(values).forEach(function(key){
+
+      document.querySelectorAll(
+        '[data-withdrawal-count="'+key+'"]'
+      ).forEach(function(element){
+        element.textContent=String(values[key]);
+      });
+
+    });
+
+  }
+
+  window.atfLiteRenderWithdrawalSummary=
+    atfLiteRenderWithdrawalSummary;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRefreshWithdrawalDetails(){
+
+    try{
+
+      if(typeof atfLiteRenderWithdrawalHistory==="function"){
+        atfLiteRenderWithdrawalHistory();
+      }
+
+      if(typeof atfLiteRenderWithdrawalSummary==="function"){
+        atfLiteRenderWithdrawalSummary();
+      }
+
+      if(typeof atfLiteRenderWalletBalance==="function"){
+        atfLiteRenderWalletBalance();
+      }
+
+    }catch(error){}
+
+  }
+
+  window.atfLiteRefreshWithdrawalDetails=
+    atfLiteRefreshWithdrawalDetails;
+
+  window.addEventListener(
+    "focus",
+    atfLiteRefreshWithdrawalDetails
+  );
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteWithdrawalStatusLabel(status){
+
+    const labels={
+      Pending:"Awaiting review",
+      Approved:"Approved",
+      Rejected:"Rejected",
+      Paid:"Payment completed"
+    };
+
+    return labels[String(status||"Pending")]||"Status unavailable";
+
+  }
+
+  window.atfLiteWithdrawalStatusLabel=
+    atfLiteWithdrawalStatusLabel;
+
+})();
+                         </script>
+
+
+  window.atfLiteFormatDate=atfLiteFormatDate;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteWithdrawalStatusColor(status){
+
+    const colors={
+      Pending:"#fbbf24",
+      Approved:"#38bdf8",
+      Rejected:"#fb7185",
+      Paid:"#4ade80"
+    };
+
+    return colors[String(status||"Pending")]||"#94a3b8";
+
+  }
+
+  window.atfLiteWithdrawalStatusColor=
+    atfLiteWithdrawalStatusColor;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteCreateWithdrawalReference(){
+
+    const randomPart=Math.random()
+      .toString(36)
+      .slice(2,8)
+      .toUpperCase();
+
+    return "ATFW-"+Date.now().toString(36).toUpperCase()
+      +"-"+randomPart;
+
+  }
+
+  window.atfLiteCreateWithdrawalReference=
+    atfLiteCreateWithdrawalReference;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteGetWithdrawalHistorySorted(){
+
+    const history=window.atfLiteGetWithdrawalHistory
+      ? window.atfLiteGetWithdrawalHistory()
+      : [];
+
+    return history.slice().sort(function(a,b){
+      return Number(b.createdAt||0)-Number(a.createdAt||0);
+    });
+
+  }
+
+  window.atfLiteGetWithdrawalHistorySorted=
+    atfLiteGetWithdrawalHistorySorted;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteWithdrawalModuleReady(){
+
+    const ready=
+      typeof window.atfLiteGetWithdrawalHistory==="function" &&
+      typeof window.atfLiteRenderWithdrawalHistory==="function" &&
+      typeof window.atfLiteGetWithdrawalSummary==="function";
+
+    document.documentElement.dataset.atfWithdrawalReady=
+      ready ? "true" : "false";
+
+    return ready;
+
+  }
+
+  window.atfLiteWithdrawalModuleReady=
+    atfLiteWithdrawalModuleReady;
+
+  if(document.readyState==="loading"){
+
+    document.addEventListener("DOMContentLoaded",function(){
+      window.atfLiteWithdrawalModuleReady();
+    },{once:true});
+
+  }else{
+
+    window.atfLiteWithdrawalModuleReady();
+
+  }
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteGetActivityHistory(){
+
+    try{
+      const raw=localStorage.getItem("atfLiteActivityHistoryV1");
+      const items=raw?JSON.parse(raw):[];
+      return Array.isArray(items)?items:[];
+    }catch(error){
+      return [];
+    }
+
+  }
+
+  window.atfLiteGetActivityHistory=atfLiteGetActivityHistory;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteSaveActivityHistory(items){
+
+    if(!Array.isArray(items)){
+      return false;
+    }
+
+    try{
+      localStorage.setItem(
+        "atfLiteActivityHistoryV1",
+        JSON.stringify(items.slice(0,200))
+      );
+      return true;
+    }catch(error){
+      return false;
+    }
+
+  }
+
+  window.atfLiteSaveActivityHistory=atfLiteSaveActivityHistory;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRecordActivity(title,description,icon){
+
+    const items=window.atfLiteGetActivityHistory();
+
+    items.unshift({
+      id:"ACT-"+Date.now(),
+      title:String(title||"Activity"),
+      description:String(description||""),
+      icon:String(icon||"•"),
+      createdAt:Date.now()
+    });
+
+    const saved=window.atfLiteSaveActivityHistory(items);
+
+    if(saved && typeof window.renderActivityPage==="function"){
+      window.renderActivityPage();
+    }
+
+    return saved;
+
+  }
+
+  window.atfLiteRecordActivity=atfLiteRecordActivity;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRenderActivityHistory(){
+
+    const container=document.getElementById("activityHistoryList");
+
+    if(!container){
+      return;
+    }
+
+    const items=window.atfLiteGetActivityHistory();
+
+    container.replaceChildren();
+
+    if(items.length===0){
+      container.textContent="No activity yet.";
+      return;
+    }
+
+    items.slice(0,100).forEach(function(item){
+
+      const row=document.createElement("div");
+      row.className="activity-history-item";
+
+      const heading=document.createElement("div");
+      heading.textContent=String(item.icon||"•")+" "+String(item.title||"Activity");
+
+      const detail=document.createElement("div");
+      detail.textContent=String(item.description||"");
+
+      const date=document.createElement("small");
+      date.textContent=window.atfLiteFormatDate
+        ? window.atfLiteFormatDate(item.createdAt)
+        : new Date(Number(item.createdAt)||Date.now()).toLocaleString();
+
+      row.append(heading,detail,date);
+      container.appendChild(row);
+
+    });
+
+  }
+
+  window.atfLiteRenderActivityHistory=atfLiteRenderActivityHistory;
+
+})();
+</script>
+<script>
+(function(){
+
+  function atfLiteRenderActivityHistory(){
+
+    const container=document.getElementById("activityHistoryList");
+
+    if(!container){
+      return;
+    }
+
+    const items=window.atfLiteGetActivityHistory();
+
+    container.replaceChildren();
+
+    if(items.length===0){
+      container.textContent="No activity yet.";
+      return;
+    }
+
+    items.slice(0,100).forEach(function(item){
+
+      const row=document.createElement("div");
+      row.className="activity-history-item";
+
+      const heading=document.createElement("div");
+      heading.textContent=String(item.icon||"•")+" "+String(item.title||"Activity");
+
+      const detail=document.createElement("div");
+      detail.textContent=String(item.description||"");
+
+      const date=document.createElement("small");
+      date.textContent=window.atfLiteFormatDate
+        ? window.atfLiteFormatDate(item.createdAt)
+        : new Date(Number(item.createdAt)||Date.now()).toLocaleString();
+
+      row.append(heading,detail,date);
+      container.appendChild(row);
+
+    });
+
+  }
+
+  window.atfLiteRenderActivityHistory=atfLiteRenderActivityHistory;
+
+})();
+        </script>
+<script>
+(function(){
+
+  function atfLiteRefreshActivityModule(){
+
+    try{
+      if(typeof window.atfLiteRenderActivityHistory==="function"){
+        window.atfLiteRenderActivityHistory();
+      }
+
+      if(typeof window.atfLiteGetWithdrawalSummary==="function"){
+        const summary=window.atfLiteGetWithdrawalSummary();
+
+        document.querySelectorAll('[data-withdrawal-count="total"]')
+          .forEach(function(element){
+            element.textContent=String(summary.totalRequests);
+          });
+      }
+    }catch(error){}
+
+  }
+
+  window.atfLiteRefreshActivityModule=atfLiteRefreshActivityModule;
+
+})();
+</script>
+
